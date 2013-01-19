@@ -159,7 +159,7 @@ void JGEDisplayObject::setAlphaEnabled(bool value)
 	m_alphaEnabled = value;
 }
 
-BOOL JGEDisplayObject::getAlphaEnabled()
+bool JGEDisplayObject::getAlphaEnabled()
 {
 	return m_alphaEnabled;
 }

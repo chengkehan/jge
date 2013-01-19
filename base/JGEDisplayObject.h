@@ -10,6 +10,8 @@ class JGERender;
 
 class JGEDisplayObject : public JGEEventDispatcher
 {
+friend class JGERender;
+
 public:
 	struct Vertex
 	{
@@ -67,7 +69,7 @@ public:
 	float getAlpha();
 
 	void setAlphaEnabled(bool value);
-	BOOL getAlphaEnabled();
+	bool getAlphaEnabled();
 
 	JGEDisplayObjectContainer* getParent();
 
