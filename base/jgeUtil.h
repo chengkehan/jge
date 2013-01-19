@@ -49,6 +49,8 @@
 #define jgeDXVerifyIf(hr) if(FAILED(hr)){ DXTRACE_ERR_MSGBOX(DXGetErrorDescription(hr), hr); DXTRACE_ERR_MSGBOX(DXGetErrorString(hr), hr); DXTRACE_MSG(DXGetErrorDescription(hr)); DXTRACE_ERR(DXGetErrorDescription(hr), hr); 
 #define jgeDXVerifyEndIf }
 
+#define jgeMessageBoxError(msg) { MessageBox(NULL, L##msg, L"Error", MB_OK); }
+
 extern char __jge_trace_buffer[1024];
 #define jgeTrace1(format, value1) { sprintf_s(__jge_trace_buffer, 1024, format, value1); OutputDebugStringA(__jge_trace_buffer); }
 #define jgeTrace2(format, value1, value2) { sprintf_s(__jge_trace_buffer, 1024, format, value1, value2); OutputDebugStringA(__jge_trace_buffer); }
