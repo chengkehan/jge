@@ -1,4 +1,5 @@
 #include "JGEDisplayObject.h"
+#include "JGEDisplayObjectContainer.h"
 #include "jgeUtil.h"
 
 CONST DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
@@ -15,12 +16,14 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 	m_lpTexture = null;
 	m_lpVBData = null;
 	m_alpha = 0.0f; m_alphaEnabled = true;
+	m_lpParent = null;
 }
 
 JGEDisplayObject::~JGEDisplayObject()
 {
 	m_lpd3dd = null;
 	m_lpTexture = null;
+	m_lpParent = null;
 	jgeDelete(m_lpVBData);
 }
 
@@ -166,7 +169,12 @@ bool JGEDisplayObject::getAlphaEnabled() const
 
 JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
 {
-	return (JGEDisplayObjectContainer*)m_lpParent;
+	return m_lpParent;
+}
+
+void JGEDisplayObject::setParent(JGEDisplayObjectContainer* lpParent)
+{
+	m_lpParent = lpParent;
 }
 
 void JGEDisplayObject::updateVertexBufferData()
@@ -180,7 +188,7 @@ void JGEDisplayObject::updateVertexBufferData()
 	FLOAT global_scaleY = 1.0f;
 	FLOAT global_rotation = 0.0f;
 	FLOAT global_alpha = 1.0f;
-	JGEDisplayObject* lpTarget = (JGEDisplayObject*)m_lpParent;
+	JGEDisplayObjectContainer * lpTarget = m_lpParent;
 	while(lpTarget != NULL)
 	{
 		global_x += lpTarget->getX() + lpTarget->getRefX();
@@ -189,7 +197,7 @@ void JGEDisplayObject::updateVertexBufferData()
 		global_scaleY *= lpTarget->getScaleY();
 		global_rotation += lpTarget->getRotation();
 		global_alpha *= lpTarget->getAlpha();
-		lpTarget = (JGEDisplayObject*)lpTarget->getParent();
+		lpTarget = lpTarget->getParent();
 	}
 
 	FLOAT x = global_x + m_x;

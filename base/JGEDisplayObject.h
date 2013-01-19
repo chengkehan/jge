@@ -11,6 +11,7 @@ class JGERender;
 class JGEDisplayObject : public JGEEventDispatcher
 {
 friend class JGERender;
+friend class JGEDisplayObjectContainer;
 
 public:
 	struct Vertex
@@ -91,7 +92,9 @@ private:
 	IDirect3DDevice9* m_lpd3dd;
 	float m_alpha;
 	bool m_alphaEnabled;
+	JGEDisplayObjectContainer* m_lpParent;
 
+	void setParent(JGEDisplayObjectContainer* lpParent);
 	void updateVertexBufferData();
 	inline void initVBData();
 };

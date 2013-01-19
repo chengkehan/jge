@@ -20,7 +20,7 @@ public:
 	bool dispatchEvent(JGEEvent* lpEvent, bool bubble = false);
 
 protected:
-	JGEEventDispatcher* m_lpParent;
+	JGEEventDispatcher* m_lpParentBubble;
 
 private:
 	typedef std::list<EventHandler> EventHandlerList;

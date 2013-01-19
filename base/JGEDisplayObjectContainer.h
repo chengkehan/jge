@@ -4,6 +4,7 @@
 #include <d3d9.h>
 #include <list>
 #include "JGEDisplayObject.h"
+#include "jgeUtil.h"
 
 class JGEDisplayObjectContainer : public JGEDisplayObject
 {
@@ -11,22 +12,24 @@ public:
 	JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd);
 	~JGEDisplayObjectContainer();
 
-	int getNumChildren() const;
+	uint getNumChildren() const;
 	JGEDisplayObject* addChild(JGEDisplayObject* lpChild);
-	JGEDisplayObject* addChildAt(JGEDisplayObject* lpChild, int index);
+	JGEDisplayObject* addChildAt(JGEDisplayObject* lpChild, uint index);
 	JGEDisplayObject* removeChild(JGEDisplayObject* lpChild);
-	JGEDisplayObject* removeChildAt(int index);
+	JGEDisplayObject* removeChildAt(uint index);
 	bool containsChild(JGEDisplayObject* lpChild) const;
-	int getChildIndex(JGEDisplayObject* lpChild) const;
-	JGEDisplayObject* getChildAt(int index) const;
-	JGEDisplayObject* getChildByName(LPCWCHAR name) const;
-	JGEDisplayObject* setChildIndex(JGEDisplayObject* lpChild, int index);
+	bool getChildIndex(JGEDisplayObject* lpChild, uint* lpIndex) const;
+	JGEDisplayObject* getChildAt(uint index) const;
+	JGEDisplayObject* getChildByName(const char* lpName) const;
+	JGEDisplayObject* setChildIndex(JGEDisplayObject* lpChild, uint index);
 
 private:
 	JGEDisplayObjectContainer();
 	JGEDisplayObjectContainer(const JGEDisplayObjectContainer& value);
 
-	std::list<JGEDisplayObject*> m_lpChildrenList;
+	typedef std::list<JGEDisplayObject*> ChildrenList;
+
+	ChildrenList m_lpChildrenList;
 };
 
 #endif

@@ -7,7 +7,7 @@ using namespace std;
 JGEEventDispatcher::JGEEventDispatcher()
 {
 	m_lpEventMap = null;
-	m_lpParent = null;
+	m_lpParentBubble = null;
 }
 
 JGEEventDispatcher::~JGEEventDispatcher()
@@ -21,7 +21,7 @@ JGEEventDispatcher::~JGEEventDispatcher()
 		}
 	}
 	jgeDelete(m_lpEventMap);
-	m_lpParent = null;
+	m_lpParentBubble = null;
 }
 
 bool JGEEventDispatcher::addEventListener(int eventID, EventHandler handler)
@@ -109,9 +109,9 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 		return true;
 	}
 
-	if(bubble && m_lpParent != null)
+	if(bubble && m_lpParentBubble != null)
 	{
-		m_lpParent->dispatchEvent(lpEvent, bubble);
+		m_lpParentBubble->dispatchEvent(lpEvent, bubble);
 	}
 }
 
