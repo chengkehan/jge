@@ -3,7 +3,6 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 
-#include "jgeUtil.h"
 #include <dinput.h>
 
 class JGEInput

@@ -1,11 +1,17 @@
 #include "JGEInput.h"
+#include "jgeUtil.h"
 
-JGEInput::JGEInput():
-m_hWnd(null), m_hInstance(null), m_lpInput(null), m_lpKeyboard(null), m_lpMouse(null), 
-	m_mouseX(0), m_mouseY(0), m_mouseClientWidth(0), m_mouseClientHeight(0), m_mouseSpeed(1.0f), 
-	m_mouseLeftButtonDown(false), m_mouseRightButtonDown(false), m_mouseMiddleButtonDown(false)
+JGEInput::JGEInput()
 {
-
+	m_hWnd = null;
+	m_hInstance = null;
+	m_lpInput = null;
+	m_lpKeyboard = null;
+	m_lpMouse = null;
+	m_mouseX = 0; m_mouseY = 0;
+	m_mouseClientWidth = 0; m_mouseClientHeight = 0;
+	m_mouseSpeed = 1.0f;
+	m_mouseLeftButtonDown = false; m_mouseRightButtonDown = false; m_mouseMiddleButtonDown = false;
 }
 
 JGEInput::~JGEInput()

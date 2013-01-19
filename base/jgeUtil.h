@@ -25,6 +25,9 @@
 	}
 
 #define null 0
+#define dword unsigned long
+#define word unsigned short
+#define uint unsigned int
 #define jgeAssert(c) { assert(c); }
 
 #define jgeReleaseCom(lpCom) { if(lpCom){ lpCom->Release(); lpCom = null; } }
@@ -45,6 +48,7 @@
 #define jgeMalloc(lp, numBytes, lpType) { assert(lp == null); lp = (lpType)malloc(numBytes); assert(lp != null); memset(lp, 0, numBytes); }
 #define jgeFree(lp) { if(lp != null) { free(lp); lp = null; } }
 #define jgeMemCpy(lpSrc, lpDest, numBytes) { if(lpSrc == lpDest){ assert(lpSrc != null); assert(lpDest != null); memcpy(lpDest, lpSrc, numBytes); } }
+#define jgeZeroMem(lp, numBytes) { if(lp != null){ memset(lp, 0, numBytes); } }
 
 #define jgeDXVerifyIf(hr) if(FAILED(hr)){ DXTRACE_ERR_MSGBOX(DXGetErrorDescription(hr), hr); DXTRACE_ERR_MSGBOX(DXGetErrorString(hr), hr); DXTRACE_MSG(DXGetErrorDescription(hr)); DXTRACE_ERR(DXGetErrorDescription(hr), hr); 
 #define jgeDXVerifyEndIf }
@@ -56,14 +60,14 @@ extern char __jge_trace_buffer[1024];
 #define jgeTrace2(format, value1, value2) { sprintf_s(__jge_trace_buffer, 1024, format, value1, value2); OutputDebugStringA(__jge_trace_buffer); }
 #define jgeTrace3(format, value1, value2, value3) { sprintf_s(__jge_trace_buffer, 1024, format, value1, value2, value3); OutputDebugStringA(__jge_trace_buffer); }
 
-extern DWORD __jge_timePoint;
+extern dword __jge_timePoint;
 inline void jgeTimeDeltaStart()
 {
 	__jge_timePoint = timeGetTime();
 }
 inline void jgeTimeDeltaStop()
 {
-	DWORD timeDelta = timeGetTime() - __jge_timePoint;
+	dword timeDelta = timeGetTime() - __jge_timePoint;
 	jgeTrace1("time delte:%d\n", timeDelta);
 }
 
