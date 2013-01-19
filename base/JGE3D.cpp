@@ -24,6 +24,9 @@ JGE3D::JGE3D()
 	m_windowd = false;
 	m_init = false;
 	m_running = false;
+	setupCallback = null;
+	releaseCallback = null;
+	frameCallback = null;
 }
 
 JGE3D::~JGE3D()
