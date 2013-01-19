@@ -31,6 +31,7 @@ private:
 	JGE3D::RELEASECALLBACK m_releaseCallback;
 	bool m_exitWhileEscapeDown;
 	bool m_mouseVisible;
+	bool m_init;
 	
 	static void jc2dFrameCallback(uint timeDelta);
 	static void jc2dRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);

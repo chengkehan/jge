@@ -12,6 +12,7 @@ JGE2D::JGE2D()
 	m_exitWhileEscapeDown = true;
 	m_mouseVisible = true;
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
+	m_init = false;
 }
 
 JGE2D::~JGE2D()
@@ -20,13 +21,18 @@ JGE2D::~JGE2D()
 	{
 		m_releaseCallback();
 	}
-	m_stage = null;
+	jgeDelete(m_stage);
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
 }
 
 bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
 	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd)
 {
+	if(m_init)
+	{
+		return true;
+	}
+
 	JGE3D::getInstance()->setupCallback = null;
 	JGE3D::getInstance()->releaseCallback = null;
 	JGE3D::getInstance()->frameCallback = jc2dFrameCallback;
@@ -36,16 +42,16 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 
 	if(!JGE3D::getInstance()->init(hInstance, windowX, windowY, windowWidth, windowHeight, windowd))
 	{
-		return FALSE;
+		return false;
 	}
 
 	if(!JGEInput::getInstance()->initInput(hInstance, JGE3D::getInstance()->getHWnd()))
 	{
-		return FALSE;
+		return false;
 	}
 	if(!JGERender::getInstance()->init(JGE3D::getInstance()->getDirect3DDevice()))
 	{
-		return FALSE;
+		return false;
 	}
 
 	jgeNewArgs1(m_stage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
@@ -54,11 +60,12 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 	{
 		if(!m_setupCallback())
 		{
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	m_init = true;
+	return true;
 }
 
 void JGE2D::setExitWhileEscapeDown(bool value)
