@@ -34,44 +34,44 @@ public:
 	~JGEDisplayObject();
 
 	void setX(float value);
-	float getX();
+	float getX() const;
 
 	void setY(float value);
-	float getY();
+	float getY() const;
 
 	void setRefX(float value);
-	float getRefX();
+	float getRefX() const;
 
 	void setRefY(float value);
-	float getRefY();
+	float getRefY() const;
 
 	void setWidth(float value);
-	float getWidth();
-	float getWidthOriginal();
+	float getWidth() const;
+	float getWidthOriginal() const;
 
 	void setHeight(float value);
-	float getHeight();
-	float getHeightOriginal();
+	float getHeight() const;
+	float getHeightOriginal() const;
 
 	void setScaleX(float value);
-	float getScaleX();
+	float getScaleX() const;
 
 	void setScaleY(float value);
-	float getScaleY();
+	float getScaleY() const;
 
 	void setRotation(float value);
-	float getRotation();
+	float getRotation() const;
 
 	void setTexture(JGETexture* texture);
-	JGETexture* getTexture();
+	JGETexture* getTexture() const;
 
 	void setAlpha(float value);
-	float getAlpha();
+	float getAlpha() const;
 
 	void setAlphaEnabled(bool value);
-	bool getAlphaEnabled();
+	bool getAlphaEnabled() const;
 
-	JGEDisplayObjectContainer* getParent();
+	JGEDisplayObjectContainer* getParent() const;
 
 private:
 	JGEDisplayObject();

@@ -50,15 +50,16 @@ bool JGETextureManager::removeTexture(int id)
 	}
 }
 
-JGETexture* JGETextureManager::getTexture(int id)
+JGETexture* JGETextureManager::getTexture(int id) const
 {
-	if(containsTexture(id))
+	TextureMap::const_iterator iter = m_textureMap.find(id);
+	if(iter == m_textureMap.end())
 	{
-		return m_textureMap[id];
+		return null;
 	}
 	else
 	{
-		return null;
+		return iter->second;
 	}
 }
 
@@ -88,7 +89,7 @@ JGETexture* JGETextureManager::loadFileTexture(int id, const char* lpPath, IDire
 	}
 }
 
-bool JGETextureManager::containsTexture(int id)
+bool JGETextureManager::containsTexture(int id) const
 {
 	return m_textureMap.find(id) != m_textureMap.end();
 }

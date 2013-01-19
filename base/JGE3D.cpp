@@ -38,7 +38,7 @@ JGE3D::~JGE3D()
 	jgeReleaseCom(m_lpd3dd);
 }
 
-bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, int windowWidth, int windowHeight, 
+bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, 
 	bool windowed, D3DDEVTYPE deviceType, uint maxTextureBlendStages, uint fps)
 {
 	if(m_init)
@@ -197,42 +197,42 @@ void JGE3D::run()
 	}
 }
 
-HWND JGE3D::getHWnd()
+HWND JGE3D::getHWnd() const
 {
 	return m_hWnd;
 }
 
-HINSTANCE JGE3D::getHInstance()
+HINSTANCE JGE3D::getHInstance() const
 {
 	return m_hInstance;
 }
 
-IDirect3DDevice9* JGE3D::getDirect3DDevice()
+IDirect3DDevice9* JGE3D::getDirect3DDevice() const
 {
 	return m_lpd3dd;
 }
 
-int JGE3D::getWindowX()
+int JGE3D::getWindowX() const
 {
 	return m_windowX;
 }
 
-int JGE3D::getWindowY()
+int JGE3D::getWindowY() const
 {
 	return m_windowY;
 }
 
-int JGE3D::getWindowWidth()
+int JGE3D::getWindowWidth() const
 {
 	return m_windowWidth;
 }
 
-int JGE3D::getWindowHeight()
+int JGE3D::getWindowHeight() const
 {
 	return m_windowHeight;
 }
 
-uint JGE3D::getFPS()
+uint JGE3D::getFPS() const
 {
 	return m_fps;
 }
@@ -243,7 +243,7 @@ void JGE3D::setFPS(uint value)
 	m_fpsTime = 1000 / m_fps;
 }
 
-bool JGE3D::getWindowd()
+bool JGE3D::getWindowd() const
 {
 	return m_windowd;
 }
@@ -268,12 +268,12 @@ bool JGE3D::clearMessageCallback(uint msg)
 	}
 }
 
-bool JGE3D::containsMesageCallback(uint msg)
+bool JGE3D::containsMesageCallback(uint msg) const
 {
 	return jge3d::winProcCallbacks.find(msg) != jge3d::winProcCallbacks.end();
 }
 
-jge3d::WinProcCallback JGE3D::getMessageCallback(uint msg)
+jge3d::WinProcCallback JGE3D::getMessageCallback(uint msg) const
 {
 	if(containsMesageCallback(msg))
 	{

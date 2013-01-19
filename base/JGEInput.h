@@ -20,16 +20,16 @@ public:
 	bool keyDown(int diKeyCode);
 	bool mouseLockOnWindow();
 	bool mouseUnlockOnWindow();
-	HWND getHWnd();
-	HINSTANCE getHInstance();
-	int getMouseX();
-	int getMouseY();
-	bool getMouseLockedOnWindow();
+	HWND getHWnd() const;
+	HINSTANCE getHInstance() const;
+	int getMouseX() const;
+	int getMouseY() const;
+	bool getMouseLockedOnWindow() const;
 	void setMouseSpeed(float speed);
-	float getMouseSpeed();
-	bool getMouseLeftButtonDown();
-	bool getMouseRightButtonDown();
-	bool getMouseMiddleButtonDown();
+	float getMouseSpeed() const;
+	bool getMouseLeftButtonDown() const;
+	bool getMouseRightButtonDown() const;
+	bool getMouseMiddleButtonDown() const;
 
 private:
 	JGEInput(const JGEInput& value);

@@ -81,7 +81,7 @@ bool JGEEventDispatcher::removeEventListener(int eventID, EventHandler handler)
 	}
 }
 
-bool JGEEventDispatcher::hasEventListener(int eventID)
+bool JGEEventDispatcher::hasEventListener(int eventID) const
 {
 	EventMap::iterator iterMap = m_lpEventMap->find(eventID);
 	return iterMap != m_lpEventMap->end();

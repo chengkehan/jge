@@ -301,27 +301,27 @@ bool JGEInput::initInputDevice(HINSTANCE hInstance)
 	return TRUE;
 }
 
-HWND JGEInput::getHWnd()
+HWND JGEInput::getHWnd() const
 {
 	return m_hWnd;
 }
 
-HINSTANCE JGEInput::getHInstance()
+HINSTANCE JGEInput::getHInstance() const
 {
 	return m_hInstance;
 }
 
-INT JGEInput::getMouseX()
+INT JGEInput::getMouseX() const
 {
 	return m_mouseX;
 }
 
-INT JGEInput::getMouseY()
+INT JGEInput::getMouseY() const
 {
 	return m_mouseY;
 }
 
-bool JGEInput::getMouseLockedOnWindow()
+bool JGEInput::getMouseLockedOnWindow() const
 {
 	return m_mouseLockedOnWindow;
 }
@@ -331,22 +331,22 @@ VOID JGEInput::setMouseSpeed(FLOAT speed)
 	m_mouseSpeed = speed;
 }
 
-FLOAT JGEInput::getMouseSpeed()
+FLOAT JGEInput::getMouseSpeed() const
 {
 	return m_mouseSpeed;
 }
 
-bool JGEInput::getMouseLeftButtonDown()
+bool JGEInput::getMouseLeftButtonDown() const
 {
 	return m_mouseLeftButtonDown;
 }
 
-bool JGEInput::getMouseRightButtonDown()
+bool JGEInput::getMouseRightButtonDown() const
 {
 	return m_mouseRightButtonDown;
 }
 
-bool JGEInput::getMouseMiddleButtonDown()
+bool JGEInput::getMouseMiddleButtonDown() const
 {
 	return m_mouseMiddleButtonDown;
 }

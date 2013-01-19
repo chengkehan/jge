@@ -32,23 +32,23 @@ public:
 	RELEASECALLBACK releaseCallback;
 	FRAMECALLBACK frameCallback;
 
-	bool init(HINSTANCE hInstance, int windowX = 0, int windowY = 0, int windowWidth = 800, int windowHeight = 600, 
+	bool init(HINSTANCE hInstance, int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, 
 		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30);
 	void run();
-	HWND getHWnd();
-	HINSTANCE getHInstance();
-	IDirect3DDevice9* getDirect3DDevice();
-	int getWindowX();
-	int getWindowY();
-	int getWindowWidth();
-	int getWindowHeight();
-	uint getFPS();
+	HWND getHWnd() const;
+	HINSTANCE getHInstance() const;
+	IDirect3DDevice9* getDirect3DDevice() const;
+	int getWindowX() const;
+	int getWindowY() const;
+	int getWindowWidth() const;
+	int getWindowHeight() const;
+	uint getFPS() const;
 	void setFPS(uint value);
-	bool getWindowd();
+	bool getWindowd() const;
 	bool setMessageCallback(uint msg, jge3d::WinProcCallback callback);
 	bool clearMessageCallback(uint msg);
-	bool containsMesageCallback(uint msg);
-	jge3d::WinProcCallback getMessageCallback(uint msg);
+	bool containsMesageCallback(uint msg) const;
+	jge3d::WinProcCallback getMessageCallback(uint msg) const;
 
 	static bool setRenderState(
 		IDirect3DDevice9* lpd3dd, dword cullMode = D3DCULL_CCW, bool lighting = true, bool zEnable = true, 

@@ -29,7 +29,7 @@ void JGEDisplayObject::setX(float value)
 	m_x = value;
 }
 
-float JGEDisplayObject::getX()
+float JGEDisplayObject::getX() const
 {
 	return m_x;
 }
@@ -39,7 +39,7 @@ void JGEDisplayObject::setY(float value)
 	m_y = value;
 }
 
-float JGEDisplayObject::getY()
+float JGEDisplayObject::getY() const
 {
 	return m_y;
 }
@@ -49,7 +49,7 @@ void JGEDisplayObject::setRefX(float value)
 	m_refX = value;
 }
 
-float JGEDisplayObject::getRefX()
+float JGEDisplayObject::getRefX() const
 {
 	return m_refX;
 }
@@ -59,7 +59,7 @@ void JGEDisplayObject::setRefY(float value)
 	m_refY = value;
 }
 
-float JGEDisplayObject::getRefY()
+float JGEDisplayObject::getRefY() const
 {
 	return m_refY;
 }
@@ -69,12 +69,12 @@ void JGEDisplayObject::setWidth(float value)
 	m_scaleX = value / m_widthOriginal;
 }
 
-float JGEDisplayObject::getWidth()
+float JGEDisplayObject::getWidth() const
 {
 	return m_widthOriginal * m_scaleX;
 }
 
-float JGEDisplayObject::getWidthOriginal()
+float JGEDisplayObject::getWidthOriginal() const
 {
 	return m_widthOriginal;
 }
@@ -84,12 +84,12 @@ void JGEDisplayObject::setHeight(float value)
 	m_scaleY = value / m_heightOriginal;
 }
 
-float JGEDisplayObject::getHeight()
+float JGEDisplayObject::getHeight() const
 {
 	return m_heightOriginal * m_scaleY;
 }
 
-float JGEDisplayObject::getHeightOriginal()
+float JGEDisplayObject::getHeightOriginal() const
 {
 	return m_heightOriginal;
 }
@@ -99,7 +99,7 @@ void JGEDisplayObject::setScaleX(float value)
 	m_scaleX = value;
 }
 
-float JGEDisplayObject::getScaleX()
+float JGEDisplayObject::getScaleX() const
 {
 	return m_scaleX;
 }
@@ -109,7 +109,7 @@ void JGEDisplayObject::setScaleY(float value)
 	m_scaleY = value;
 }
 
-float JGEDisplayObject::getScaleY()
+float JGEDisplayObject::getScaleY() const
 {
 	return m_scaleY;
 }
@@ -119,7 +119,7 @@ void JGEDisplayObject::setRotation(float value)
 	m_rotation = value;
 }
 
-float JGEDisplayObject::getRotation()
+float JGEDisplayObject::getRotation() const
 {
 	return m_rotation;
 }
@@ -139,7 +139,7 @@ void JGEDisplayObject::setTexture(JGETexture* lpTexture)
 	}
 }
 
-JGETexture* JGEDisplayObject::getTexture()
+JGETexture* JGEDisplayObject::getTexture() const
 {
 	return m_lpTexture;
 }
@@ -149,7 +149,7 @@ void JGEDisplayObject::setAlpha(float value)
 	m_alpha = min(max(value, 0.0f), 1.0f);
 }
 
-float JGEDisplayObject::getAlpha()
+float JGEDisplayObject::getAlpha() const
 {
 	return m_alpha;
 }
@@ -159,12 +159,12 @@ void JGEDisplayObject::setAlphaEnabled(bool value)
 	m_alphaEnabled = value;
 }
 
-bool JGEDisplayObject::getAlphaEnabled()
+bool JGEDisplayObject::getAlphaEnabled() const
 {
 	return m_alphaEnabled;
 }
 
-JGEDisplayObjectContainer* JGEDisplayObject::getParent()
+JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
 {
 	return (JGEDisplayObjectContainer*)m_lpParent;
 }

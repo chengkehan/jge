@@ -16,7 +16,7 @@ public:
 
 	bool addEventListener(int eventID, EventHandler handler);
 	bool removeEventListener(int eventID, EventHandler handler);
-	bool hasEventListener(int eventID);
+	bool hasEventListener(int eventID) const;
 	bool dispatchEvent(JGEEvent* lpEvent, bool bubble = false);
 
 protected:
