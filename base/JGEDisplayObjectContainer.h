@@ -6,8 +6,12 @@
 #include "JGEDisplayObject.h"
 #include "jgeUtil.h"
 
+class JGE2D;
+
 class JGEDisplayObjectContainer : public JGEDisplayObject
 {
+friend class JGE2D;
+
 public:
 	JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd);
 	~JGEDisplayObjectContainer();

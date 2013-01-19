@@ -6,8 +6,9 @@
 #include <cassert>
 #include <cstdio>
 #include <ctime>
+#include <memory>
 
-#define JC_SINGLETON_DECLARE(clazz) \
+#define JGE_SINGLETON_DECLARE(clazz) \
 	friend class std::auto_ptr<##clazz##>; \
 	public: \
 	static clazz##* getInstance(); \
@@ -15,7 +16,7 @@
 	clazz##(const clazz##& object); \
 	static std::auto_ptr<##clazz##> m_instance;
 
-#define JC_SINGLETON_IMPLEMENTS(clazz) \
+#define JGE_SINGLETON_IMPLEMENTS(clazz) \
 	std::auto_ptr<##clazz##> clazz##::m_instance(NULL); \
 	clazz##* clazz##::getInstance() \
 	{ \
@@ -92,11 +93,11 @@ inline void jgeWin32Exit(int exitCode = 0)
 
 inline int jgeWin32CursorShow()
 {
-	ShowCursor(TRUE);
+	return ShowCursor(TRUE);
 }
 inline int jgeWin32CursorHide()
 {
-	ShowCursor(FALSE);
+	return ShowCursor(FALSE);
 }
 
 inline BOOL jgeWin32GetWindowRect(HWND hwnd, RECT* lpRect)

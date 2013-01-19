@@ -20,10 +20,9 @@ namespace jge3d
 
 class JGE3D
 {
-public:
-	JGE3D();
-	~JGE3D();
+JGE_SINGLETON_DECLARE(JGE3D)
 
+public:
 	typedef bool (*SETUPCALLBACK)(void);
 	typedef void (*RELEASECALLBACK)(void);
 	typedef void (*FRAMECALLBACK)(uint timeDelta);
@@ -59,7 +58,8 @@ public:
 	static bool setViewTransform(IDirect3DDevice9* lpd3dd, float eyeX, float eyeY, float eyeZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ);
 
 private:
-	JGE3D(const JGE3D& jcd3d);
+	JGE3D();
+	~JGE3D();
 
 	HWND m_hWnd;
 	HINSTANCE m_hInstance;

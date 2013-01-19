@@ -4,13 +4,13 @@
 #define DIRECTINPUT_VERSION 0x0800
 
 #include <dinput.h>
+#include "jgeUtil.h"
 
 class JGEInput
 {
-public:
-	JGEInput();
-	~JGEInput();
+JGE_SINGLETON_DECLARE(JGEInput)
 
+public:
 	bool initInput(HINSTANCE hInstance, HWND hWnd);
 	bool initKeyboard(HINSTANCE hInstance, HWND hWnd);
 	bool initMouse(HINSTANCE hInstance, HWND hWnd);
@@ -32,7 +32,8 @@ public:
 	bool getMouseMiddleButtonDown() const;
 
 private:
-	JGEInput(const JGEInput& value);
+	JGEInput();
+	~JGEInput();
 
 	HWND m_hWnd;
 	HINSTANCE m_hInstance;

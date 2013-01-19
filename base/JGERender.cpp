@@ -1,5 +1,7 @@
 #include "JGERender.h"
 
+JGE_SINGLETON_IMPLEMENTS(JGERender)
+
 JGERender::JGERender()
 {
 	m_lpd3dd = null;

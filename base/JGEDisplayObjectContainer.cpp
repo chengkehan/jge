@@ -5,7 +5,7 @@ using namespace std;
 
 JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
 {
-
+	m_isContainer = true;
 }
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()

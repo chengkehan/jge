@@ -6,17 +6,17 @@
 
 class JGERender
 {
-public:
-	JGERender();
-	~JGERender();
+JGE_SINGLETON_DECLARE(JGERender)
 
+public:
 	bool init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount = 4000);
 	void beginScene();
 	bool renderDisplayObject(JGEDisplayObject* lpDisplayObject);
 	void endScene();
 
 private:
-	JGERender(const JGERender& value);
+	JGERender();
+	~JGERender();
 
 	IDirect3DDevice9* m_lpd3dd;
 	IDirect3DVertexBuffer9* m_lpVbBuffer;

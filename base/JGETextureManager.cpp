@@ -1,5 +1,7 @@
 #include "JGETextureManager.h"
 
+JGE_SINGLETON_IMPLEMENTS(JGETextureManager)
+
 JGETextureManager::JGETextureManager()
 {
 

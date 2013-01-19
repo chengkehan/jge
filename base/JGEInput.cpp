@@ -1,5 +1,6 @@
 #include "JGEInput.h"
-#include "jgeUtil.h"
+
+JGE_SINGLETON_IMPLEMENTS(JGEInput)
 
 JGEInput::JGEInput()
 {

@@ -17,6 +17,7 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 	m_lpVBData = null;
 	m_alpha = 0.0f; m_alphaEnabled = true;
 	m_lpParent = null;
+	m_isContainer = false;
 }
 
 JGEDisplayObject::~JGEDisplayObject()

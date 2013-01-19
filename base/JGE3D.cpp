@@ -1,5 +1,7 @@
 #include "JGE3D.h"
 
+JGE_SINGLETON_IMPLEMENTS(JGE3D)
+
 jge3d::WinProcCallbackMap jge3d::winProcCallbacks;
 
 LRESULT CALLBACK jge3d::winProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam)

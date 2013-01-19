@@ -7,11 +7,13 @@
 
 class JGEDisplayObjectContainer;
 class JGERender;
+class JGE2D;
 
 class JGEDisplayObject : public JGEEventDispatcher
 {
 friend class JGERender;
 friend class JGEDisplayObjectContainer;
+friend class JGE2D;
 
 public:
 	struct Vertex
@@ -73,6 +75,9 @@ public:
 	bool getAlphaEnabled() const;
 
 	JGEDisplayObjectContainer* getParent() const;
+
+protected:
+	bool m_isContainer;
 
 private:
 	JGEDisplayObject();

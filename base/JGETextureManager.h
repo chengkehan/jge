@@ -3,13 +3,13 @@
 
 #include <map>
 #include "JGETexture.h"
+#include "jgeUtil.h"
 
 class JGETextureManager
 {
-public:
-	JGETextureManager();
-	~JGETextureManager();
+JGE_SINGLETON_DECLARE(JGETextureManager)
 
+public:
 	JGETexture* addTexture(int id, IDirect3DTexture9* lpTexture, D3DXIMAGE_INFO* lpInfo = null);
 	bool removeTexture(int id);
 	JGETexture* getTexture(int id) const;
@@ -17,7 +17,8 @@ public:
 	bool containsTexture(int id) const;
 
 private:
-	JGETextureManager(const JGETextureManager& value);
+	JGETextureManager();
+	~JGETextureManager();
 
 	// key id, value lpTexture
 	typedef std::map<int, JGETexture*> TextureMap;
