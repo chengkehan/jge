@@ -130,7 +130,7 @@ void JGERender::lockVbIb()
 	if(!m_vbibLocked)
 	{
 		m_lpVbBuffer->Lock(0, m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), (void**)&m_lpVbBufferData, 0);
-		m_lpIbBuffer->Lock(0, m_bufferDisplayObjectAmount * 6 * sizeof(WORD), (void**)&m_lpIbBufferData, 0);
+		m_lpIbBuffer->Lock(0, m_bufferDisplayObjectAmount * 6 * sizeof(word), (void**)&m_lpIbBufferData, 0);
 		m_vbibLocked = true;
 	}
 }

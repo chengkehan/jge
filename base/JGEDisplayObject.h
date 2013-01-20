@@ -101,7 +101,6 @@ private:
 
 	void setParent(JGEDisplayObjectContainer* lpParent);
 	void updateVertexBufferData();
-	inline void initVBData();
 };
 
 #endif

@@ -48,7 +48,7 @@
 
 #define jgeMalloc(lp, numBytes, lpType) { assert(lp == null); lp = (lpType)malloc(numBytes); assert(lp != null); memset(lp, 0, numBytes); }
 #define jgeFree(lp) { if(lp != null) { free(lp); lp = null; } }
-#define jgeMemCpy(lpSrc, lpDest, numBytes) { if(lpSrc == lpDest){ assert(lpSrc != null); assert(lpDest != null); memcpy(lpDest, lpSrc, numBytes); } }
+#define jgeMemCpy(lpSrc, lpDest, numBytes) { if(lpSrc != lpDest){ assert(lpSrc != null); assert(lpDest != null); memcpy(lpDest, lpSrc, numBytes); } }
 #define jgeZeroMem(lp, numBytes) { if(lp != null){ memset(lp, 0, numBytes); } }
 
 #define jgeDXVerifyIf(hr) if(FAILED(hr)){ DXTRACE_ERR_MSGBOX(DXGetErrorDescription(hr), hr); DXTRACE_ERR_MSGBOX(DXGetErrorString(hr), hr); DXTRACE_MSG(DXGetErrorDescription(hr)); DXTRACE_ERR(DXGetErrorDescription(hr), hr); 

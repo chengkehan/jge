@@ -56,7 +56,7 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 
 	jgeNewArgs1(m_lpStage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
 
-	if(m_setupCallback != NULL)
+	if(m_setupCallback != null)
 	{
 		if(!m_setupCallback())
 		{
@@ -106,7 +106,7 @@ void JGE2D::setMouseLockOnWindow(bool value)
 	if(value)
 	{
 		JGE3D::getInstance()->setMessageCallback(WM_MOVE, jgeMouseLockOnWindowProc);
-		jgeMouseLockOnWindowProc(NULL, 0, 0, 0);
+		jgeMouseLockOnWindowProc(null, 0, 0, 0);
 	}
 	else
 	{
@@ -131,7 +131,7 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 
 	//jgeUpdateMouseEvent(JGE2D::getInstance()->getStage());
 
-	if(JGE2D::getInstance()->m_frameCallback != NULL)
+	if(JGE2D::getInstance()->m_frameCallback != null)
 	{
 		JGE2D::getInstance()->m_frameCallback(timeDelta);
 	}
@@ -143,7 +143,7 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 
 void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
 {
-	if(lpContainer == NULL)
+	if(lpContainer == null)
 	{
 		return;
 	}
@@ -159,8 +159,11 @@ void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContain
 			}
 			else
 			{
-				lpChild->updateVertexBufferData();
-				JGERender::getInstance()->renderDisplayObject(lpChild);
+				if(lpChild->m_lpTexture != null)
+				{
+					lpChild->updateVertexBufferData();
+					JGERender::getInstance()->renderDisplayObject(lpChild);
+				}
 			}
 		}
 	}

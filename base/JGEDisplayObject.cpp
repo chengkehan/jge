@@ -11,11 +11,11 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 	m_refX = 0.0f; m_refY = 0.0f;
 	m_x = 0.0f; m_y = 0.0f;
 	m_widthOriginal = 0.0f; m_heightOriginal = 0.0f;
-	m_scaleX = 0.0f; m_scaleY = 0.0f;
+	m_scaleX = 1.0f; m_scaleY = 1.0f;
 	m_rotation = 0.0f;
 	m_lpTexture = null;
 	m_lpVBData = null;
-	m_alpha = 0.0f; m_alphaEnabled = true;
+	m_alpha = 1.0f; m_alphaEnabled = true;
 	m_lpParent = null;
 	m_isContainer = false;
 }
@@ -131,7 +131,7 @@ float JGEDisplayObject::getRotation() const
 void JGEDisplayObject::setTexture(JGETexture* lpTexture)
 {
 	m_lpTexture = lpTexture;
-	if(m_lpTexture != NULL)
+	if(m_lpTexture == null)
 	{
 		m_widthOriginal = 0.0f;
 		m_heightOriginal = 0.0f;
@@ -183,6 +183,15 @@ void JGEDisplayObject::updateVertexBufferData()
 	// x1=cos(angle)*x-sin(angle)*y;
 	// y1=cos(angle)*y+sin(angle)*x;
 
+	if(m_lpVBData == null)
+	{
+		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
+		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 0.0f; m_lpVBData[0].z = 0.0f;
+		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 0.0f; m_lpVBData[1].z = 0.0f;
+		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 0.0f; m_lpVBData[2].z = 0.0f;
+		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 0.0f; m_lpVBData[3].z = 0.0f;
+	}
+
 	FLOAT global_x = 0.0f;
 	FLOAT global_y = 0.0f;
 	FLOAT global_scaleX = 1.0f;
@@ -225,12 +234,4 @@ void JGEDisplayObject::updateVertexBufferData()
 	m_lpVBData[1].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[2].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[3].diffuse = m_lpVBData[0].diffuse;
-}
-
-inline void JGEDisplayObject::initVBData()
-{
-	if(m_lpVBData == null)
-	{
-		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
-	}
 }
