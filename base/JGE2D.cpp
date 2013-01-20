@@ -8,7 +8,7 @@ JGE_SINGLETON_IMPLEMENTS(JGE2D)
 
 JGE2D::JGE2D()
 {
-	m_stage = null;
+	m_lpStage = null;
 	m_exitWhileEscapeDown = true;
 	m_mouseVisible = true;
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
@@ -21,7 +21,7 @@ JGE2D::~JGE2D()
 	{
 		m_releaseCallback();
 	}
-	jgeDelete(m_stage);
+	jgeDelete(m_lpStage);
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
 }
 
@@ -35,7 +35,7 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 
 	JGE3D::getInstance()->setupCallback = null;
 	JGE3D::getInstance()->releaseCallback = null;
-	JGE3D::getInstance()->frameCallback = jc2dFrameCallback;
+	JGE3D::getInstance()->frameCallback = jgeFrameCallback;
 	m_frameCallback = frameCallback;
 	m_setupCallback = setupCallback;
 	m_releaseCallback = releaseCallback;
@@ -54,7 +54,7 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 		return false;
 	}
 
-	jgeNewArgs1(m_stage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
+	jgeNewArgs1(m_lpStage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
 
 	if(m_setupCallback != NULL)
 	{
@@ -66,6 +66,11 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 
 	m_init = true;
 	return true;
+}
+
+JGEDisplayObjectContainer* JGE2D::getStage() const
+{
+	return m_lpStage;
 }
 
 void JGE2D::setExitWhileEscapeDown(bool value)
@@ -100,8 +105,8 @@ void JGE2D::setMouseLockOnWindow(bool value)
 {
 	if(value)
 	{
-		JGE3D::getInstance()->setMessageCallback(WM_MOVE, jc2dMouseLockOnWindowProc);
-		jc2dMouseLockOnWindowProc(NULL, 0, 0, 0);
+		JGE3D::getInstance()->setMessageCallback(WM_MOVE, jgeMouseLockOnWindowProc);
+		jgeMouseLockOnWindowProc(NULL, 0, 0, 0);
 	}
 	else
 	{
@@ -115,7 +120,7 @@ bool JGE2D::getMouseLockOnWindow() const
 	return JGEInput::getInstance()->getMouseLockedOnWindow();
 }
 
-void JGE2D::jc2dFrameCallback(uint timeDelta)
+void JGE2D::jgeFrameCallback(uint timeDelta)
 {
 	JGEInput::getInstance()->updateInput();
 	if(JGE2D::getInstance()->m_exitWhileEscapeDown && JGEInput::getInstance()->keyDown(DIK_ESCAPE))
@@ -124,7 +129,7 @@ void JGE2D::jc2dFrameCallback(uint timeDelta)
 		return;
 	}
 
-	//jc2dUpdateMouseEvent(JGE2D::getInstance()->getStage());
+	//jgeUpdateMouseEvent(JGE2D::getInstance()->getStage());
 
 	if(JGE2D::getInstance()->m_frameCallback != NULL)
 	{
@@ -132,11 +137,11 @@ void JGE2D::jc2dFrameCallback(uint timeDelta)
 	}
 
 	JGERender::getInstance()->beginScene();
-	jc2dRenderDisplayObjectContainer(JGE2D::getInstance()->getStage());
+	jgeRenderDisplayObjectContainer(JGE2D::getInstance()->getStage());
 	JGERender::getInstance()->endScene();
 }
 
-void JGE2D::jc2dRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
+void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
 {
 	if(lpContainer == NULL)
 	{
@@ -150,7 +155,7 @@ void JGE2D::jc2dRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContai
 			JGEDisplayObject* lpChild = *iter;
 			if(lpChild->m_isContainer)
 			{
-				jc2dRenderDisplayObjectContainer((JGEDisplayObjectContainer*)lpChild);
+				jgeRenderDisplayObjectContainer((JGEDisplayObjectContainer*)lpChild);
 			}
 			else
 			{
@@ -161,12 +166,12 @@ void JGE2D::jc2dRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContai
 	}
 }
 
-void JGE2D::jc2dMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam)
+void JGE2D::jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam)
 {
 	JGEInput::getInstance()->mouseLockOnWindow();
 }
 
-//void JGE2D::jc2dUpdateMouseEvent(JCDisplayObjectContainer* lpContainer)
+//void JGE2D::jgeUpdateMouseEvent(JCDisplayObjectContainer* lpContainer)
 //{
 //	//jccommon_stdRIterForEachM(std::list<JCDisplayObject*>, lpContainer->m_childrenList, iter)
 //	//{

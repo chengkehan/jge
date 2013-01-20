@@ -10,15 +10,27 @@
 #include "JGEDisplayObjectContainer.h"
 #include "jgeUtil.h"
 
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
+
 namespace jge
 {
-	extern JGE2D* lpJge;
+	extern JGE2D* lp2D;
+	extern JGE3D* lp3D;
+	extern JGEInput* lpInput;
+	extern JGETextureManager* lpTextureManger;
 
 	inline bool init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
 		int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true)
 	{
-		lpJge = JGE2D::getInstance();
-		return lpJge->init(hInstance, setupCallback, releaseCallback, frameCallback, windowX, windowY, windowWidth, windowHeight, windowd);
+		lp2D = JGE2D::getInstance();
+		lp3D = JGE3D::getInstance();
+		lpInput = JGEInput::getInstance();
+		lpTextureManger = JGETextureManager::getInstance();
+		return lp2D->init(hInstance, setupCallback, releaseCallback, frameCallback, windowX, windowY, windowWidth, windowHeight, windowd);
 	}
 
 	inline void run()
@@ -119,6 +131,16 @@ namespace jge
 	inline uint getFPS()
 	{
 		return JGE3D::getInstance()->getFPS();
+	}
+
+	inline void setExitWhileEscapeDown(bool value)
+	{
+		JGE2D::getInstance()->setExitWhileEscapeDown(value);
+	}
+
+	inline bool getExitWhileEscapeDown()
+	{
+		return JGE2D::getInstance()->getExitWhileEscapeDown();
 	}
 
 	inline JGEDisplayObject* newDisplayObject()

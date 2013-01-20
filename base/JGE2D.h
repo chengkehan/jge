@@ -25,7 +25,7 @@ private:
 	JGE2D();
 	~JGE2D();
 
-	JGEDisplayObjectContainer* m_stage;
+	JGEDisplayObjectContainer* m_lpStage;
 	JGE3D::FRAMECALLBACK m_frameCallback;
 	JGE3D::SETUPCALLBACK m_setupCallback;
 	JGE3D::RELEASECALLBACK m_releaseCallback;
@@ -33,10 +33,10 @@ private:
 	bool m_mouseVisible;
 	bool m_init;
 	
-	static void jc2dFrameCallback(uint timeDelta);
-	static void jc2dRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
-	static void jc2dMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);
-	static void jc2dUpdateMouseEvent(JGEDisplayObjectContainer* lpContainer);
+	static void jgeFrameCallback(uint timeDelta);
+	static void jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
+	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);
+	static void jgeUpdateMouseEvent(JGEDisplayObjectContainer* lpContainer);
 };
 
 #endif
