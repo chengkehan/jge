@@ -224,12 +224,12 @@ int JGE3D::getWindowY() const
 	return m_windowY;
 }
 
-int JGE3D::getWindowWidth() const
+uint JGE3D::getWindowWidth() const
 {
 	return m_windowWidth;
 }
 
-int JGE3D::getWindowHeight() const
+uint JGE3D::getWindowHeight() const
 {
 	return m_windowHeight;
 }

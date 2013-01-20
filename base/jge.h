@@ -3,8 +3,10 @@
 
 #include "JGE3D.h"
 #include "JGE2D.h"
+#include "JGEInput.h"
 #include "JGETexture.h"
 #include "JGETextureManager.h"
+#include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
 #include "jgeUtil.h"
 
@@ -37,6 +39,110 @@ namespace jge
 	inline JGEDisplayObjectContainer* getStage()
 	{
 		return JGE2D::getInstance()->getStage();
+	}
+
+	inline uint getStageWidth()
+	{
+		return JGE3D::getInstance()->getWindowWidth();
+	}
+
+	inline uint getStageHeight()
+	{
+		return JGE3D::getInstance()->getWindowHeight();
+	}
+
+	inline int getMouseX()
+	{
+		return JGEInput::getInstance()->getMouseX();
+	}
+
+	inline int getMouseY()
+	{
+		return JGEInput::getInstance()->getMouseY();
+	}
+
+	inline bool isKeyDown(int diKeyCode)
+	{
+		return JGEInput::getInstance()->keyDown(diKeyCode);
+	}
+
+	inline void setMouseSpeed(float value)
+	{
+		JGEInput::getInstance()->setMouseSpeed(value);
+	}
+
+	inline float getMouseSpeed()
+	{
+		return JGEInput::getInstance()->getMouseSpeed();
+	}
+
+	inline bool isMouseLeftButtonDown()
+	{
+		return JGEInput::getInstance()->getMouseLeftButtonDown();
+	}
+
+	inline bool isMouseRightButtonDown()
+	{
+		return JGEInput::getInstance()->getMouseRightButtonDown();
+	}
+
+	inline bool isMouseMiddleButtonDown()
+	{
+		return JGEInput::getInstance()->getMouseMiddleButtonDown();
+	}
+
+	inline void setMouseVisible(bool value)
+	{
+		JGE2D::getInstance()->setMouseVisible(value);
+	}
+
+	inline bool getMouseVisible()
+	{
+		return JGE2D::getInstance()->getMouseVisible();
+	}
+
+	inline void setMouseLockOnWindow(bool value)
+	{
+		JGE2D::getInstance()->setMouseLockOnWindow(value);
+	}
+
+	inline bool getMouseLockOnWindow()
+	{
+		return JGE2D::getInstance()->getMouseLockOnWindow();
+	}
+
+	inline void setFPS(uint value)
+	{
+		JGE3D::getInstance()->setFPS(value);
+	}
+
+	inline uint getFPS()
+	{
+		return JGE3D::getInstance()->getFPS();
+	}
+
+	inline JGEDisplayObject* newDisplayObject()
+	{
+		JGEDisplayObject* lpDisplayObject = null;
+		jgeNewArgs1(lpDisplayObject, JGEDisplayObject, JGE3D::getInstance()->getDirect3DDevice());
+		return lpDisplayObject;
+	}
+
+	inline void releaseDisplayObject(JGEDisplayObject* lpDisplayObject)
+	{
+		jgeDelete(lpDisplayObject);
+	}
+
+	inline JGEDisplayObjectContainer* newDisplayObjectContainer()
+	{
+		JGEDisplayObjectContainer* lpContainer = null;
+		jgeNewArgs1(lpContainer, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
+		return lpContainer;
+	}
+
+	inline void releaseDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
+	{
+		jgeDelete(lpContainer);
 	}
 }
 

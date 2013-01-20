@@ -39,8 +39,8 @@ public:
 	IDirect3DDevice9* getDirect3DDevice() const;
 	int getWindowX() const;
 	int getWindowY() const;
-	int getWindowWidth() const;
-	int getWindowHeight() const;
+	uint getWindowWidth() const;
+	uint getWindowHeight() const;
 	uint getFPS() const;
 	void setFPS(uint value);
 	bool getWindowd() const;
@@ -66,8 +66,8 @@ private:
 	IDirect3DDevice9* m_lpd3dd;
 	int m_windowX;
 	int m_windowY;
-	int m_windowWidth;
-	int m_windowHeight;
+	uint m_windowWidth;
+	uint m_windowHeight;
 	bool m_windowd;
 	bool m_init;
 	bool m_running;
