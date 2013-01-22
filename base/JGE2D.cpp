@@ -129,7 +129,7 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 		return;
 	}
 
-	//jgeUpdateMouseEvent(JGE2D::getInstance()->getStage());
+	jgeUpdateMouseEvent(JGE2D::getInstance()->getStage());
 
 	if(JGE2D::getInstance()->m_frameCallback != null)
 	{
@@ -149,7 +149,7 @@ void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContain
 	}
 	else
 	{
-		JGEDisplayObjectContainer::ChildrenList* lpChildren = &lpContainer->m_lpChildrenList;
+		JGEDisplayObjectContainer::ChildrenList* lpChildren = lpContainer->m_lpChildrenList;
 		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
 		{
 			JGEDisplayObject* lpChild = *iter;
@@ -174,18 +174,18 @@ void JGE2D::jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM 
 	JGEInput::getInstance()->mouseLockOnWindow();
 }
 
-//void JGE2D::jgeUpdateMouseEvent(JCDisplayObjectContainer* lpContainer)
-//{
-//	//jccommon_stdRIterForEachM(std::list<JCDisplayObject*>, lpContainer->m_childrenList, iter)
-//	//{
-//	//	JCDisplayObject* child = *iter;
-//	//	if(child->isContainer())
-//	//	{
-//	//		jc2dUpdateMouseEvent((JCDisplayObjectContainer*)child);
-//	//	}
-//	//	else
-//	//	{
-//
-//	//	}
-//	//}
-//}
+void JGE2D::jgeUpdateMouseEvent(JGEDisplayObjectContainer* lpContainer)
+{
+	//jccommon_stdRIterForEachM(std::list<JCDisplayObject*>, lpContainer->m_childrenList, iter)
+	//{
+	//	JCDisplayObject* child = *iter;
+	//	if(child->isContainer())
+	//	{
+	//		jc2dUpdateMouseEvent((JCDisplayObjectContainer*)child);
+	//	}
+	//	else
+	//	{
+
+	//	}
+	//}
+}

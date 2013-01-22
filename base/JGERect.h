@@ -18,10 +18,11 @@ public:
 	JGERect* combine(const JGERect* lpDestRect, JGERect* lpCombineResult) const;
 	JGERect* clone(JGERect* lpDestRect) const;
 	const JGERect* copy(const JGERect* lpSrcRect);
+	void zero();
 
 private:
-	inline bool containsPoint(float x, float y) const;
-	inline bool intersectoinInternal(const JGERect* lpRect, float* x1, float* x2, float* y1 ,float* y2) const;
+	bool containsPoint(float x, float y) const;
+	bool intersectoinInternal(const JGERect* lpRect, float* x1, float* x2, float* y1 ,float* y2) const;
 };
 
 #endif

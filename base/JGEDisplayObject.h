@@ -4,6 +4,7 @@
 #include <d3d9.h>
 #include "JGEEventDispatcher.h"
 #include "JGETexture.h"
+#include "JGERect.h"
 
 class JGEDisplayObjectContainer;
 class JGERender;
@@ -65,7 +66,7 @@ public:
 	void setRotation(float value);
 	float getRotation() const;
 
-	void setTexture(JGETexture* texture);
+	virtual bool setTexture(JGETexture* texture);
 	JGETexture* getTexture() const;
 
 	void setAlpha(float value);
@@ -75,6 +76,8 @@ public:
 	bool getAlphaEnabled() const;
 
 	JGEDisplayObjectContainer* getParent() const;
+
+	virtual JGERect* getBounds(JGERect* lpRectResult);
 
 protected:
 	bool m_isContainer;

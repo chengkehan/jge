@@ -128,7 +128,7 @@ float JGEDisplayObject::getRotation() const
 	return m_rotation;
 }
 
-void JGEDisplayObject::setTexture(JGETexture* lpTexture)
+bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
 {
 	m_lpTexture = lpTexture;
 	if(m_lpTexture == null)
@@ -141,6 +141,7 @@ void JGEDisplayObject::setTexture(JGETexture* lpTexture)
 		m_widthOriginal = (float)lpTexture->getImageInfo()->Width;
 		m_heightOriginal = (float)lpTexture->getImageInfo()->Height;
 	}
+	return true;
 }
 
 JGETexture* JGEDisplayObject::getTexture() const
@@ -171,6 +172,27 @@ bool JGEDisplayObject::getAlphaEnabled() const
 JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
 {
 	return m_lpParent;
+}
+
+JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
+{
+	if(lpRectResult == null)
+	{
+		return null;
+	}
+
+	if(m_lpVBData == null)
+	{
+		return null;
+	}
+	else
+	{
+		lpRectResult->m_left = min(min(min(m_lpVBData[0].x, m_lpVBData[1].x), m_lpVBData[2].x), m_lpVBData[3].x);
+		lpRectResult->m_top = min(min(min(m_lpVBData[0].y, m_lpVBData[1].y), m_lpVBData[2].y), m_lpVBData[3].y);
+		lpRectResult->m_right = max(max(max(m_lpVBData[0].x, m_lpVBData[1].x), m_lpVBData[2].x), m_lpVBData[3].x);
+		lpRectResult->m_bottom = max(max(max(m_lpVBData[0].y, m_lpVBData[1].y), m_lpVBData[2].y), m_lpVBData[3].y);
+		return lpRectResult;
+	}
 }
 
 void JGEDisplayObject::setParent(JGEDisplayObjectContainer* lpParent)

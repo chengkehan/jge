@@ -115,7 +115,7 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 	}
 }
 
-void JGEEventDispatcher::initEventMap()
+inline void JGEEventDispatcher::initEventMap()
 {
 	if(m_lpEventMap == null)
 	{

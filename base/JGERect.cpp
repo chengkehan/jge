@@ -152,6 +152,14 @@ const JGERect* JGERect::copy(const JGERect* lpSrcRect)
 	}
 }
 
+void JGERect::zero()
+{
+	m_left = 0.0f;
+	m_top = 0.0f;
+	m_right = 0.0f;
+	m_bottom = 0.0f;
+}
+
 inline bool JGERect::containsPoint(float x, float y) const
 {
 	return x >= m_left && x <= m_right && y >= m_top && y <= m_bottom;

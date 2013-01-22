@@ -31,7 +31,13 @@ bool setupCallback()
 
 	lpBox = newDisplayObject();
 	lpBox->setTexture(getTexture(0));
+	lpBox->setX(getStageWidth() * 0.5f);
+	lpBox->setY(getStageHeight() * 0.5f);
+	lpBox->setRefX(lpBox->getWidth() * 0.5f);
+	lpBox->setRefY(lpBox->getHeight() * 0.5f);
 	getStage()->addChild(lpBox);
+
+	setFPS(60);
 
 	return true;
 }
@@ -43,5 +49,5 @@ void releaseCallback()
 
 void frameCallback(uint timeDelta)
 {
-
+	lpBox->setRotation(lpBox->getRotation() + 0.05f);
 }

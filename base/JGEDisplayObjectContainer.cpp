@@ -6,16 +6,17 @@ using namespace std;
 JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
 {
 	m_isContainer = true;
+	m_lpChildrenList = null;
 }
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()
 {
-
+	jgeDelete(m_lpChildrenList);
 }
 
 uint JGEDisplayObjectContainer::getNumChildren() const
 {
-	return m_lpChildrenList.size();
+	return m_lpChildrenList->size();
 }
 
 JGEDisplayObject* JGEDisplayObjectContainer::addChild(JGEDisplayObject* lpChild)
@@ -25,7 +26,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::addChild(JGEDisplayObject* lpChild)
 		return null;
 	}
 	removeChild(lpChild);
-	m_lpChildrenList.push_back(lpChild);
+	m_lpChildrenList->push_back(lpChild);
 	lpChild->setParent(this);
 
 	return lpChild;
@@ -51,22 +52,22 @@ JGEDisplayObject* JGEDisplayObjectContainer::addChildAt(JGEDisplayObject* lpChil
 	{
 		uint indexCount = 0;
 		JGEDisplayObject* childAdded = null;
-		for (ChildrenList::iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter, ++indexCount)
+		for (ChildrenList::iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter, ++indexCount)
 		{
 			if(indexCount == index)
 			{
 				childAdded = lpChild;
-				m_lpChildrenList.insert(iter, lpChild);
+				m_lpChildrenList->insert(iter, lpChild);
 				break;
 			}
 		}
 		jgeAssert(childAdded != null);
 		indexCount = 0;
-		for (ChildrenList::iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter, ++indexCount)
+		for (ChildrenList::iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter, ++indexCount)
 		{
 			if(indexCount != index && childAdded == *iter)
 			{
-				m_lpChildrenList.erase(iter);
+				m_lpChildrenList->erase(iter);
 				break;
 			}
 		}
@@ -82,14 +83,14 @@ JGEDisplayObject* JGEDisplayObjectContainer::removeChild(JGEDisplayObject* lpChi
 		return null;
 	}
 
-	ChildrenList::iterator iter = find(m_lpChildrenList.begin(), m_lpChildrenList.end(), lpChild);
-	if(iter == m_lpChildrenList.end())
+	ChildrenList::iterator iter = find(m_lpChildrenList->begin(), m_lpChildrenList->end(), lpChild);
+	if(iter == m_lpChildrenList->end())
 	{
 		return null;
 	}
 	else
 	{
-		m_lpChildrenList.erase(iter);
+		m_lpChildrenList->erase(iter);
 		lpChild->setParent(null);
 		return lpChild;
 	}
@@ -104,12 +105,12 @@ JGEDisplayObject* JGEDisplayObjectContainer::removeChildAt(uint index)
 	else
 	{
 		uint indexCount = 0;
-		for (ChildrenList::iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter, ++indexCount)
+		for (ChildrenList::iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter, ++indexCount)
 		{
 			if(index == indexCount)
 			{
 				JGEDisplayObject* lpChild = *iter;
-				m_lpChildrenList.erase(iter);
+				m_lpChildrenList->erase(iter);
 				lpChild->setParent(null);
 				return lpChild;
 			}
@@ -127,7 +128,7 @@ bool JGEDisplayObjectContainer::containsChild(JGEDisplayObject* lpChild) const
 		return false;
 	}
 
-	return find(m_lpChildrenList.begin(), m_lpChildrenList.end(), lpChild) != m_lpChildrenList.end();
+	return find(m_lpChildrenList->begin(), m_lpChildrenList->end(), lpChild) != m_lpChildrenList->end();
 }
 
 bool JGEDisplayObjectContainer::getChildIndex(JGEDisplayObject* lpChild, uint* lpIndex) const
@@ -138,7 +139,7 @@ bool JGEDisplayObjectContainer::getChildIndex(JGEDisplayObject* lpChild, uint* l
 	}
 
 	uint index = 0;
-	for (ChildrenList::const_iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter, ++index)
+	for (ChildrenList::const_iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter, ++index)
 	{
 		if(lpChild == *iter)
 		{
@@ -159,7 +160,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::getChildAt(uint index) const
 	else
 	{
 		uint indexCount = 0;
-		for (ChildrenList::const_iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter, ++indexCount)
+		for (ChildrenList::const_iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter, ++indexCount)
 		{
 			if(indexCount == index)
 			{
@@ -174,7 +175,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::getChildAt(uint index) const
 
 JGEDisplayObject* JGEDisplayObjectContainer::getChildByName(const char* lpName) const
 {
-	for (ChildrenList::const_iterator iter = m_lpChildrenList.begin(); iter != m_lpChildrenList.end(); ++iter)
+	for (ChildrenList::const_iterator iter = m_lpChildrenList->begin(); iter != m_lpChildrenList->end(); ++iter)
 	{
 		if(jgecsequ(lpName, (*iter)->getName()))
 		{
@@ -203,5 +204,45 @@ JGEDisplayObject* JGEDisplayObjectContainer::setChildIndex(JGEDisplayObject* lpC
 	else
 	{
 		return null;
+	}
+}
+
+bool JGEDisplayObjectContainer::setTexture(JGETexture* texture)
+{
+	return false;
+}
+
+JGERect* JGEDisplayObjectContainer::getBounds(JGERect* lpRectResult)
+{
+	if(lpRectResult == null)
+	{
+		return null;
+	}
+
+	uint numChildren = m_lpChildrenList->size();
+	if(numChildren == 0)
+	{
+		return null;
+	}
+	else
+	{
+		ChildrenList::iterator iter = m_lpChildrenList->begin();
+		(*iter)->getBounds(lpRectResult);
+		JGERect rect;
+		for (++iter; iter != m_lpChildrenList->end(); ++iter)
+		{
+			(*iter)->getBounds(&rect);
+			lpRectResult->combine(&rect, lpRectResult);
+		}
+	}
+
+	return lpRectResult;
+}
+
+inline void JGEDisplayObjectContainer::initChildrentList()
+{
+	if(m_lpChildrenList == null)
+	{
+		jgeNew(m_lpChildrenList, ChildrenList);
 	}
 }

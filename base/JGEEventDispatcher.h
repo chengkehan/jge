@@ -27,7 +27,7 @@ private:
 	typedef std::map<int, EventHandlerList*> EventMap;
 
 	JGEEventDispatcher(const JGEEventDispatcher& value);
-	inline void initEventMap();
+	void initEventMap();
 
 	EventMap* m_lpEventMap;
 };

@@ -4,6 +4,8 @@
 #include <d3d9.h>
 #include <list>
 #include "JGEDisplayObject.h"
+#include "JGETexture.h"
+#include "JGERect.h"
 #include "jgeUtil.h"
 
 class JGE2D;
@@ -26,6 +28,8 @@ public:
 	JGEDisplayObject* getChildAt(uint index) const;
 	JGEDisplayObject* getChildByName(const char* lpName) const;
 	JGEDisplayObject* setChildIndex(JGEDisplayObject* lpChild, uint index);
+	bool setTexture(JGETexture* texture);
+	JGERect* getBounds(JGERect* lpRectResult);
 
 private:
 	JGEDisplayObjectContainer();
@@ -33,7 +37,9 @@ private:
 
 	typedef std::list<JGEDisplayObject*> ChildrenList;
 
-	ChildrenList m_lpChildrenList;
+	ChildrenList* m_lpChildrenList;
+
+	void initChildrentList();
 };
 
 #endif
