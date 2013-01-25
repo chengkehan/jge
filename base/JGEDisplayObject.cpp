@@ -1,6 +1,5 @@
 #include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
-#include "jgeUtil.h"
 
 CONST DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
@@ -26,74 +25,75 @@ JGEDisplayObject::~JGEDisplayObject()
 	m_lpTexture = null;
 	m_lpParent = null;
 	jgeDelete(m_lpVBData);
+	JGE2DQtree::getInstance()->getQtree()->clearObject(this);
 }
 
-void JGEDisplayObject::setX(float value)
+inline void JGEDisplayObject::setX(float value)
 {
 	m_x = value;
 }
 
-float JGEDisplayObject::getX() const
+inline float JGEDisplayObject::getX() const
 {
 	return m_x;
 }
 
-void JGEDisplayObject::setY(float value)
+inline void JGEDisplayObject::setY(float value)
 {
 	m_y = value;
 }
 
-float JGEDisplayObject::getY() const
+inline float JGEDisplayObject::getY() const
 {
 	return m_y;
 }
 
-void JGEDisplayObject::setRefX(float value)
+inline void JGEDisplayObject::setRefX(float value)
 {
 	m_refX = value;
 }
 
-float JGEDisplayObject::getRefX() const
+inline float JGEDisplayObject::getRefX() const
 {
 	return m_refX;
 }
 
-void JGEDisplayObject::setRefY(float value)
+inline void JGEDisplayObject::setRefY(float value)
 {
 	m_refY = value;
 }
 
-float JGEDisplayObject::getRefY() const
+inline float JGEDisplayObject::getRefY() const
 {
 	return m_refY;
 }
 
-void JGEDisplayObject::setWidth(float value)
+inline void JGEDisplayObject::setWidth(float value)
 {
 	m_scaleX = value / m_widthOriginal;
 }
 
-float JGEDisplayObject::getWidth() const
+inline float JGEDisplayObject::getWidth() const
 {
 	return m_widthOriginal * m_scaleX;
 }
 
-float JGEDisplayObject::getWidthOriginal() const
+inline float JGEDisplayObject::getWidthOriginal() const
 {
 	return m_widthOriginal;
 }
 
-void JGEDisplayObject::setHeight(float value)
+inline void JGEDisplayObject::setHeight(float value)
 {
 	m_scaleY = value / m_heightOriginal;
 }
 
-float JGEDisplayObject::getHeight() const
+inline float JGEDisplayObject::getHeight() const
 {
 	return m_heightOriginal * m_scaleY;
 }
 
-float JGEDisplayObject::getHeightOriginal() const
+inline float JGEDisplayObject::getHeightOriginal() const
 {
 	return m_heightOriginal;
 }
@@ -103,12 +103,12 @@ void JGEDisplayObject::setScaleX(float value)
 	m_scaleX = value;
 }
 
-float JGEDisplayObject::getScaleX() const
+inline float JGEDisplayObject::getScaleX() const
 {
 	return m_scaleX;
 }
 
-void JGEDisplayObject::setScaleY(float value)
+inline void JGEDisplayObject::setScaleY(float value)
 {
 	m_scaleY = value;
 }
@@ -118,12 +118,12 @@ float JGEDisplayObject::getScaleY() const
 	return m_scaleY;
 }
 
-void JGEDisplayObject::setRotation(float value)
+inline void JGEDisplayObject::setRotation(float value)
 {
 	m_rotation = value;
 }
 
-float JGEDisplayObject::getRotation() const
+inline float JGEDisplayObject::getRotation() const
 {
 	return m_rotation;
 }
@@ -144,32 +144,32 @@ bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
 	return true;
 }
 
-JGETexture* JGEDisplayObject::getTexture() const
+inline JGETexture* JGEDisplayObject::getTexture() const
 {
 	return m_lpTexture;
 }
 
-void JGEDisplayObject::setAlpha(float value)
+inline void JGEDisplayObject::setAlpha(float value)
 {
 	m_alpha = min(max(value, 0.0f), 1.0f);
 }
 
-float JGEDisplayObject::getAlpha() const
+inline float JGEDisplayObject::getAlpha() const
 {
 	return m_alpha;
 }
 
-void JGEDisplayObject::setAlphaEnabled(bool value)
+inline void JGEDisplayObject::setAlphaEnabled(bool value)
 {
 	m_alphaEnabled = value;
 }
 
-bool JGEDisplayObject::getAlphaEnabled() const
+inline bool JGEDisplayObject::getAlphaEnabled() const
 {
 	return m_alphaEnabled;
 }
 
-JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
+inline JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
 {
 	return m_lpParent;
 }
@@ -195,7 +195,7 @@ JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
 	}
 }
 
-void JGEDisplayObject::setParent(JGEDisplayObjectContainer* lpParent)
+inline void JGEDisplayObject::setParent(JGEDisplayObjectContainer* lpParent)
 {
 	m_lpParent = lpParent;
 }
@@ -214,14 +214,14 @@ void JGEDisplayObject::updateVertexBufferData()
 		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 0.0f; m_lpVBData[3].z = 0.0f;
 	}
 
-	FLOAT global_x = 0.0f;
-	FLOAT global_y = 0.0f;
-	FLOAT global_scaleX = 1.0f;
-	FLOAT global_scaleY = 1.0f;
-	FLOAT global_rotation = 0.0f;
-	FLOAT global_alpha = 1.0f;
+	float global_x = 0.0f;
+	float global_y = 0.0f;
+	float global_scaleX = 1.0f;
+	float global_scaleY = 1.0f;
+	float global_rotation = 0.0f;
+	float global_alpha = 1.0f;
 	JGEDisplayObjectContainer * lpTarget = m_lpParent;
-	while(lpTarget != NULL)
+	while(lpTarget != null)
 	{
 		global_x += lpTarget->getX() + lpTarget->getRefX();
 		global_y += lpTarget->getY() + lpTarget->getRefY();
@@ -232,27 +232,30 @@ void JGEDisplayObject::updateVertexBufferData()
 		lpTarget = lpTarget->getParent();
 	}
 
-	FLOAT x = global_x + m_x;
-	FLOAT y = global_y + m_y;
-	FLOAT width = m_widthOriginal * m_scaleX * global_scaleX;
-	FLOAT height = m_heightOriginal * m_scaleY * global_scaleY;
-	FLOAT rotation = m_rotation + global_rotation;
-	FLOAT refX = m_refX * m_scaleX * global_scaleX;
-	FLOAT refY = m_refY * m_scaleY * global_scaleY;
+	float x = global_x + m_x;
+	float y = global_y + m_y;
+	float width = m_widthOriginal * m_scaleX * global_scaleX;
+	float height = m_heightOriginal * m_scaleY * global_scaleY;
+	float rotation = m_rotation + global_rotation;
+	float refX = m_refX * m_scaleX * global_scaleX;
+	float refY = m_refY * m_scaleY * global_scaleY;
 
-	m_lpVBData[0].x = x + cosf(rotation) * (-refX) - sinf(rotation) * (height - refY);
-	m_lpVBData[0].y = y + cosf(rotation) * (height - refY) + sinf(rotation) * (-refX);
+	float cosRot = cosf(rotation);
+	float sinRot = sinf(rotation);
 
-	m_lpVBData[1].x = x + cosf(rotation) * (-refX) - sinf(rotation) * (-refY);
-	m_lpVBData[1].y = y + cosf(rotation) * (-refY) + sinf(rotation) * (-refX);
+	m_lpVBData[0].x = x + cosRot * (-refX) - sinRot * (height - refY);
+	m_lpVBData[0].y = y + cosRot * (height - refY) + sinRot * (-refX);
 
-	m_lpVBData[2].x = x + cosf(rotation) * (width - refX) - sinf(rotation) * (height - refY);
-	m_lpVBData[2].y = y + cosf(rotation) * (height - refY) + sinf(rotation) * (width - refX);
+	m_lpVBData[1].x = x + cosRot * (-refX) - sinRot * (-refY);
+	m_lpVBData[1].y = y + cosRot * (-refY) + sinRot * (-refX);
 
-	m_lpVBData[3].x = x + cosf(rotation) * (width - refX) - sinf(rotation) * (-refY);
-	m_lpVBData[3].y = y + cosf(rotation) * (-refY) + sinf(rotation) * (width - refX);
+	m_lpVBData[2].x = x + cosRot * (width - refX) - sinRot * (height - refY);
+	m_lpVBData[2].y = y + cosRot * (height - refY) + sinRot * (width - refX);
 
-	m_lpVBData[0].diffuse = (((INT)(global_alpha * m_alpha * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
+	m_lpVBData[3].x = x + cosRot * (width - refX) - sinRot * (-refY);
+	m_lpVBData[3].y = y + cosRot * (-refY) + sinRot * (width - refX);
+
+	m_lpVBData[0].diffuse = (((int)(global_alpha * m_alpha * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
 	m_lpVBData[1].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[2].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[3].diffuse = m_lpVBData[0].diffuse;

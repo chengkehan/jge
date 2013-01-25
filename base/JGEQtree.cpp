@@ -1,149 +1,196 @@
 #include "JGEQtree.h"
 
-using namespace std;
+JGEQtreeNodeData::JGEQtreeNodeData()
+{
+	m_lpNodeDataNext = null;
+	m_lpNode = null;
+}
 
-template<class T>
-JGEQtree<T>::JGEQtree(uint depth, uint width, uint height)
+JGEQtreeNodeData::~JGEQtreeNodeData()
+{
+	m_lpNodeDataNext = null;
+	m_lpNode = null;
+}
+
+JGEQtree::JGEQtree(uint depth, uint width, uint height)
 {
 	m_width = width;
 	m_height = height;
 	m_depth = depth;
 	m_lpRoot = null;
-
-	initNodeRecursive(&m_lpRoot, 0.0f, 0.0f, (float)m_width, (float)m_height, 1);
+	initRecursive(&m_lpRoot, 1, 0.0f, 0.0f, (float)width, (float)height);
 }
 
-template<class T>
-JGEQtree<T>::~JGEQtree()
+JGEQtree::~JGEQtree()
 {
-	destroyDataMap();
-	destroyNodeRecursive(m_lpRoot);
+	destroyRecursive(m_lpRoot);
 	m_lpRoot = null;
 }
 
-template<class T>
-JGEQtreeNode<T>* JGEQtree<T>::find(float x, float y)
+bool JGEQtree::setObject(JGEQtreeNodeData* lpData, const JGERect* lpRect)
 {
-	JGEQtreeNode<T>* lpNode = null;
-	findRecursive(m_lpRoot, x, y, &lpNode);
-	return lpNode;
-}
-
-template<class T>
-bool JGEQtree<T>::insert(float x, float y, T* lpData)
-{
-	if(m_lpRoot == null || lpData == null || !m_lpRoot->lpRect->contains(x, y))
+	if(m_lpRoot == null || lpData == null || lpRect == null)
 	{
 		return false;
 	}
-
-	insertRecursive(m_lpRoot, x, y, lpData);
-	return true;
-}
-
-template<class T>
-void JGEQtree<T>::findRecursive(JGEQtreeNode<T>* lpNode, float x, float y, JGEQtreeNode<T>** lplpNodeResult)
-{
-	if(lpNode != null && lpNode->lpRect->contains(x, y))
+	else
 	{
-		if(lpNode->lpSubNodes == null)
-		{
-			*lplpNodeResult = lpNode;
-		}
-		else
-		{
-			for (int i = 0; i < 4; ++i)
-			{
-				findRecursive(&lpNode->lpSubNodes[i], x, y, lplpNodeResult);
-			}
-		}
+		setObjectRecursive(m_lpRoot, lpData, lpRect);
+		return true;
 	}
 }
 
-template<class T>
-void JGEQtree<T>::initNodeRecursive(JGEQtreeNode<T>** lplpNodeParent, float leftParent, float topParent, float rightParent, float bottomParent, uint depth)
+bool JGEQtree::clearObject(JGEQtreeNodeData* lpData)
 {
-	if(depth > m_depth)
+	if(lpData == null || lpData->m_lpNode == null || lpData->m_lpNode->lpDataSet == null)
 	{
-		if(*lplpNodeParent != null)
-		{
-			*lplpNodeParent->lpSubNodes = null;
-			*lplpNodeParent->lpDataMap = null;
-		}
+		return false;
 	}
 	else
 	{
-		float widthHalf = (rightParent - leftParent) * 0.5f;
-		float heightHalf = (bottomParent - topParent) * 0.5f;
-
-		*lplpNodeParent->lpDataMap = null;
-
-		*lplpNodeParent->lpRect = null;
-		jgeNew(*lplpNodeParent->lpRect, JGERect);
-		*lplpNodeParent->lpRect->m_left = leftParent;
-		*lplpNodeParent->lpRect->m_top = topParent;
-		*lplpNodeParent->lpRect->m_right = rightParent;
-		*lplpNodeParent->lpRect->m_bottom = bottomParent;
-
-		*lplpNodeParent->lpSubNodes = null;
-		jgeNewArray(*lplpNodeParent->lpSubNodes, JGEQtreeNode<T>, 4);
-		initNodeRecursive(&&(*lplpNodeParent->lpSubNodes[0]), leftParent, topParent, leftParent + widthHalf, topParent + heightHalf, depth + 1);
-		initNodeRecursive(&&(*lplpNodeParent->lpSubNodes[1]), leftParent + widthHalf, topParent, leftParent + widthHalf * 2.0f, topParent + heightHalf, depth + 1);
-		initNodeRecursive(&&(*lplpNodeParent->lpSubNodes[2]), leftParent + widthHalf, topParent + heightHalf, leftParent + widthHalf * 2.0f, topParent + heightHalf * 2.0f, depth + 1);
-		initNodeRecursive(&&(*lplpNodeParent->lpSubNodes[3]), leftParent, topParent + heightHalf, leftParent + widthHalf, topParent + heightHalf * 2.0f, depth + 1);
+		size_t r = lpData->m_lpNode->lpDataSet->erase(lpData);
+		jgeAssert(r != 0);
+		lpData->m_lpNode = null;
+		return true;
 	}
 }
 
-template<class T>
-void JGEQtree<T>::destroyNodeRecursive(JGEQtreeNode<T>* lpNode)
+JGEQtreeNodeData* JGEQtree::search(float x, float y)
 {
-	if(lpNode != null)
-	{
-		jgeDelete(lpNode->lpRect);
-		jgeDelete(lpNode->lpDataMap);
+	JGEQtreeNodeData* lpNodeData = null;
+	searchRecursive(x, y, m_lpRoot, &lpNodeData);
+	return lpNodeData;
+}
 
-		if(lpNode->lpSubNodes != null)
+void JGEQtree::initRecursive(JGEQtreeNode** lplpNode, uint depth, float left, float top, float right, float bottom)
+{
+	*lplpNode = null;
+
+	if(depth > m_depth)
+	{
+		return;
+	}
+
+	jgeNew(*lplpNode, JGEQtreeNode);
+
+	(*lplpNode)->rect.m_left = left;
+	(*lplpNode)->rect.m_top = top;
+	(*lplpNode)->rect.m_right = right;
+	(*lplpNode)->rect.m_bottom = bottom;
+
+	(*lplpNode)->lpDataSet = null;
+
+	float widthHalf = (right - left) * 0.5f;
+	float heightHalf = (bottom - top) * 0.5f;		
+	initRecursive(&(*lplpNode)->lpSubNodes[0], depth + 1, left, top, left + widthHalf, top + heightHalf);
+	initRecursive(&(*lplpNode)->lpSubNodes[1], depth + 1, left + widthHalf, top, left + widthHalf * 2.0f, top + heightHalf);
+	initRecursive(&(*lplpNode)->lpSubNodes[2], depth + 1, left, top + heightHalf, left + widthHalf, top + heightHalf * 2.0f);
+	initRecursive(&(*lplpNode)->lpSubNodes[3], depth + 1, left + widthHalf, top + heightHalf, left + widthHalf * 2.0f, top + heightHalf * 2.0f);
+}
+
+void JGEQtree::destroyRecursive(JGEQtreeNode* lpNode)
+{
+	if(lpNode == null)
+	{
+		return;
+	}
+
+	if(lpNode->lpDataSet != null)
+	{
+		for (JGEQtreeNode::DataSet::iterator iter = lpNode->lpDataSet->begin(); iter != lpNode->lpDataSet->end(); ++iter)
 		{
-			for (int i = 0; i < 4; ++i)
-			{
-				destroyNodeRecursive(&lpNode->lpSubNodes[i]);
-			}
-			jgeDeleteArray(lpNode->lpSubNodes);
+			(*iter)->m_lpNode = null;
 		}
 	}
+	jgeDelete(lpNode->lpDataSet);
+	if(lpNode->lpSubNodes != null)
+	{
+		destroyRecursive(lpNode->lpSubNodes[0]);
+		destroyRecursive(lpNode->lpSubNodes[1]);
+		destroyRecursive(lpNode->lpSubNodes[2]);
+		destroyRecursive(lpNode->lpSubNodes[3]);
+	}
+	jgeDelete(lpNode);
 }
 
-template<class T>
-void JGEQtree<T>::insertRecursive(JGEQtreeNode<T>& lpNode, float x, float y, T* lpData)
+void JGEQtree::setObjectRecursive(JGEQtreeNode* lpNode, JGEQtreeNodeData* lpNodeData, const JGERect* lpRect)
 {
-	if(lpNode != null && lpNode->lpRect->contains(x, y))
+	if(lpNode != null && lpRect != null && !lpNode->rect.contains(lpRect))
 	{
-		if(lpNode->lpSubNodes == null)
+		return;
+	}
+
+	if(lpNode->lpSubNodes[0] == null)
+	{
+		if(lpNode->lpDataSet == null)
 		{
-			if(lpNode->lpDataMap == null)
-			{
-				lpNode->lpDataMap = new map<T*, T*>();
-				jgeAssert(lpNode != null);
-			}
-			lpNode->lpDataMap->insert(map<T*, T*>::value_type(lpData, lpData));
+			jgeNew(lpNode->lpDataSet, JGEQtreeNode::DataSet);
+		}
+		if(lpNodeData->m_lpNode != null && lpNodeData->m_lpNode->lpDataSet != null)
+		{
+			lpNodeData->m_lpNode->lpDataSet->erase(lpNodeData);
+		}
+		lpNode->lpDataSet->insert(lpNodeData);
+		lpNodeData->m_lpNode = lpNode;
+	}
+	else
+	{
+		if(lpNode->lpSubNodes[0]->rect.contains(lpRect))
+		{
+			setObjectRecursive(lpNode->lpSubNodes[0], lpNodeData, lpRect);
+			return;
+		}
+		if(lpNode->lpSubNodes[1]->rect.contains(lpRect))
+		{
+			setObjectRecursive(lpNode->lpSubNodes[1], lpNodeData, lpRect);
+			return;
+		}
+		if(lpNode->lpSubNodes[2]->rect.contains(lpRect))
+		{
+			setObjectRecursive(lpNode->lpSubNodes[2], lpNodeData, lpRect);
+			return;
+		}
+		if(lpNode->lpSubNodes[3]->rect.contains(lpRect))
+		{
+			setObjectRecursive(lpNode->lpSubNodes[3], lpNodeData, lpRect);
+			return;
+		}
+
+		if(lpNode->lpDataSet == null)
+		{
+			jgeNew(lpNode->lpDataSet, JGEQtreeNode::DataSet);
+		}
+		if(lpNodeData->m_lpNode != null && lpNodeData->m_lpNode->lpDataSet != null)
+		{
+			lpNodeData->m_lpNode->lpDataSet->erase(lpNodeData);
+		}
+		lpNode->lpDataSet->insert(lpNodeData);
+		lpNodeData->m_lpNode = lpNode;
+	}
+}
+
+void JGEQtree::searchRecursive(float x, float y, JGEQtreeNode* lpNode, JGEQtreeNodeData** lplpNodeData)
+{
+	if(lpNode == null || !lpNode->rect.contains(x, y))
+	{
+		return;
+	}
+
+	if(lpNode->lpDataSet != null)
+	{
+		for(JGEQtreeNode::DataSet::iterator iter = lpNode->lpDataSet->begin(); iter != lpNode->lpDataSet->end(); ++iter)
+		{
+			JGEQtreeNodeData* lpDataNext = *lplpNodeData;
+			*lplpNodeData = *iter;
+			(*lplpNodeData)->m_lpNodeDataNext = lpDataNext;
 		}
 	}
-}
 
-template<class T>
-inline void JGEQtree<T>::initDataMap()
-{
-	if(m_lpDataMap == null)
+	if(lpNode->lpSubNodes[0] != null)
 	{
-		jgeNew(m_lpDataMap, DataMap);
-	}
-}
-
-template<class T>
-inline void JGEQtree<T>::destroyDataMap()
-{
-	for(DataMap::iterator iter = m_lpDataMap->begin(); iter != m_lpDataMap->end(); ++iterator)
-	{
-
+		searchRecursive(x, y, lpNode->lpSubNodes[0], &(*lplpNodeData)->m_lpNodeDataNext);
+		searchRecursive(x, y, lpNode->lpSubNodes[1], &(*lplpNodeData)->m_lpNodeDataNext);
+		searchRecursive(x, y, lpNode->lpSubNodes[2], &(*lplpNodeData)->m_lpNodeDataNext);
+		searchRecursive(x, y, lpNode->lpSubNodes[3], &(*lplpNodeData)->m_lpNodeDataNext);
 	}
 }

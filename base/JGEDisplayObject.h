@@ -5,12 +5,14 @@
 #include "JGEEventDispatcher.h"
 #include "JGETexture.h"
 #include "JGERect.h"
+#include "JGE2DQtree.h"
+#include "jgeUtil.h"
 
 class JGEDisplayObjectContainer;
 class JGERender;
 class JGE2D;
 
-class JGEDisplayObject : public JGEEventDispatcher
+class JGEDisplayObject : public JGEEventDispatcher, public JGEQtreeNodeData
 {
 friend class JGERender;
 friend class JGEDisplayObjectContainer;
@@ -101,6 +103,8 @@ private:
 	float m_alpha;
 	bool m_alphaEnabled;
 	JGEDisplayObjectContainer* m_lpParent;
+	uint m_depth;
+	uint m_index;
 
 	void setParent(JGEDisplayObjectContainer* lpParent);
 	void updateVertexBufferData();

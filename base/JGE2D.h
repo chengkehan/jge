@@ -36,7 +36,8 @@ private:
 	static void jgeFrameCallback(uint timeDelta);
 	static void jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
 	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);
-	static void jgeUpdateMouseEvent(JGEDisplayObjectContainer* lpContainer);
+	static void jgeUpdateMouseEvent();
+	static void jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer);
 };
 
 #endif

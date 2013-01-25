@@ -1,51 +1,60 @@
 #ifndef __JGE_QTREE_H__
 #define __JGE_QTREE_H__
 
-#include <list>
-#include <map>
-#include "jgeUtil.h"
+#include <set>
 #include "JGERect.h"
+#include "jgeUtil.h"
 
-template<class T>
+class JGEQtreeNodeData;
+class JGEQtree;
+class JGE2D;
+
 struct JGEQtreeNode
 {
-	JGERect* lpRect;
-	std::map<T*, T*>* lpDataMap;
-	JGEQtreeNode<T>* lpSubNodes;
+	typedef std::set<JGEQtreeNodeData*> DataSet;
+
+	JGERect rect;
+	DataSet* lpDataSet;
+	JGEQtreeNode* lpSubNodes[4];
 };
 
-template<class T>
+class JGEQtreeNodeData
+{
+friend class JGEQtree;
+friend class JGE2D;
+
+public:
+	JGEQtreeNodeData();
+	~JGEQtreeNodeData();
+
+private:
+	JGEQtreeNode* m_lpNode;
+	JGEQtreeNodeData* m_lpNodeDataNext;
+};
+
 class JGEQtree
 {
 public:
 	JGEQtree(uint depth, uint width, uint height);
 	~JGEQtree();
 
-	JGEQtreeNode<T>* find(float x, float y);
-	bool insert(float x, float y, T* lpData);
-	bool insert(float left, float top, float right, float bottom, T* lpData);
-	bool earse(T* lpData);
-	bool update(float left, float top, float right, float bottom, T* lpData);
+	bool setObject(JGEQtreeNodeData* lpData, const JGERect* lpRect);
+	bool clearObject(JGEQtreeNodeData* lpData);
+	JGEQtreeNodeData* search(float x, float y);
 
 private:
 	JGEQtree();
 	JGEQtree(const JGEQtree& value);
 
-	typedef std::list<JGEQtreeNode<T>*> NodeList;
-	typedef std::map<T*, NodeList*> DataMap;
-
-	JGEQtreeNode<T>* m_lpRoot;
-	DataMap* m_lpDataMap;
+	JGEQtreeNode* m_lpRoot;
 	uint m_width;
 	uint m_height;
 	uint m_depth;
 
-	void findRecursive(JGEQtreeNode<T>* lpNode, float x, float y, JGEQtreeNode<T>** lplpNodeResult);
-	void initNodeRecursive(JGEQtreeNode<T>** lplpNodeParent, float leftParent, float topParent, float rightParent, float bottomParent, uint depth);
-	void destroyNodeRecursive(JGEQtreeNode<T>* lpNode);
-	void insertRecursive(JGEQtreeNode<T>& lpNode, float x, float y, T* lpData);
-	void initDataMap();
-	void destroyDataMap();
+	void initRecursive(JGEQtreeNode** lplpNode, uint depth, float left, float top, float right, float bottom);
+	void destroyRecursive(JGEQtreeNode* lpNode);
+	void setObjectRecursive(JGEQtreeNode* lpNode, JGEQtreeNodeData* lpNodeData, const JGERect* lpRect);
+	void searchRecursive(float x, float y, JGEQtreeNode* lpNode, JGEQtreeNodeData** lplpNodeData);
 };
 
 #endif
