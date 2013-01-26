@@ -8,10 +8,10 @@ public:
 	virtual ~JGEObject();
 
 	void setName(const char* lpName);
-	const char* getName() const;
+	inline const char* getName() const { return m_lpName; }
 
-	void setExtraData(void* lpData);
-	void* getExtraData() const;
+	inline void setExtraData(void* lpData) { m_lpExtraData = lpData; }
+	inline void* getExtraData() const { return m_lpExtraData; }
 
 private:
 	JGEObject(const JGEObject& value);

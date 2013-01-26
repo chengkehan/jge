@@ -74,7 +74,10 @@ inline void jgeTimeDeltaStop()
 
 inline bool jgecsequ(const char* lpStr1, const char* lpStr2)
 {
-	return lpStr1 == lpStr2 ? true : strcmp(lpStr1, lpStr2) == 0;
+	return 
+		lpStr1 == lpStr2 ? true : 
+		lpStr1 == null && lpStr2 != null ? false : 
+		lpStr1 != null && lpStr2 == null ? false : strcmp(lpStr1, lpStr2) == 0;
 }
 inline size_t jgecslen(const char* lpStr)
 {
@@ -107,6 +110,11 @@ inline BOOL jgeWin32GetWindowRect(HWND hwnd, RECT* lpRect)
 inline BOOL jgeWin32GetClientRect(HWND hwnd, RECT* lpRect)
 {
 	return GetClientRect(hwnd, lpRect);
+}
+
+inline void jgeWin32GetCursorPos(POINT* lpPoint)
+{
+	GetCursorPos(lpPoint);
 }
 
 inline BOOL jgeWin32ClientToScreen(HWND hwnd, POINT* lpPoint)

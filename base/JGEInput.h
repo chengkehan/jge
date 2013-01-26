@@ -14,22 +14,26 @@ public:
 	bool initInput(HINSTANCE hInstance, HWND hWnd);
 	bool initKeyboard(HINSTANCE hInstance, HWND hWnd);
 	bool initMouse(HINSTANCE hInstance, HWND hWnd);
+	bool initClientMouse(HWND hWnd);
 	bool updateInput();
 	bool updateKeyboard();
 	bool updateMouse();
+	bool updateClientMouse();
 	bool keyDown(int diKeyCode);
 	bool mouseLockOnWindow();
 	bool mouseUnlockOnWindow();
-	HWND getHWnd() const;
-	HINSTANCE getHInstance() const;
-	int getMouseX() const;
-	int getMouseY() const;
-	bool getMouseLockedOnWindow() const;
-	void setMouseSpeed(float speed);
-	float getMouseSpeed() const;
-	bool getMouseLeftButtonDown() const;
-	bool getMouseRightButtonDown() const;
-	bool getMouseMiddleButtonDown() const;
+	inline HWND getHWnd() const { return m_hWnd; }
+	inline HINSTANCE getHInstance() const { return m_hInstance; }
+	inline int getMouseX() const { return m_mouseX; }
+	inline int getMouseY() const { return m_mouseY; }
+	inline int getClientMouseX() const { return m_clientMouseX; }
+	inline int getClientMouseY() const { return m_clientMouseY; }
+	inline bool getMouseLockedOnWindow() const { return m_mouseLockedOnWindow; }
+	inline void setMouseSpeed(float speed) { m_mouseSpeed = speed; }
+	inline float getMouseSpeed() const { return m_mouseSpeed; }
+	inline bool getMouseLeftButtonDown() const { return m_mouseLeftButtonDown; }
+	inline bool getMouseRightButtonDown() const { return m_mouseRightButtonDown; }
+	inline bool getMouseMiddleButtonDown() const { return m_mouseMiddleButtonDown; }
 
 private:
 	JGEInput();
@@ -42,6 +46,9 @@ private:
 	IDirectInputDevice8* m_lpMouse;
 	int m_mouseX;
 	int m_mouseY;
+	int m_clientMouseX;
+	int m_clientMouseY;
+	bool m_clientMouseOn;
 	int m_mouseClientWidth;
 	int m_mouseClientHeight;
 	bool m_mouseLockedOnWindow;

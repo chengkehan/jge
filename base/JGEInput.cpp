@@ -10,6 +10,7 @@ JGEInput::JGEInput()
 	m_lpKeyboard = null;
 	m_lpMouse = null;
 	m_mouseX = 0; m_mouseY = 0;
+	m_clientMouseX = 0; m_clientMouseY = 0; m_clientMouseOn = false;
 	m_mouseClientWidth = 0; m_mouseClientHeight = 0;
 	m_mouseSpeed = 1.0f;
 	m_mouseLeftButtonDown = false; m_mouseRightButtonDown = false; m_mouseMiddleButtonDown = false;
@@ -35,10 +36,10 @@ JGEInput::~JGEInput()
 
 bool JGEInput::initInput(HINSTANCE hInstance, HWND hWnd)
 {
-	bool result = initKeyboard(hInstance, hWnd) && initMouse(hInstance, hWnd);
+	bool result = initKeyboard(hInstance, hWnd) && initMouse(hInstance, hWnd) && initClientMouse(hWnd);
 	if(result)
 	{
-		return TRUE;
+		return true;
 	}
 	else
 	{
@@ -88,7 +89,7 @@ bool JGEInput::initKeyboard(HINSTANCE hInstance, HWND hWnd)
 		m_hInstance = hInstance;
 	}
 
-	return TRUE;
+	return true;
 }
 
 bool JGEInput::initMouse(HINSTANCE hInstance, HWND hWnd)
@@ -137,15 +138,28 @@ bool JGEInput::initMouse(HINSTANCE hInstance, HWND hWnd)
 		m_hInstance = hInstance;
 	}
 
-	return TRUE;
+	return true;
+}
+
+bool JGEInput::initClientMouse(HWND hWnd)
+{
+	if(hWnd == null)
+	{
+		return false;
+	}
+
+	m_clientMouseOn = true;
+	m_hWnd = hWnd;
+	return true;
 }
 
 bool JGEInput::updateInput()
 {
-	bool keyboardResult = m_lpKeyboard == null ? TRUE : updateKeyboard();
-	bool mouseResult = m_lpMouse == null ? TRUE : updateMouse();
+	bool keyboardResult = m_lpKeyboard == null ? true : updateKeyboard();
+	bool mouseResult = m_lpMouse == null ? true : updateMouse();
+	bool clientMouseResult = m_clientMouseOn ? updateClientMouse() : true;
 
-	return keyboardResult && mouseResult;
+	return keyboardResult && mouseResult && clientMouseResult;
 }
 
 bool JGEInput::updateKeyboard()
@@ -168,7 +182,7 @@ bool JGEInput::updateKeyboard()
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 bool JGEInput::updateMouse()
@@ -195,17 +209,35 @@ bool JGEInput::updateMouse()
 	}
 	else
 	{
-		m_mouseX = max(min(m_mouseX + (INT)((FLOAT)m_mouseState.lX * m_mouseSpeed), m_mouseClientWidth), 0);
-		m_mouseY = max(min(m_mouseY + (INT)((FLOAT)m_mouseState.lY * m_mouseSpeed), m_mouseClientHeight), 0);
+		m_mouseX = max(min(m_mouseX + (int)((FLOAT)m_mouseState.lX * m_mouseSpeed), m_mouseClientWidth), 0);
+		m_mouseY = max(min(m_mouseY + (int)((FLOAT)m_mouseState.lY * m_mouseSpeed), m_mouseClientHeight), 0);
 		m_mouseLeftButtonDown = m_mouseState.rgbButtons[0] != 0;
 		m_mouseRightButtonDown = m_mouseState.rgbButtons[1] != 0;
 		m_mouseMiddleButtonDown = m_mouseState.rgbButtons[2] != 0;
 	}
 
-	return TRUE;
+	return true;
 }
 
-bool JGEInput::keyDown(INT diKeyCode)
+bool JGEInput::updateClientMouse()
+{
+	if(m_clientMouseOn)
+	{
+		static POINT p;
+		jgeWin32GetCursorPos(&p);
+		jgeWin32ScreenToClient(m_hWnd, &p);
+		m_clientMouseX = p.x;
+		m_clientMouseY = p.y;
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool JGEInput::keyDown(int diKeyCode)
 {
 	if(diKeyCode < 0 || diKeyCode >= 256)
 	{
@@ -258,9 +290,9 @@ bool JGEInput::mouseLockOnWindow()
 		return false;
 	}
 
-	m_mouseLockedOnWindow = TRUE;
+	m_mouseLockedOnWindow = true;
 
-	return TRUE;
+	return true;
 }
 
 bool JGEInput::mouseUnlockOnWindow()
@@ -281,7 +313,7 @@ bool JGEInput::mouseUnlockOnWindow()
 
 	m_mouseLockedOnWindow = false;
 
-	return TRUE;
+	return true;
 }
 
 bool JGEInput::initInputDevice(HINSTANCE hInstance)
@@ -299,55 +331,5 @@ bool JGEInput::initInputDevice(HINSTANCE hInstance)
 			return false;
 		}
 	}
-	return TRUE;
-}
-
-HWND JGEInput::getHWnd() const
-{
-	return m_hWnd;
-}
-
-HINSTANCE JGEInput::getHInstance() const
-{
-	return m_hInstance;
-}
-
-INT JGEInput::getMouseX() const
-{
-	return m_mouseX;
-}
-
-INT JGEInput::getMouseY() const
-{
-	return m_mouseY;
-}
-
-bool JGEInput::getMouseLockedOnWindow() const
-{
-	return m_mouseLockedOnWindow;
-}
-
-VOID JGEInput::setMouseSpeed(FLOAT speed)
-{
-	m_mouseSpeed = speed;
-}
-
-FLOAT JGEInput::getMouseSpeed() const
-{
-	return m_mouseSpeed;
-}
-
-bool JGEInput::getMouseLeftButtonDown() const
-{
-	return m_mouseLeftButtonDown;
-}
-
-bool JGEInput::getMouseRightButtonDown() const
-{
-	return m_mouseRightButtonDown;
-}
-
-bool JGEInput::getMouseMiddleButtonDown() const
-{
-	return m_mouseMiddleButtonDown;
+	return true;
 }

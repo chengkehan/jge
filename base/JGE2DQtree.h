@@ -10,7 +10,7 @@ JGE_SINGLETON_DECLARE(JGE2DQtree)
 	
 public:
 	void init(uint depth, uint width, uint height);
-	JGEQtree* getQtree();
+	inline JGEQtree* getQtree() { return m_lpQtree; }
 
 private:
 	JGE2DQtree();

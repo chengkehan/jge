@@ -39,45 +39,45 @@ public:
 	JGEDisplayObject(IDirect3DDevice9* lpd3dd);
 	~JGEDisplayObject();
 
-	void setX(float value);
-	float getX() const;
+	inline void setX(float value) { m_x = value; }
+	inline float getX() const { return m_x; }
 
-	void setY(float value);
-	float getY() const;
+	inline void setY(float value) { m_y = value; }
+	inline float getY() const { return m_y; }
 
-	void setRefX(float value);
-	float getRefX() const;
+	inline void setRefX(float value) { m_refX = value; }
+	inline float getRefX() const { return m_refX; }
 
-	void setRefY(float value);
-	float getRefY() const;
+	inline void setRefY(float value){ m_refY = value; }
+	inline float getRefY() const { return m_refY; }
 
-	void setWidth(float value);
-	float getWidth() const;
-	float getWidthOriginal() const;
+	inline void setWidth(float value) { m_scaleX = value / m_widthOriginal; }
+	inline float getWidth() const { return m_widthOriginal * m_scaleX; }
+	inline float getWidthOriginal() const { return m_widthOriginal; }
 
-	void setHeight(float value);
-	float getHeight() const;
-	float getHeightOriginal() const;
+	inline void setHeight(float value) { m_scaleY = value / m_heightOriginal; }
+	inline float getHeight() const { return m_heightOriginal * m_scaleY; }
+	inline float getHeightOriginal() const { return m_heightOriginal; }
 
-	void setScaleX(float value);
-	float getScaleX() const;
+	inline void setScaleX(float value) { m_scaleX = value; }
+	inline float getScaleX() const { return m_scaleX; }
 
-	void setScaleY(float value);
-	float getScaleY() const;
+	inline void setScaleY(float value) { m_scaleY = value; }
+	inline float getScaleY() const { return m_scaleY; }
 
-	void setRotation(float value);
-	float getRotation() const;
+	inline void setRotation(float value) { m_rotation = value; }
+	inline float getRotation() const { return m_rotation; }
 
 	virtual bool setTexture(JGETexture* texture);
-	JGETexture* getTexture() const;
+	inline JGETexture* getTexture() const { return m_lpTexture; }
 
-	void setAlpha(float value);
-	float getAlpha() const;
+	inline void setAlpha(float value) { m_alpha = min(max(value, 0.0f), 1.0f); }
+	inline float getAlpha() const { return m_alpha; }
 
-	void setAlphaEnabled(bool value);
-	bool getAlphaEnabled() const;
+	inline void setAlphaEnabled(bool value) { m_alphaEnabled = value; }
+	inline bool getAlphaEnabled() const { return m_alphaEnabled; }
 
-	JGEDisplayObjectContainer* getParent() const;
+	inline JGEDisplayObjectContainer* getParent() const { return m_lpParent; }
 
 	virtual JGERect* getBounds(JGERect* lpRectResult);
 
@@ -106,7 +106,7 @@ private:
 	uint m_depth;
 	uint m_index;
 
-	void setParent(JGEDisplayObjectContainer* lpParent);
+	inline void setParent(JGEDisplayObjectContainer* lpParent) { m_lpParent = lpParent; }
 	void updateVertexBufferData();
 };
 

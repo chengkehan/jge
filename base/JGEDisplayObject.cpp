@@ -28,106 +28,6 @@ JGEDisplayObject::~JGEDisplayObject()
 	JGE2DQtree::getInstance()->getQtree()->clearObject(this);
 }
 
-inline void JGEDisplayObject::setX(float value)
-{
-	m_x = value;
-}
-
-inline float JGEDisplayObject::getX() const
-{
-	return m_x;
-}
-
-inline void JGEDisplayObject::setY(float value)
-{
-	m_y = value;
-}
-
-inline float JGEDisplayObject::getY() const
-{
-	return m_y;
-}
-
-inline void JGEDisplayObject::setRefX(float value)
-{
-	m_refX = value;
-}
-
-inline float JGEDisplayObject::getRefX() const
-{
-	return m_refX;
-}
-
-inline void JGEDisplayObject::setRefY(float value)
-{
-	m_refY = value;
-}
-
-inline float JGEDisplayObject::getRefY() const
-{
-	return m_refY;
-}
-
-inline void JGEDisplayObject::setWidth(float value)
-{
-	m_scaleX = value / m_widthOriginal;
-}
-
-inline float JGEDisplayObject::getWidth() const
-{
-	return m_widthOriginal * m_scaleX;
-}
-
-inline float JGEDisplayObject::getWidthOriginal() const
-{
-	return m_widthOriginal;
-}
-
-inline void JGEDisplayObject::setHeight(float value)
-{
-	m_scaleY = value / m_heightOriginal;
-}
-
-inline float JGEDisplayObject::getHeight() const
-{
-	return m_heightOriginal * m_scaleY;
-}
-
-inline float JGEDisplayObject::getHeightOriginal() const
-{
-	return m_heightOriginal;
-}
-
-void JGEDisplayObject::setScaleX(float value)
-{
-	m_scaleX = value;
-}
-
-inline float JGEDisplayObject::getScaleX() const
-{
-	return m_scaleX;
-}
-
-inline void JGEDisplayObject::setScaleY(float value)
-{
-	m_scaleY = value;
-}
-
-float JGEDisplayObject::getScaleY() const
-{
-	return m_scaleY;
-}
-
-inline void JGEDisplayObject::setRotation(float value)
-{
-	m_rotation = value;
-}
-
-inline float JGEDisplayObject::getRotation() const
-{
-	return m_rotation;
-}
-
 bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
 {
 	m_lpTexture = lpTexture;
@@ -142,36 +42,6 @@ bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
 		m_heightOriginal = (float)lpTexture->getImageInfo()->Height;
 	}
 	return true;
-}
-
-inline JGETexture* JGEDisplayObject::getTexture() const
-{
-	return m_lpTexture;
-}
-
-inline void JGEDisplayObject::setAlpha(float value)
-{
-	m_alpha = min(max(value, 0.0f), 1.0f);
-}
-
-inline float JGEDisplayObject::getAlpha() const
-{
-	return m_alpha;
-}
-
-inline void JGEDisplayObject::setAlphaEnabled(bool value)
-{
-	m_alphaEnabled = value;
-}
-
-inline bool JGEDisplayObject::getAlphaEnabled() const
-{
-	return m_alphaEnabled;
-}
-
-inline JGEDisplayObjectContainer* JGEDisplayObject::getParent() const
-{
-	return m_lpParent;
 }
 
 JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
@@ -193,11 +63,6 @@ JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
 		lpRectResult->m_bottom = max(max(max(m_lpVBData[0].y, m_lpVBData[1].y), m_lpVBData[2].y), m_lpVBData[3].y);
 		return lpRectResult;
 	}
-}
-
-inline void JGEDisplayObject::setParent(JGEDisplayObjectContainer* lpParent)
-{
-	m_lpParent = lpParent;
 }
 
 void JGEDisplayObject::updateVertexBufferData()

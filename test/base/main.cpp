@@ -31,10 +31,11 @@ bool setupCallback()
 
 	lpBox = newDisplayObject();
 	lpBox->setTexture(getTexture(0));
-	lpBox->setX(getStageWidth() * 0.5f);
-	lpBox->setY(getStageHeight() * 0.5f);
-	lpBox->setRefX(lpBox->getWidth() * 0.5f);
-	lpBox->setRefY(lpBox->getHeight() * 0.5f);
+	lpBox->setX(10.0f);
+	lpBox->setY(10.0f);
+	//lpBox->setRefX(lpBox->getWidth() * 0.5f);
+	//lpBox->setRefY(lpBox->getHeight() * 0.5f);
+	lpBox->setName("jimBox");
 	getStage()->addChild(lpBox);
 
 	setFPS(60);
@@ -49,5 +50,5 @@ void releaseCallback()
 
 void frameCallback(uint timeDelta)
 {
-	lpBox->setRotation(lpBox->getRotation() + 0.05f);
+	//lpBox->setRotation(lpBox->getRotation() + 0.05f);
 }

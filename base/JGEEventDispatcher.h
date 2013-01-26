@@ -5,6 +5,7 @@
 #include <map>
 #include "JGEObject.h"
 #include "JGEEvent.h"
+#include "jgeUtil.h"
 
 class JGEEventDispatcher : public JGEObject
 {
@@ -27,9 +28,10 @@ private:
 	typedef std::map<int, EventHandlerList*> EventMap;
 
 	JGEEventDispatcher(const JGEEventDispatcher& value);
-	void initEventMap();
 
 	EventMap* m_lpEventMap;
+
+	inline void initEventMap() { if(m_lpEventMap == null){ jgeNew(m_lpEventMap, EventMap); } }
 };
 
 #endif

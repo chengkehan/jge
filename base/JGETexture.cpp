@@ -16,13 +16,3 @@ JGETexture::~JGETexture()
 	jgeReleaseCom(m_lpTexture);
 	jgeDelete(m_lpImgInfo);
 }
-
-IDirect3DTexture9* JGETexture::getTexture() const
-{
-	return m_lpTexture;
-}
-
-const D3DXIMAGE_INFO* JGETexture::getImageInfo() const
-{
-	return m_lpImgInfo;
-}

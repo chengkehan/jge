@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "JGEEventDispatcher.h"
-#include "jgeUtil.h"
 
 using namespace std;
 
@@ -112,13 +111,5 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 	if(bubble && m_lpParentBubble != null)
 	{
 		m_lpParentBubble->dispatchEvent(lpEvent, bubble);
-	}
-}
-
-inline void JGEEventDispatcher::initEventMap()
-{
-	if(m_lpEventMap == null)
-	{
-		m_lpEventMap = new EventMap();
 	}
 }

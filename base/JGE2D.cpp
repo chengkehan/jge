@@ -1,5 +1,4 @@
 #include "JGE2D.h"
-#include "JGEInput.h"
 #include "JGETextureManager.h"
 #include "JGERender.h"
 #include "JGEDisplayObject.h"
@@ -27,7 +26,7 @@ JGE2D::~JGE2D()
 }
 
 bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
-	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd)
+	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, bool clientMouse)
 {
 	if(m_init)
 	{
@@ -46,6 +45,7 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 		return false;
 	}
 
+	m_clientMouse = clientMouse;
 	if(!JGEInput::getInstance()->initInput(hInstance, JGE3D::getInstance()->getHWnd()))
 	{
 		return false;
@@ -55,7 +55,10 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 		return false;
 	}
 
+	JGE2DQtree::getInstance()->init(7, windowWidth, windowHeight);
+
 	jgeNewArgs1(m_lpStage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
+	m_lpStage->setName("jge2dstage");
 	m_lpStage->m_depth = 0;
 	m_lpStage->m_index = 0;
 
@@ -71,21 +74,6 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 	return true;
 }
 
-JGEDisplayObjectContainer* JGE2D::getStage() const
-{
-	return m_lpStage;
-}
-
-void JGE2D::setExitWhileEscapeDown(bool value)
-{
-	m_exitWhileEscapeDown = value;
-}
-
-bool JGE2D::getExitWhileEscapeDown() const
-{
-	return m_exitWhileEscapeDown;
-}
-
 void JGE2D::setMouseVisible(bool value)
 {
 	m_mouseVisible = value;
@@ -97,11 +85,6 @@ void JGE2D::setMouseVisible(bool value)
 	{
 		jgeWin32CursorHide();
 	}
-}
-
-bool JGE2D::getMouseVisible() const
-{
-	return m_mouseVisible;
 }
 
 void JGE2D::setMouseLockOnWindow(bool value)
@@ -116,11 +99,6 @@ void JGE2D::setMouseLockOnWindow(bool value)
 		JGE3D::getInstance()->clearMessageCallback(WM_MOVE);
 		JGEInput::getInstance()->mouseUnlockOnWindow();
 	}
-}
-
-bool JGE2D::getMouseLockOnWindow() const
-{
-	return JGEInput::getInstance()->getMouseLockedOnWindow();
 }
 
 void JGE2D::jgeFrameCallback(uint timeDelta)
@@ -152,7 +130,7 @@ void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContain
 	}
 	else
 	{
-		JGEDisplayObjectContainer::ChildrenList* lpChildren = lpContainer->m_lpChildrenList;
+		JGEDisplayObjectContainer::ChildrenList* lpChildren = &lpContainer->m_childrenList;
 		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
 		{
 			JGEDisplayObject* lpChild = *iter;
@@ -179,10 +157,11 @@ void JGE2D::jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM 
 
 void JGE2D::jgeUpdateMouseEvent()
 {
-	int mouseX = JGEInput::getInstance()->getMouseX();
-	int mouseY = JGEInput::getInstance()->getMouseY();
+	int mouseX = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseX() : JGEInput::getInstance()->getMouseX();
+	int mouseY = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseY() : JGEInput::getInstance()->getMouseY();
 	JGEQtreeNodeData* lpNodeData = JGE2DQtree::getInstance()->getQtree()->search((float)mouseX, (float)mouseY);
-	JGEDisplayObject* lpDisplayObjectResult = null;
+	JGEDisplayObject* lpDisplayObjectResult1 = null;
+	static JGEDisplayObject* lpDisplayObjectResult2 = null;
 	uint depthMax = 0;
 	uint indexMax = 0;
 	JGERect rect;
@@ -195,15 +174,30 @@ void JGE2D::jgeUpdateMouseEvent()
 			{
 				depthMax = lpDisplayObject->m_depth;
 				indexMax = lpDisplayObject->m_index;
-				lpDisplayObjectResult = lpDisplayObject;
+				lpDisplayObjectResult1 = lpDisplayObject;
 			}
 		}
 		lpNodeData = lpNodeData->m_lpNodeDataNext;
 	}
-	if(lpDisplayObjectResult != null)
-	{
 
+	if(lpDisplayObjectResult1 != lpDisplayObjectResult2)
+	{
+		if(lpDisplayObjectResult2 != null)
+		{
+			lpDisplayObjectResult2->setAlpha(1.0f);
+		}
 	}
+
+	if(lpDisplayObjectResult1 != null)
+	{
+		//static JGERect jgerect;
+		//lpDisplayObjectResult->getBounds(&jgerect);
+		//jgeTrace2("%f %f ", jgerect.m_left, jgerect.m_top);
+		//jgeTrace2("%f %f\n", jgerect.m_right, jgerect.m_bottom);
+		//jgeTrace2("%d %d\n", mouseX, mouseY);
+		lpDisplayObjectResult1->setAlpha(0.3f);
+	}
+	lpDisplayObjectResult2 = lpDisplayObjectResult1;
 }
 
 void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
@@ -215,7 +209,7 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 	else
 	{
 		JGERect rect;
-		JGEDisplayObjectContainer::ChildrenList* lpChildren = lpContainer->m_lpChildrenList;
+		JGEDisplayObjectContainer::ChildrenList* lpChildren = &lpContainer->m_childrenList;
 		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
 		{
 			JGEDisplayObject* lpChildren = *iter;
@@ -231,7 +225,7 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 				}
 				else
 				{
-					JGE2DQtree::getInstance()->getQtree()->setObject(lpContainer, lpChildren->getBounds(&rect));
+					JGE2DQtree::getInstance()->getQtree()->setObject(lpChildren, lpChildren->getBounds(&rect));
 				}
 			}
 		}

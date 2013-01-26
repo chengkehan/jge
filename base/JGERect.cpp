@@ -1,5 +1,4 @@
 #include "JGERect.h"
-#include "jgeUtil.h"
 
 JGERect::JGERect()
 {
@@ -158,19 +157,4 @@ void JGERect::zero()
 	m_top = 0.0f;
 	m_right = 0.0f;
 	m_bottom = 0.0f;
-}
-
-inline bool JGERect::containsPoint(float x, float y) const
-{
-	return x >= m_left && x <= m_right && y >= m_top && y <= m_bottom;
-}
-
-inline bool JGERect::intersectoinInternal(const JGERect* lpRect, float* x1, float* x2, float* y1 ,float* y2) const
-{
-	*x1 = max(min(m_left, m_right), min(lpRect->m_left, lpRect->m_right));
-	*x2 = min(min(m_left, m_right), min(lpRect->m_left, lpRect->m_right));
-	*y1 = max(min(m_top, m_bottom), min(lpRect->m_top, lpRect->m_bottom));
-	*y2 = min(min(m_top, m_bottom), min(lpRect->m_top, lpRect->m_bottom));
-
-	return *x1 <= *x2 && *y1 <= *y2;
 }

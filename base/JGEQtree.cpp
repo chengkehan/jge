@@ -188,9 +188,9 @@ void JGEQtree::searchRecursive(float x, float y, JGEQtreeNode* lpNode, JGEQtreeN
 
 	if(lpNode->lpSubNodes[0] != null)
 	{
-		searchRecursive(x, y, lpNode->lpSubNodes[0], &(*lplpNodeData)->m_lpNodeDataNext);
-		searchRecursive(x, y, lpNode->lpSubNodes[1], &(*lplpNodeData)->m_lpNodeDataNext);
-		searchRecursive(x, y, lpNode->lpSubNodes[2], &(*lplpNodeData)->m_lpNodeDataNext);
-		searchRecursive(x, y, lpNode->lpSubNodes[3], &(*lplpNodeData)->m_lpNodeDataNext);
+		searchRecursive(x, y, lpNode->lpSubNodes[0], lplpNodeData);
+		searchRecursive(x, y, lpNode->lpSubNodes[1], lplpNodeData);
+		searchRecursive(x, y, lpNode->lpSubNodes[2], lplpNodeData);
+		searchRecursive(x, y, lpNode->lpSubNodes[3], lplpNodeData);
 	}
 }

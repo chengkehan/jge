@@ -34,16 +34,16 @@ public:
 	bool init(HINSTANCE hInstance, int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, 
 		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30);
 	void run();
-	HWND getHWnd() const;
-	HINSTANCE getHInstance() const;
-	IDirect3DDevice9* getDirect3DDevice() const;
-	int getWindowX() const;
-	int getWindowY() const;
-	uint getWindowWidth() const;
-	uint getWindowHeight() const;
-	uint getFPS() const;
+	inline HWND getHWnd() const { return m_hWnd; }
+	inline HINSTANCE getHInstance() const { return m_hInstance; }
+	inline IDirect3DDevice9* getDirect3DDevice() const { return m_lpd3dd; }
+	inline int getWindowX() const { return m_windowX; }
+	inline int getWindowY() const { return m_windowY; }
+	inline uint getWindowWidth() const { return m_windowWidth; }
+	inline uint getWindowHeight() const { return m_windowHeight; }
+	inline uint getFPS() const { return m_fps; }
 	void setFPS(uint value);
-	bool getWindowd() const;
+	inline bool getWindowd() const { return m_windowd; }
 	bool setMessageCallback(uint msg, jge3d::WinProcCallback callback);
 	bool clearMessageCallback(uint msg);
 	bool containsMesageCallback(uint msg) const;

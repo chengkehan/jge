@@ -12,8 +12,8 @@ public:
 	JGETexture(IDirect3DTexture9* lpTexture, D3DXIMAGE_INFO* lpImgInfo = null);
 	~JGETexture();
 
-	IDirect3DTexture9* getTexture() const;
-	const D3DXIMAGE_INFO* getImageInfo() const;
+	inline IDirect3DTexture9* getTexture() const { return m_lpTexture; }
+	inline const D3DXIMAGE_INFO* getImageInfo() const { return m_lpImgInfo; };
 
 private:
 	JGETexture();

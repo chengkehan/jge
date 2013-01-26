@@ -74,6 +74,16 @@ namespace jge
 		return JGEInput::getInstance()->getMouseY();
 	}
 
+	inline int getClientMouseX()
+	{
+		return JGEInput::getInstance()->getClientMouseX();
+	}
+
+	inline int getClientMouseY()
+	{
+		return JGEInput::getInstance()->getClientMouseY();
+	}
+
 	inline bool isKeyDown(int diKeyCode)
 	{
 		return JGEInput::getInstance()->keyDown(diKeyCode);

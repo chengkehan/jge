@@ -17,8 +17,3 @@ void JGE2DQtree::init(uint depth, uint width, uint height)
 	jgeDelete(m_lpQtree);
 	jgeNewArgs3(m_lpQtree, JGEQtree, depth, width, height);
 }
-
-JGEQtree* JGE2DQtree::getQtree()
-{
-	return m_lpQtree;
-}

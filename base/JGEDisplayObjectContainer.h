@@ -18,12 +18,12 @@ public:
 	JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd);
 	~JGEDisplayObjectContainer();
 
-	uint getNumChildren() const;
+	inline uint getNumChildren() const { return m_childrenList.size(); }
 	JGEDisplayObject* addChild(JGEDisplayObject* lpChild);
 	JGEDisplayObject* addChildAt(JGEDisplayObject* lpChild, uint index);
 	JGEDisplayObject* removeChild(JGEDisplayObject* lpChild);
 	JGEDisplayObject* removeChildAt(uint index);
-	bool containsChild(JGEDisplayObject* lpChild) const;
+	inline bool containsChild(JGEDisplayObject* lpChild) const { return lpChild != null && lpChild->getParent() == this; }
 	bool getChildIndex(JGEDisplayObject* lpChild, uint* lpIndex) const;
 	JGEDisplayObject* getChildAt(uint index) const;
 	JGEDisplayObject* getChildByName(const char* lpName) const;
@@ -37,9 +37,7 @@ private:
 
 	typedef std::list<JGEDisplayObject*> ChildrenList;
 
-	ChildrenList* m_lpChildrenList;
-
-	void initChildrentList();
+	ChildrenList m_childrenList;
 };
 
 #endif

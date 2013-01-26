@@ -23,18 +23,3 @@ void JGEObject::setName(const char* lpName)
 	jgecsfree(m_lpName);
 	m_lpName = jgecsclone(lpName);
 }
-
-const char* JGEObject::getName() const
-{
-	return m_lpName;
-}
-
-void JGEObject::setExtraData(void* lpData)
-{
-	m_lpExtraData = lpData;
-}
-
-void* JGEObject::getExtraData() const
-{
-	return m_lpExtraData;
-}

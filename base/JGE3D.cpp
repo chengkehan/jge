@@ -199,55 +199,10 @@ void JGE3D::run()
 	}
 }
 
-HWND JGE3D::getHWnd() const
-{
-	return m_hWnd;
-}
-
-HINSTANCE JGE3D::getHInstance() const
-{
-	return m_hInstance;
-}
-
-IDirect3DDevice9* JGE3D::getDirect3DDevice() const
-{
-	return m_lpd3dd;
-}
-
-int JGE3D::getWindowX() const
-{
-	return m_windowX;
-}
-
-int JGE3D::getWindowY() const
-{
-	return m_windowY;
-}
-
-uint JGE3D::getWindowWidth() const
-{
-	return m_windowWidth;
-}
-
-uint JGE3D::getWindowHeight() const
-{
-	return m_windowHeight;
-}
-
-uint JGE3D::getFPS() const
-{
-	return m_fps;
-}
-
 void JGE3D::setFPS(uint value)
 {
 	m_fps = value;
 	m_fpsTime = 1000 / m_fps;
-}
-
-bool JGE3D::getWindowd() const
-{
-	return m_windowd;
 }
 
 bool JGE3D::setMessageCallback(uint msg, jge3d::WinProcCallback callback)
