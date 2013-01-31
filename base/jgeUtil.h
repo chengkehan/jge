@@ -135,11 +135,11 @@ inline BOOL jgeWin32GetClipCursor(RECT* lpRect)
 	return GetClipCursor(lpRect);
 }
 
-inline BOOL jgeKeyDown(int vkCode)
+inline BOOL jgeWin32KeyDown(int vkCode)
 {
 	return GetAsyncKeyState(vkCode) & 0x8000 ? TRUE : FALSE;
 }
-inline BOOL jgeKeyUp(int vkCode)
+inline BOOL jgeWin32KeyUp(int vkCode)
 {
 	return GetAsyncKeyState(vkCode) & 0x8000 ? FALSE : TRUE;
 }

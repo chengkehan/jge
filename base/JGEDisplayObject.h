@@ -33,7 +33,7 @@ public:
 			diffuse = pdiffuse;
 			u = pu; v = pv;
 		}
-		static CONST DWORD FVF;
+		static const DWORD FVF;
 	};
 
 	JGEDisplayObject(IDirect3DDevice9* lpd3dd);

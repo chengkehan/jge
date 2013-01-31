@@ -22,7 +22,7 @@ JGE3D::JGE3D()
 	m_hWnd = null;
 	m_hInstance = null;
 	m_lpd3dd = null;
-	m_windowX = 0; m_windowY = 0; m_windowWidth = 0; m_windowHeight = 0;
+	m_windowWidth = 0; m_windowHeight = 0;
 	m_windowd = false;
 	m_init = false;
 	m_running = false;
@@ -41,7 +41,7 @@ JGE3D::~JGE3D()
 }
 
 bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, 
-	bool windowed, D3DDEVTYPE deviceType, uint maxTextureBlendStages, uint fps)
+	bool windowed, D3DDEVTYPE deviceType, uint maxTextureBlendStages, uint fps, bool systemMenu)
 {
 	if(m_init)
 	{
@@ -49,8 +49,6 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	}
 
 	m_hInstance = hInstance;
-	m_windowX = windowX;
-	m_windowY = windowY;
 	m_windowWidth = windowWidth;
 	m_windowHeight = windowHeight;
 
@@ -75,7 +73,23 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 		return false;
 	}
 
-	HWND hwnd = CreateWindow(L"jcd3dApp", L"jcd3dApp", WS_EX_TOPMOST, windowX, windowY, windowWidth, windowHeight, null, null, hInstance, null);
+	HWND hwnd = null;
+	if(windowed)
+	{
+		uint width = windowWidth + GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
+		uint height = windowHeight + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+
+		RECT rect;
+		rect.left = windowX == -1 ? (LONG)((GetSystemMetrics(SM_CXSCREEN) - width) * 0.5f) : 0;
+		rect.top = windowY == -1 ? (LONG)((GetSystemMetrics(SM_CYSCREEN) - height) * 0.5f) : 0;
+		rect.right = rect.left + width;
+		rect.bottom = rect.top + height;
+		hwnd = CreateWindowEx(0, L"jcd3dApp", L"jcd3dApp", WS_POPUP | WS_CAPTION | (systemMenu ? WS_SYSMENU : 0) | WS_MINIMIZEBOX | WS_VISIBLE, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, null, null, hInstance, null);
+	}
+	else
+	{
+		hwnd = CreateWindowEx(WS_EX_TOPMOST, L"jcd3dApp", L"jcd3dApp", WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, null, null, hInstance, null);
+	}
 	if(!hwnd)
 	{
 		jgeMessageBoxError("CreateWindow Failed");
@@ -244,7 +258,7 @@ jge3d::WinProcCallback JGE3D::getMessageCallback(uint msg) const
 
 bool JGE3D::setRenderState(IDirect3DDevice9* lpd3dd, dword cullMode, bool lighting, bool zEnable, dword shadeMode, dword fillMode, bool alphaBlendEnable)
 {
-	if(lpd3dd == NULL)
+	if(lpd3dd == null)
 	{
 		return false;
 	}
@@ -302,7 +316,7 @@ bool JGE3D::setProjectionPerspectiveTransform(IDirect3DDevice9* lpd3dd, uint win
 
 bool JGE3D::setViewTransform(IDirect3DDevice9* lpd3dd, D3DXVECTOR3* lpeye, D3DXVECTOR3* lptarget, D3DXVECTOR3* lpup)
 {
-	if(lpd3dd == NULL || lpeye == NULL || lptarget == NULL || lpup == NULL)
+	if(lpd3dd == null || lpeye == null || lptarget == null || lpup == null)
 	{
 		return false;
 	}
@@ -323,7 +337,7 @@ bool JGE3D::setViewTransform(IDirect3DDevice9* lpd3dd, D3DXVECTOR3* lpeye, D3DXV
 
 bool JGE3D::setViewTransform(IDirect3DDevice9* lpd3dd, float eyeX, float eyeY, float eyeZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ)
 {
-	if(lpd3dd == NULL)
+	if(lpd3dd == null)
 	{
 		return false;
 	}

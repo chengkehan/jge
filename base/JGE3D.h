@@ -31,14 +31,12 @@ public:
 	RELEASECALLBACK releaseCallback;
 	FRAMECALLBACK frameCallback;
 
-	bool init(HINSTANCE hInstance, int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, 
-		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30);
+	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, 
+		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30, bool systemMenu = false);
 	void run();
 	inline HWND getHWnd() const { return m_hWnd; }
 	inline HINSTANCE getHInstance() const { return m_hInstance; }
 	inline IDirect3DDevice9* getDirect3DDevice() const { return m_lpd3dd; }
-	inline int getWindowX() const { return m_windowX; }
-	inline int getWindowY() const { return m_windowY; }
 	inline uint getWindowWidth() const { return m_windowWidth; }
 	inline uint getWindowHeight() const { return m_windowHeight; }
 	inline uint getFPS() const { return m_fps; }
@@ -64,8 +62,6 @@ private:
 	HWND m_hWnd;
 	HINSTANCE m_hInstance;
 	IDirect3DDevice9* m_lpd3dd;
-	int m_windowX;
-	int m_windowY;
 	uint m_windowWidth;
 	uint m_windowHeight;
 	bool m_windowd;

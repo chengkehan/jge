@@ -73,10 +73,10 @@ void JGEDisplayObject::updateVertexBufferData()
 	if(m_lpVBData == null)
 	{
 		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
-		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 0.0f; m_lpVBData[0].z = 0.0f;
-		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 0.0f; m_lpVBData[1].z = 0.0f;
-		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 0.0f; m_lpVBData[2].z = 0.0f;
-		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 0.0f; m_lpVBData[3].z = 0.0f;
+		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 1.0f; m_lpVBData[0].z = 0.0f;
+		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 1.0f; m_lpVBData[1].z = 0.0f;
+		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 1.0f; m_lpVBData[2].z = 0.0f;
+		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 1.0f; m_lpVBData[3].z = 0.0f;
 	}
 
 	float global_x = 0.0f;
