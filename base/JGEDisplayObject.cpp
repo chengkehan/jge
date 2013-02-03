@@ -1,7 +1,7 @@
 #include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
 
-CONST DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+const DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
 JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 {
@@ -21,6 +21,10 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 
 JGEDisplayObject::~JGEDisplayObject()
 {
+	if(m_lpParent != null)
+	{
+		m_lpParent->removeChild(this);
+	}
 	m_lpd3dd = null;
 	m_lpTexture = null;
 	m_lpParent = null;

@@ -2,6 +2,7 @@
 #define __JGE_2D_H__
 
 #include "JGEDisplayObjectContainer.h"
+#include "JGEDisplayObject.h"
 #include "JGE3D.h"
 #include "JGEInput.h"
 #include "jgeUtil.h"
@@ -23,6 +24,8 @@ public:
 	inline bool getMouseLockOnWindow() const { return JGEInput::getInstance()->getMouseLockedOnWindow(); }
 	inline bool getClientMouse() const { return m_clientMouse; }
 
+	static void jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject);
+
 private:
 	JGE2D();
 	~JGE2D();
@@ -36,6 +39,7 @@ private:
 	bool m_init;
 	bool m_clientMouse;
 	
+	static JGEDisplayObject* m_lpMouseTarget;
 	static void jgeFrameCallback(uint timeDelta);
 	static void jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
 	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);

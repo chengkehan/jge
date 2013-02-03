@@ -6,6 +6,8 @@
 
 JGE_SINGLETON_IMPLEMENTS(JGE2D)
 
+JGEDisplayObject* JGE2D::m_lpMouseTarget = null;
+
 JGE2D::JGE2D()
 {
 	m_lpStage = null;
@@ -160,8 +162,7 @@ void JGE2D::jgeUpdateMouseEvent()
 	int mouseX = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseX() : JGEInput::getInstance()->getMouseX();
 	int mouseY = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseY() : JGEInput::getInstance()->getMouseY();
 	JGEQtreeNodeData* lpNodeData = JGE2DQtree::getInstance()->getQtree()->search((float)mouseX, (float)mouseY);
-	JGEDisplayObject* lpDisplayObjectResult1 = null;
-	static JGEDisplayObject* lpDisplayObjectResult2 = null;
+	JGEDisplayObject* lpDisplayObjectResult = null;
 	uint depthMax = 0;
 	uint indexMax = 0;
 	JGERect rect;
@@ -174,30 +175,102 @@ void JGE2D::jgeUpdateMouseEvent()
 			{
 				depthMax = lpDisplayObject->m_depth;
 				indexMax = lpDisplayObject->m_index;
-				lpDisplayObjectResult1 = lpDisplayObject;
+				lpDisplayObjectResult = lpDisplayObject;
 			}
 		}
 		lpNodeData = lpNodeData->m_lpNodeDataNext;
 	}
 
-	if(lpDisplayObjectResult1 != lpDisplayObjectResult2)
+	static bool mouseLeftButtonDown = JGEInput::getInstance()->getMouseLeftButtonDown();
+	static bool mouseRightButtonDown = JGEInput::getInstance()->getMouseRightButtonDown();
+	static bool mouseMiddleButtonDown = JGEInput::getInstance()->getMouseMiddleButtonDown();
+	static JGEEvent evt(0);
+	bool mouseLeftButtonDownCurrent = JGEInput::getInstance()->getMouseLeftButtonDown();
+	bool mouseRightButtonDownCurrent = JGEInput::getInstance()->getMouseRightButtonDown();
+	bool mouseMiddleButtonDownCurrent = JGEInput::getInstance()->getMouseMiddleButtonDown();
+	if(lpDisplayObjectResult != null)
 	{
-		if(lpDisplayObjectResult2 != null)
+		// mouse down on target
+		if(!mouseLeftButtonDown && mouseLeftButtonDownCurrent)
 		{
-			lpDisplayObjectResult2->setAlpha(1.0f);
+			evt.m_id = JGEEvent::MOUSE_DOWN_LEFT;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+		}
+		if(!mouseRightButtonDown && mouseRightButtonDownCurrent)
+		{
+			evt.m_id = JGEEvent::MOUSE_DOWN_RIGHT;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+		}
+		if(!mouseMiddleButtonDown && mouseMiddleButtonDownCurrent)
+		{
+			evt.m_id = JGEEvent::MOUSE_DOWN_MIDDLE;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+		}
+		// mouse up on target
+		if(mouseLeftButtonDown && !mouseLeftButtonDownCurrent)
+		{
+			evt.m_id = JGEEvent::MOUSE_UP_LEFT;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+
+			// mouse click on target
+			if(lpDisplayObjectResult == m_lpMouseTarget)
+			{
+				evt.m_id = JGEEvent::MOUSE_CLICK_LEFT;
+				lpDisplayObjectResult->dispatchEvent(&evt);
+			}
+		}
+		if(mouseRightButtonDown && !mouseRightButtonDownCurrent)
+		{
+			evt.m_id = JGEEvent::MOUSE_UP_RIGHT;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+
+			// mouse click on target
+			if(lpDisplayObjectResult == m_lpMouseTarget)
+			{
+				evt.m_id = JGEEvent::MOUSE_CLICK_RIGHT;
+				lpDisplayObjectResult->dispatchEvent(&evt);
+			}
+		}
+		if(mouseMiddleButtonDown && !mouseMiddleButtonDownCurrent)
+		{
+			evt.m_id = JGEEvent::MOUSE_UP_MIDDLE;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+
+			// mouse click on target
+			if(lpDisplayObjectResult == m_lpMouseTarget)
+			{
+				evt.m_id = JGEEvent::MOUSE_CLICK_MIDDLE;
+				lpDisplayObjectResult->dispatchEvent(&evt);
+			}
 		}
 	}
 
-	if(lpDisplayObjectResult1 != null)
+	if(m_lpMouseTarget != lpDisplayObjectResult)
 	{
-		//static JGERect jgerect;
-		//lpDisplayObjectResult->getBounds(&jgerect);
-		//jgeTrace2("%f %f ", jgerect.m_left, jgerect.m_top);
-		//jgeTrace2("%f %f\n", jgerect.m_right, jgerect.m_bottom);
-		//jgeTrace2("%d %d\n", mouseX, mouseY);
-		lpDisplayObjectResult1->setAlpha(0.3f);
+		if(m_lpMouseTarget != null)
+		{
+			evt.m_id = JGEEvent::MOUSE_OUT;
+			m_lpMouseTarget->dispatchEvent(&evt);
+		}
+		if(lpDisplayObjectResult != null)
+		{
+			evt.m_id = JGEEvent::MOUSE_OVER;
+			lpDisplayObjectResult->dispatchEvent(&evt);
+		}
 	}
-	lpDisplayObjectResult2 = lpDisplayObjectResult1;
+
+	m_lpMouseTarget = lpDisplayObjectResult;
+	mouseLeftButtonDown = mouseLeftButtonDownCurrent;
+	mouseRightButtonDown = mouseRightButtonDownCurrent;
+	mouseMiddleButtonDown = mouseMiddleButtonDownCurrent;
+}
+
+void JGE2D::jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject)
+{
+	if(lpDisplayObject == m_lpMouseTarget)
+	{
+		m_lpMouseTarget = null;
+	}
 }
 
 void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)

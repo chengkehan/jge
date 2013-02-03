@@ -49,7 +49,7 @@ bool JGEEventDispatcher::addEventListener(int eventID, EventHandler handler)
 
 bool JGEEventDispatcher::removeEventListener(int eventID, EventHandler handler)
 {
-	if(handler == null)
+	if(handler == null || m_lpEventMap == null)
 	{
 		return false;
 	}
@@ -82,13 +82,18 @@ bool JGEEventDispatcher::removeEventListener(int eventID, EventHandler handler)
 
 bool JGEEventDispatcher::hasEventListener(int eventID) const
 {
+	if(m_lpEventMap == null)
+	{
+		return false;
+	}
+
 	EventMap::iterator iterMap = m_lpEventMap->find(eventID);
 	return iterMap != m_lpEventMap->end();
 }
 
 bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 {
-	if(lpEvent == null)
+	if(lpEvent == null || m_lpEventMap == null)
 	{
 		return false;
 	}

@@ -106,7 +106,7 @@ private:
 	uint m_depth;
 	uint m_index;
 
-	inline void setParent(JGEDisplayObjectContainer* lpParent) { m_lpParent = lpParent; }
+	inline void setParent(JGEDisplayObjectContainer* lpParent) { m_lpParent = lpParent; m_lpParentBubble = (JGEEventDispatcher*)lpParent; }
 	void updateVertexBufferData();
 };
 

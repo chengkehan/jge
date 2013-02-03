@@ -25,7 +25,7 @@ namespace jge
 	extern JGETextureManager* lpTextureManger;
 
 	inline bool init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
-		int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true)
+		int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true)
 	{
 		lp2D = JGE2D::getInstance();
 		lp3D = JGE3D::getInstance();
@@ -163,6 +163,7 @@ namespace jge
 
 	inline void releaseDisplayObject(JGEDisplayObject* lpDisplayObject)
 	{
+		JGE2D::jgeResetMouseEvent(lpDisplayObject);
 		jgeDelete(lpDisplayObject);
 	}
 
