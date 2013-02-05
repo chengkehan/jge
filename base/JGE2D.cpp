@@ -29,7 +29,9 @@ JGE2D::~JGE2D()
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
 }
 
-bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
+bool JGE2D::init(HINSTANCE hInstance, 
+	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
+	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
 	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, bool clientMouse)
 {
 	if(m_init)
@@ -40,6 +42,8 @@ bool JGE2D::init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback, JGE3D:
 	JGE3D::getInstance()->setupCallback = null;
 	JGE3D::getInstance()->releaseCallback = null;
 	JGE3D::getInstance()->frameCallback = jgeFrameCallback;
+	JGE3D::getInstance()->wmDestroyCallback = wmDestroyCallback;
+	JGE3D::getInstance()->wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
 	m_frameCallback = frameCallback;
 	m_setupCallback = setupCallback;
 	m_releaseCallback = releaseCallback;

@@ -12,7 +12,9 @@ class JGE2D
 JGE_SINGLETON_DECLARE(JGE2D)
 
 public:
-	bool init(HINSTANCE hInstance, JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
+	bool init(HINSTANCE hInstance, 
+		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
+		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
 		int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, bool clientMouse = true);
 	inline JGEDisplayObjectContainer* getStage() const { return m_lpStage; }
 	void setMouseVisible(bool value);
