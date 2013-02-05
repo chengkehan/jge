@@ -6,7 +6,10 @@
 
 JGE_SINGLETON_IMPLEMENTS(JGE2D)
 
-JGEDisplayObject* JGE2D::m_lpMouseTarget = null;
+JGEDisplayObject* JGE2D::m_lpMouseLeftButtonTarget = null;
+JGEDisplayObject* JGE2D::m_lpMouseRightButtonTarget = null;
+JGEDisplayObject* JGE2D::m_lpMouseMiddleButtonTarget = null;
+JGEDisplayObject* JGE2D::m_lpMouseAreaTarget = null;
 
 JGE2D::JGE2D()
 {
@@ -195,16 +198,19 @@ void JGE2D::jgeUpdateMouseEvent()
 		{
 			evt.m_id = JGEEvent::MOUSE_DOWN_LEFT;
 			lpDisplayObjectResult->dispatchEvent(&evt);
+			m_lpMouseLeftButtonTarget = lpDisplayObjectResult;
 		}
 		if(!mouseRightButtonDown && mouseRightButtonDownCurrent)
 		{
 			evt.m_id = JGEEvent::MOUSE_DOWN_RIGHT;
 			lpDisplayObjectResult->dispatchEvent(&evt);
+			m_lpMouseRightButtonTarget = lpDisplayObjectResult;
 		}
 		if(!mouseMiddleButtonDown && mouseMiddleButtonDownCurrent)
 		{
 			evt.m_id = JGEEvent::MOUSE_DOWN_MIDDLE;
 			lpDisplayObjectResult->dispatchEvent(&evt);
+			m_lpMouseMiddleButtonTarget = lpDisplayObjectResult;
 		}
 		// mouse up on target
 		if(mouseLeftButtonDown && !mouseLeftButtonDownCurrent)
@@ -213,10 +219,11 @@ void JGE2D::jgeUpdateMouseEvent()
 			lpDisplayObjectResult->dispatchEvent(&evt);
 
 			// mouse click on target
-			if(lpDisplayObjectResult == m_lpMouseTarget)
+			if(lpDisplayObjectResult == m_lpMouseLeftButtonTarget)
 			{
 				evt.m_id = JGEEvent::MOUSE_CLICK_LEFT;
 				lpDisplayObjectResult->dispatchEvent(&evt);
+				m_lpMouseLeftButtonTarget = lpDisplayObjectResult;
 			}
 		}
 		if(mouseRightButtonDown && !mouseRightButtonDownCurrent)
@@ -225,10 +232,11 @@ void JGE2D::jgeUpdateMouseEvent()
 			lpDisplayObjectResult->dispatchEvent(&evt);
 
 			// mouse click on target
-			if(lpDisplayObjectResult == m_lpMouseTarget)
+			if(lpDisplayObjectResult == m_lpMouseRightButtonTarget)
 			{
 				evt.m_id = JGEEvent::MOUSE_CLICK_RIGHT;
 				lpDisplayObjectResult->dispatchEvent(&evt);
+				m_lpMouseRightButtonTarget = lpDisplayObjectResult;
 			}
 		}
 		if(mouseMiddleButtonDown && !mouseMiddleButtonDownCurrent)
@@ -237,20 +245,27 @@ void JGE2D::jgeUpdateMouseEvent()
 			lpDisplayObjectResult->dispatchEvent(&evt);
 
 			// mouse click on target
-			if(lpDisplayObjectResult == m_lpMouseTarget)
+			if(lpDisplayObjectResult == m_lpMouseMiddleButtonTarget)
 			{
 				evt.m_id = JGEEvent::MOUSE_CLICK_MIDDLE;
 				lpDisplayObjectResult->dispatchEvent(&evt);
+				m_lpMouseMiddleButtonTarget = lpDisplayObjectResult;
 			}
 		}
 	}
-
-	if(m_lpMouseTarget != lpDisplayObjectResult)
+	else
 	{
-		if(m_lpMouseTarget != null)
+		m_lpMouseLeftButtonTarget = null;
+		m_lpMouseRightButtonTarget = null;
+		m_lpMouseMiddleButtonTarget = null;
+	}
+
+	if(m_lpMouseAreaTarget != lpDisplayObjectResult)
+	{
+		if(m_lpMouseAreaTarget != null)
 		{
 			evt.m_id = JGEEvent::MOUSE_OUT;
-			m_lpMouseTarget->dispatchEvent(&evt);
+			m_lpMouseAreaTarget->dispatchEvent(&evt);
 		}
 		if(lpDisplayObjectResult != null)
 		{
@@ -258,8 +273,8 @@ void JGE2D::jgeUpdateMouseEvent()
 			lpDisplayObjectResult->dispatchEvent(&evt);
 		}
 	}
+	m_lpMouseAreaTarget = lpDisplayObjectResult;
 
-	m_lpMouseTarget = lpDisplayObjectResult;
 	mouseLeftButtonDown = mouseLeftButtonDownCurrent;
 	mouseRightButtonDown = mouseRightButtonDownCurrent;
 	mouseMiddleButtonDown = mouseMiddleButtonDownCurrent;
@@ -267,9 +282,21 @@ void JGE2D::jgeUpdateMouseEvent()
 
 void JGE2D::jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject)
 {
-	if(lpDisplayObject == m_lpMouseTarget)
+	if(lpDisplayObject == m_lpMouseLeftButtonTarget)
 	{
-		m_lpMouseTarget = null;
+		m_lpMouseLeftButtonTarget = null;
+	}
+	if(lpDisplayObject == m_lpMouseRightButtonTarget)
+	{
+		m_lpMouseRightButtonTarget = null;
+	}
+	if(lpDisplayObject == m_lpMouseMiddleButtonTarget)
+	{
+		m_lpMouseMiddleButtonTarget = null;
+	}
+	if(lpDisplayObject == m_lpMouseAreaTarget)
+	{
+		m_lpMouseAreaTarget = null;
 	}
 }
 

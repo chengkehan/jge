@@ -39,7 +39,10 @@ private:
 	bool m_init;
 	bool m_clientMouse;
 	
-	static JGEDisplayObject* m_lpMouseTarget;
+	static JGEDisplayObject* m_lpMouseLeftButtonTarget;
+	static JGEDisplayObject* m_lpMouseRightButtonTarget;
+	static JGEDisplayObject* m_lpMouseMiddleButtonTarget;
+	static JGEDisplayObject* m_lpMouseAreaTarget;
 	static void jgeFrameCallback(uint timeDelta);
 	static void jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
 	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);

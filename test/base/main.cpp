@@ -12,6 +12,7 @@ void releaseCallback();
 void frameCallback(uint timeDelta);
 void lpBoxMouseOverHandler(JGEEvent* lpEvent);
 void lpBoxMouseOutHandler(JGEEvent* lpEvent);
+void lpBoxMouseClickLeftHandler(JGEEvent* lpEvent);
 
 INT WINAPI WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in LPSTR lpCmdLine, __in int nShowCmd )
 {
@@ -33,13 +34,15 @@ bool setupCallback()
 
 	lpBox = newDisplayObject();
 	lpBox->setTexture(getTexture(0));
-	lpBox->setX(10.0f);
-	lpBox->setY(10.0f);
+	lpBox->setX(100.0f);
+	lpBox->setY(100.0f);
 	//lpBox->setRefX(lpBox->getWidth() * 0.5f);
 	//lpBox->setRefY(lpBox->getHeight() * 0.5f);
 	lpBox->setName("jimBox");
 	lpBox->addEventListener(JGEEvent::MOUSE_OVER, lpBoxMouseOverHandler);
 	lpBox->addEventListener(JGEEvent::MOUSE_OUT, lpBoxMouseOutHandler);
+	lpBox->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, lpBoxMouseClickLeftHandler);
+	lpBox->setRotation(0.2f);
 	getStage()->addChild(lpBox);
 
 	setFPS(60);
@@ -65,4 +68,9 @@ void lpBoxMouseOverHandler(JGEEvent* lpEvent)
 void lpBoxMouseOutHandler(JGEEvent* lpEvent)
 {
 	lpBox->setAlpha(1.0f);
+}
+
+void lpBoxMouseClickLeftHandler(JGEEvent* lpEvent)
+{
+	jgeTrace1("%s\n", "lpBoxOnClick");
 }
