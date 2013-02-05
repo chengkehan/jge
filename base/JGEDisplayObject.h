@@ -6,6 +6,7 @@
 #include "JGETexture.h"
 #include "JGERect.h"
 #include "JGE2DQtree.h"
+#include "JGEPoint.h"
 #include "jgeUtil.h"
 
 class JGEDisplayObjectContainer;
@@ -80,6 +81,9 @@ public:
 	inline JGEDisplayObjectContainer* getParent() const { return m_lpParent; }
 
 	virtual JGERect* getBounds(JGERect* lpRectResult);
+	virtual JGEPoint* getBounds(JGEPoint* lpBoundsResult);
+	static bool inBounds(JGEPoint* lpBounds, JGEPoint* lpPoint);
+	static bool inBounds(JGEPoint* lpBounds, float pointX, float pointY);
 
 protected:
 	bool m_isContainer;

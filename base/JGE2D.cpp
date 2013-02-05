@@ -162,19 +162,22 @@ void JGE2D::jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM 
 
 void JGE2D::jgeUpdateMouseEvent()
 {
-	int mouseX = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseX() : JGEInput::getInstance()->getMouseX();
-	int mouseY = JGE2D::getInstance()->m_clientMouse ? JGEInput::getInstance()->getClientMouseY() : JGEInput::getInstance()->getMouseY();
+	static JGEPoint pointBounds[4];
+	static JGERect rect;
+	float mouseX = JGE2D::getInstance()->m_clientMouse ? (float)JGEInput::getInstance()->getClientMouseX() : (float)JGEInput::getInstance()->getMouseX();
+	float mouseY = JGE2D::getInstance()->m_clientMouse ? (float)JGEInput::getInstance()->getClientMouseY() : (float)JGEInput::getInstance()->getMouseY();
 	JGEQtreeNodeData* lpNodeData = JGE2DQtree::getInstance()->getQtree()->search((float)mouseX, (float)mouseY);
 	JGEDisplayObject* lpDisplayObjectResult = null;
 	uint depthMax = 0;
 	uint indexMax = 0;
-	JGERect rect;
 	while(lpNodeData != null)
 	{
 		JGEDisplayObject* lpDisplayObject = (JGEDisplayObject*)lpNodeData;
 		if(!lpDisplayObject->m_isContainer)
 		{
-			if(lpDisplayObject->getBounds(&rect)->contains((float)mouseX, (float)mouseY) && 	lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
+			if(lpDisplayObject->getBounds(&rect)->contains(mouseX, mouseY) && 
+				JGEDisplayObject::inBounds(lpDisplayObject->getBounds(pointBounds), mouseX, mouseY) && 
+				lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
 			{
 				depthMax = lpDisplayObject->m_depth;
 				indexMax = lpDisplayObject->m_index;

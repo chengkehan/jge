@@ -30,6 +30,7 @@ public:
 	JGEDisplayObject* setChildIndex(JGEDisplayObject* lpChild, uint index);
 	bool setTexture(JGETexture* texture);
 	JGERect* getBounds(JGERect* lpRectResult);
+	JGEPoint* getBounds(JGEPoint* lpVectorBoundsResult);
 
 private:
 	JGEDisplayObjectContainer();

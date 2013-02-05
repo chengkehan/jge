@@ -36,13 +36,12 @@ bool setupCallback()
 	lpBox->setTexture(getTexture(0));
 	lpBox->setX(100.0f);
 	lpBox->setY(100.0f);
-	//lpBox->setRefX(lpBox->getWidth() * 0.5f);
-	//lpBox->setRefY(lpBox->getHeight() * 0.5f);
+	lpBox->setRefX(lpBox->getWidth() * 0.5f);
+	lpBox->setRefY(lpBox->getHeight() * 0.5f);
 	lpBox->setName("jimBox");
 	lpBox->addEventListener(JGEEvent::MOUSE_OVER, lpBoxMouseOverHandler);
 	lpBox->addEventListener(JGEEvent::MOUSE_OUT, lpBoxMouseOutHandler);
 	lpBox->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, lpBoxMouseClickLeftHandler);
-	lpBox->setRotation(0.2f);
 	getStage()->addChild(lpBox);
 
 	setFPS(60);
@@ -57,7 +56,7 @@ void releaseCallback()
 
 void frameCallback(uint timeDelta)
 {
-	//lpBox->setRotation(lpBox->getRotation() + 0.05f);
+	lpBox->setRotation(lpBox->getRotation() + 0.05f);
 }
 
 void lpBoxMouseOverHandler(JGEEvent* lpEvent)

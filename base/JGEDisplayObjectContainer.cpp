@@ -222,3 +222,8 @@ JGERect* JGEDisplayObjectContainer::getBounds(JGERect* lpRectResult)
 
 	return lpRectResult;
 }
+
+JGEPoint* JGEDisplayObjectContainer::getBounds(JGEPoint* lpVectorBoundsResult)
+{
+	return null;
+}

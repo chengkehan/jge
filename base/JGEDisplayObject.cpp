@@ -69,6 +69,61 @@ JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
 	}
 }
 
+JGEPoint* JGEDisplayObject::getBounds(JGEPoint* lpBoundsResult)
+{
+	if(lpBoundsResult == null || m_lpVBData == null || m_lpTexture == null)
+	{
+		return null;
+	}
+	else
+	{
+		lpBoundsResult[0].m_x = m_lpVBData[0].x;
+		lpBoundsResult[0].m_y = m_lpVBData[0].y;
+
+		lpBoundsResult[1].m_x = m_lpVBData[1].x;
+		lpBoundsResult[1].m_y = m_lpVBData[1].y;
+
+		lpBoundsResult[2].m_x = m_lpVBData[3].x;
+		lpBoundsResult[2].m_y = m_lpVBData[3].y;
+
+		lpBoundsResult[3].m_x = m_lpVBData[2].x;
+		lpBoundsResult[3].m_y = m_lpVBData[2].y;
+
+		return lpBoundsResult;
+	}
+}
+
+bool JGEDisplayObject::inBounds(JGEPoint* lpBounds, JGEPoint* lpPoint)
+{
+	if(lpBounds == null || lpPoint == null)
+	{
+		return false;
+	}
+
+	if(
+		(jgeVectorABPointSide(&lpBounds[1], &lpBounds[0], lpPoint) != -1 || 
+		jgeVectorABPointSide(&lpBounds[2], &lpBounds[1], lpPoint) != -1 || 
+		jgeVectorABPointSide(&lpBounds[0], &lpBounds[2], lpPoint) != -1)
+		&& 
+		(jgeVectorABPointSide(&lpBounds[2], &lpBounds[0], lpPoint) != -1 || 
+		jgeVectorABPointSide(&lpBounds[3], &lpBounds[2], lpPoint) != -1 || 
+		jgeVectorABPointSide(&lpBounds[0], &lpBounds[3], lpPoint) != -1)
+	)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool JGEDisplayObject::inBounds(JGEPoint* lpBounds, float pointX, float pointY)
+{
+	static JGEPoint point;
+	point.m_x = pointX;
+	point.m_y = pointY;
+	return inBounds(lpBounds, &point);
+}
+
 void JGEDisplayObject::updateVertexBufferData()
 {
 	// x1=cos(angle)*x-sin(angle)*y;

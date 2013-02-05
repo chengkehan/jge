@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <ctime>
 #include <memory>
+#include "JGEPoint.h"
 
 #define JGE_SINGLETON_DECLARE(clazz) \
 	friend class std::auto_ptr<##clazz##>; \
@@ -142,6 +143,14 @@ inline BOOL jgeWin32KeyDown(int vkCode)
 inline BOOL jgeWin32KeyUp(int vkCode)
 {
 	return GetAsyncKeyState(vkCode) & 0x8000 ? FALSE : TRUE;
+}
+
+int jgeVectorABPointSide(JGEPoint* lpPointA, JGEPoint* lpPointB, JGEPoint* lpPoint);
+
+inline bool jgeFloatEqual(float a, float b)
+{
+	float value = a - b;
+	return value > -0.0001 && value < 0.0001;
 }
 
 #endif
