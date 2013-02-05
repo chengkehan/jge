@@ -94,6 +94,10 @@ inline void jgeWin32Exit(int exitCode = 0)
 {
 	PostQuitMessage(exitCode);
 }
+inline void jgeWin32DestroyWindow(HWND hwnd)
+{
+	DestroyWindow(hwnd);
+}
 
 inline int jgeWin32CursorShow()
 {

@@ -26,10 +26,14 @@ public:
 	typedef bool (*SETUPCALLBACK)(void);
 	typedef void (*RELEASECALLBACK)(void);
 	typedef void (*FRAMECALLBACK)(uint timeDelta);
+	typedef bool (*WMDESTROYCALLBACK)();
+	typedef bool (*WMESCAPEKEYDOWNCALLBACK)();
 
 	SETUPCALLBACK setupCallback;
 	RELEASECALLBACK releaseCallback;
 	FRAMECALLBACK frameCallback;
+	WMDESTROYCALLBACK wmDestroyCallback;
+	WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback;
 
 	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, 
 		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30, bool systemMenu = false);

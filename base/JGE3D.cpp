@@ -6,6 +6,18 @@ jge3d::WinProcCallbackMap jge3d::winProcCallbacks;
 
 LRESULT CALLBACK jge3d::winProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam)
 {
+	switch(msg)
+	{
+		case WM_DESTROY:
+		{
+			if(JGE3D::getInstance()->wmDestroyCallback == null || JGE3D::getInstance()->wmDestroyCallback())
+			{
+				jgeWin32Exit();
+			}
+			break;
+		}
+	}
+
 	for (jge3d::WinProcCallbackMap::iterator iter = jge3d::winProcCallbacks.begin(); iter != jge3d::winProcCallbacks.end(); ++iter)
 	{
 		if(iter->first == msg && iter->second != null)
@@ -29,6 +41,8 @@ JGE3D::JGE3D()
 	setupCallback = null;
 	releaseCallback = null;
 	frameCallback = null;
+	wmDestroyCallback = null;
+	wmEscapeKeyDownCallback = null;
 }
 
 JGE3D::~JGE3D()
@@ -198,6 +212,12 @@ void JGE3D::run()
 			dword currTime = timeGetTime();
 			if(currTime - lastTime >= m_fpsTime)
 			{
+				if(jgeWin32KeyDown(VK_ESCAPE) && (wmEscapeKeyDownCallback == null || wmEscapeKeyDownCallback()))
+				{
+					jgeWin32DestroyWindow(m_hWnd);
+					break;
+				}
+
 				dword timeDelta = currTime - lastTime;
 				m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 				m_lpd3dd->BeginScene();

@@ -14,7 +14,6 @@ JGEDisplayObject* JGE2D::m_lpMouseAreaTarget = null;
 JGE2D::JGE2D()
 {
 	m_lpStage = null;
-	m_exitWhileEscapeDown = true;
 	m_mouseVisible = true;
 	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
 	m_init = false;
@@ -109,11 +108,6 @@ void JGE2D::setMouseLockOnWindow(bool value)
 void JGE2D::jgeFrameCallback(uint timeDelta)
 {
 	JGEInput::getInstance()->updateInput();
-	if(JGE2D::getInstance()->m_exitWhileEscapeDown && JGEInput::getInstance()->keyDown(DIK_ESCAPE))
-	{
-		jgeWin32Exit();
-		return;
-	}
 
 	jgeUpdateQtree(JGE2D::getInstance()->getStage());
 	jgeUpdateMouseEvent();

@@ -144,16 +144,6 @@ namespace jge
 		return JGE3D::getInstance()->getFPS();
 	}
 
-	inline void setExitWhileEscapeDown(bool value)
-	{
-		JGE2D::getInstance()->setExitWhileEscapeDown(value);
-	}
-
-	inline bool getExitWhileEscapeDown()
-	{
-		return JGE2D::getInstance()->getExitWhileEscapeDown();
-	}
-
 	inline JGEDisplayObject* newDisplayObject()
 	{
 		JGEDisplayObject* lpDisplayObject = null;
