@@ -102,7 +102,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	}
 	else
 	{
-		hwnd = CreateWindowEx(WS_EX_TOPMOST, L"jcd3dApp", L"jcd3dApp", WS_POPUP | WS_VISIBLE, 0, 0, 0, 0, null, null, hInstance, null);
+		hwnd = CreateWindowEx(WS_EX_TOPMOST, L"jcd3dApp", L"jcd3dApp", WS_POPUP | WS_VISIBLE, 0, 0, windowWidth, windowHeight, null, null, hInstance, null);
 	}
 	if(!hwnd)
 	{
