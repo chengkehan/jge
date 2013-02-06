@@ -36,9 +36,29 @@ namespace jge
 		return lp2D->init(hInstance, setupCallback, releaseCallback, frameCallback, wmDestroyCallback, wmEscapeKeyDownCallback, windowX, windowY, windowWidth, windowHeight, windowd);
 	}
 
+	inline JGE3D* getJGE3D()
+	{
+		return JGE3D::getInstance();
+	}
+
+	inline JGE2D* getJGE2D()
+	{
+		return JGE2D::getInstance();
+	}
+
+	inline JGEInput* getJGEInput()
+	{
+		return JGEInput::getInstance();
+	}
+
 	inline void run()
 	{
 		JGE3D::getInstance()->run();
+	}
+
+	inline bool setWindowTitle(const wchar_t* lpTitle)
+	{
+		jgeWin32SetWindowText(JGE3D::getInstance()->getHWnd(), lpTitle);
 	}
 
 	inline JGETexture* loadTexture(int id, const char* lpPath)

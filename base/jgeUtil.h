@@ -90,6 +90,15 @@ inline void jgecsfree(char* lpStr)
 	jgeFree(lpStr);
 }
 
+inline uint jgeWin32GetScreenWidth()
+{
+	return GetSystemMetrics(SM_CXFULLSCREEN);
+}
+inline uint jgeWin32GetScreenHeight()
+{
+	return GetSystemMetrics(SM_CYFULLSCREEN);
+}
+
 inline void jgeWin32Exit(int exitCode = 0)
 {
 	PostQuitMessage(exitCode);
@@ -147,6 +156,19 @@ inline BOOL jgeWin32KeyDown(int vkCode)
 inline BOOL jgeWin32KeyUp(int vkCode)
 {
 	return GetAsyncKeyState(vkCode) & 0x8000 ? FALSE : TRUE;
+}
+
+inline BOOL jgeWin32SetWindowText(HWND hwnd, LPCWSTR lpText)
+{
+	return SetWindowTextW(hwnd, lpText);
+}
+inline int jgeWin32GetWindowText(HWND hwnd, LPWSTR lpBuffer, int bufferSize)
+{
+	return GetWindowTextW(hwnd, lpBuffer, bufferSize);
+}
+inline int jgeWin32GetWindowTextLength(HWND hwnd)
+{
+	return GetWindowTextLengthW(hwnd);
 }
 
 int jgeVectorABPointSide(JGEPoint* lpPointA, JGEPoint* lpPointB, JGEPoint* lpPoint);
