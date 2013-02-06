@@ -43,6 +43,8 @@ JGE3D::JGE3D()
 	frameCallback = null;
 	wmDestroyCallback = null;
 	wmEscapeKeyDownCallback = null;
+	deviceLoseCallback = null;
+	deviceLoseResetCallback = null;
 }
 
 JGE3D::~JGE3D()
@@ -140,23 +142,22 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 		return false;
 	}
 
-	D3DPRESENT_PARAMETERS d3dpp;
-	d3dpp.BackBufferWidth = windowWidth;
-	d3dpp.BackBufferHeight = windowHeight;
-	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
-	d3dpp.BackBufferCount = 1;
-	d3dpp.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
-	d3dpp.MultiSampleQuality = 0;
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.hDeviceWindow = hwnd;
-	d3dpp.Windowed = windowed;
-	d3dpp.EnableAutoDepthStencil = true;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-	d3dpp.Flags = 0;
-	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+	m_presentParams.BackBufferWidth = windowWidth;
+	m_presentParams.BackBufferHeight = windowHeight;
+	m_presentParams.BackBufferFormat = D3DFMT_A8R8G8B8;
+	m_presentParams.BackBufferCount = 1;
+	m_presentParams.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
+	m_presentParams.MultiSampleQuality = 0;
+	m_presentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	m_presentParams.hDeviceWindow = hwnd;
+	m_presentParams.Windowed = windowed;
+	m_presentParams.EnableAutoDepthStencil = true;
+	m_presentParams.AutoDepthStencilFormat = D3DFMT_D24S8;
+	m_presentParams.Flags = 0;
+	m_presentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	m_presentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-	HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT, deviceType, hwnd, vp, &d3dpp, &m_lpd3dd);
+	HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT, deviceType, hwnd, vp, &m_presentParams, &m_lpd3dd);
 	if(FAILED(hr))
 	{
 		d3d9->Release();
@@ -226,7 +227,31 @@ void JGE3D::run()
 					frameCallback(currTime - lastTime);
 				}
 				m_lpd3dd->EndScene();
-				m_lpd3dd->Present(null, null, null, null);
+				HRESULT presentH = m_lpd3dd->Present(null, null, null, null);
+				// device lose
+				if(presentH == D3DERR_DEVICELOST)
+				{
+					if(m_lpd3dd->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+					{
+						// release resource
+						if(deviceLoseCallback != null)
+						{
+							deviceLoseCallback();
+						}
+						
+						// reset device
+						m_lpd3dd->Reset(&m_presentParams);
+
+						// rebuild resource
+						if(deviceLoseResetCallback != null)
+						{
+							if(!deviceLoseResetCallback())
+							{
+								break;
+							}
+						}
+					}
+				}
 				lastTime = currTime;
 			}
 		}

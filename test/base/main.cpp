@@ -16,7 +16,7 @@ void lpBoxMouseClickLeftHandler(JGEEvent* lpEvent);
 
 INT WINAPI WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in LPSTR lpCmdLine, __in int nShowCmd )
 {
-	if(!init(hInstance, setupCallback, releaseCallback, frameCallback, null, null, -1, -1, 800, 600, true))
+	if(!init(hInstance, setupCallback, releaseCallback, frameCallback, null, null, null, null, -1, -1, 800, 600, true))
 	{
 		return 0;
 	}

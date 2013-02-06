@@ -27,13 +27,18 @@ namespace jge
 	inline bool init(HINSTANCE hInstance, 
 		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
 		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
+		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback = null, 
 		int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true)
 	{
 		lp2D = JGE2D::getInstance();
 		lp3D = JGE3D::getInstance();
 		lpInput = JGEInput::getInstance();
 		lpTextureManger = JGETextureManager::getInstance();
-		return lp2D->init(hInstance, setupCallback, releaseCallback, frameCallback, wmDestroyCallback, wmEscapeKeyDownCallback, windowX, windowY, windowWidth, windowHeight, windowd);
+		return lp2D->init(hInstance, 
+			setupCallback, releaseCallback, frameCallback, 
+			wmDestroyCallback, wmEscapeKeyDownCallback, 
+			deviceLoseCallback, deviceLoseResetCallback, 
+			windowX, windowY, windowWidth, windowHeight, windowd);
 	}
 
 	inline JGE3D* getJGE3D()

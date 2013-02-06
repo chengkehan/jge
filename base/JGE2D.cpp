@@ -15,7 +15,7 @@ JGE2D::JGE2D()
 {
 	m_lpStage = null;
 	m_mouseVisible = true;
-	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
+	m_frameCallback = null; m_releaseCallback = null;
 	m_init = false;
 }
 
@@ -26,12 +26,13 @@ JGE2D::~JGE2D()
 		m_releaseCallback();
 	}
 	jgeDelete(m_lpStage);
-	m_frameCallback = null; m_setupCallback = null; m_releaseCallback = null;
+	m_frameCallback = null; m_releaseCallback = null;
 }
 
 bool JGE2D::init(HINSTANCE hInstance, 
 	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
 	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
+	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback, 
 	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, bool clientMouse)
 {
 	if(m_init)
@@ -44,9 +45,12 @@ bool JGE2D::init(HINSTANCE hInstance,
 	JGE3D::getInstance()->frameCallback = jgeFrameCallback;
 	JGE3D::getInstance()->wmDestroyCallback = wmDestroyCallback;
 	JGE3D::getInstance()->wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
+	JGE3D::getInstance()->deviceLoseCallback = jgeDeviceLoseCallback;
+	JGE3D::getInstance()->deviceLoseResetCallback = jgeDeviceLoseResetCallback;
 	m_frameCallback = frameCallback;
-	m_setupCallback = setupCallback;
 	m_releaseCallback = releaseCallback;
+	m_deviceLoseCallback = deviceLoseCallback;
+	m_deviceLoseResetCallback = deviceLoseResetCallback;
 
 	if(!JGE3D::getInstance()->init(hInstance, windowX, windowY, windowWidth, windowHeight, windowd))
 	{
@@ -70,9 +74,9 @@ bool JGE2D::init(HINSTANCE hInstance,
 	m_lpStage->m_depth = 0;
 	m_lpStage->m_index = 0;
 
-	if(m_setupCallback != null)
+	if(setupCallback != null)
 	{
-		if(!m_setupCallback())
+		if(!setupCallback())
 		{
 			return false;
 		}
@@ -330,5 +334,29 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 				}
 			}
 		}
+	}
+}
+
+void JGE2D::jgeDeviceLoseCallback()
+{
+	// release 2d
+
+	if(JGE2D::getInstance()->m_deviceLoseCallback != null)
+	{
+		JGE2D::getInstance()->m_deviceLoseCallback();
+	}
+}
+
+bool JGE2D::jgeDeviceLoseResetCallback()
+{
+	// reset 2d
+
+	if(JGE2D::getInstance()->m_deviceLoseResetCallback != null)
+	{
+		return JGE2D::getInstance()->m_deviceLoseResetCallback();
+	}
+	else
+	{
+		return true;
 	}
 }
