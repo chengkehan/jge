@@ -117,6 +117,11 @@ void JGEQtree::setObjectRecursive(JGEQtreeNode* lpNode, JGEQtreeNodeData* lpNode
 {
 	if(lpNode != null && lpRect != null && !lpNode->rect.contains(lpRect))
 	{
+		if(lpNodeData != null && lpNodeData->m_lpNode != null)
+		{
+			lpNodeData->m_lpNode->lpDataSet->erase(lpNodeData);
+			lpNodeData->m_lpNode = null;
+		}
 		return;
 	}
 

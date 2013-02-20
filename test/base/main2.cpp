@@ -5,7 +5,7 @@
 
 using namespace jge;
 
-const uint numBoxes = 1;
+const uint numBoxes = 7;
 JGEDisplayObject* lpBoxList[numBoxes];
 
 bool setupCallback();
@@ -31,8 +31,8 @@ void createBox(uint index)
 {
 	JGEDisplayObject* lpBox = newDisplayObject();
 	lpBox->setTexture(getTexture(0));
-	lpBox->setX((float)(rand() % getStageWidth()));
-	lpBox->setY((float)(rand() % getStageHeight()));
+	lpBox->setX(100.0f);
+	lpBox->setY(100.0f + 30.0f * (index + 1));
 	lpBox->setRefX(lpBox->getWidth() * 0.5f);
 	lpBox->setRefY(lpBox->getHeight() * 0.5f);
 	lpBox->addEventListener(JGEEvent::MOUSE_OVER, lpBoxMouseOverHandler);
@@ -78,7 +78,7 @@ void frameCallback(uint timeDelta)
 
 void lpBoxMouseOverHandler(JGEEvent* lpEvent)
 {
-	((JGEDisplayObject*)lpEvent->m_lpEventDispatcher)->setAlpha(0.5f);
+	((JGEDisplayObject*)lpEvent->m_lpEventDispatcher)->setAlpha(0.2f);
 }
 
 void lpBoxMouseOutHandler(JGEEvent* lpEvent)
@@ -88,5 +88,5 @@ void lpBoxMouseOutHandler(JGEEvent* lpEvent)
 
 void lpBoxMouseClickLeftHandler(JGEEvent* lpEvent)
 {
-	jgeTrace1("%s\n", "lpBoxOnClick");
+	((JGEDisplayObject*)lpEvent->m_lpEventDispatcher)->setAlpha(0.6f);
 }

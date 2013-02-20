@@ -15,18 +15,14 @@ JGE2D::JGE2D()
 {
 	m_lpStage = null;
 	m_mouseVisible = true;
-	m_frameCallback = null; m_releaseCallback = null;
+	m_frameCallback = null;
 	m_init = false;
 }
 
 JGE2D::~JGE2D()
 {
-	if(m_releaseCallback != null)
-	{
-		m_releaseCallback();
-	}
 	jgeDelete(m_lpStage);
-	m_frameCallback = null; m_releaseCallback = null;
+	m_frameCallback = null;
 }
 
 bool JGE2D::init(HINSTANCE hInstance, 
@@ -41,14 +37,13 @@ bool JGE2D::init(HINSTANCE hInstance,
 	}
 
 	JGE3D::getInstance()->setupCallback = null;
-	JGE3D::getInstance()->releaseCallback = null;
+	JGE3D::getInstance()->releaseCallback = releaseCallback;
 	JGE3D::getInstance()->frameCallback = jgeFrameCallback;
 	JGE3D::getInstance()->wmDestroyCallback = wmDestroyCallback;
 	JGE3D::getInstance()->wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
 	JGE3D::getInstance()->deviceLoseCallback = jgeDeviceLoseCallback;
 	JGE3D::getInstance()->deviceLoseResetCallback = jgeDeviceLoseResetCallback;
 	m_frameCallback = frameCallback;
-	m_releaseCallback = releaseCallback;
 	m_deviceLoseCallback = deviceLoseCallback;
 	m_deviceLoseResetCallback = deviceLoseResetCallback;
 

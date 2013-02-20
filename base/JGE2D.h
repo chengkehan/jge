@@ -32,7 +32,6 @@ private:
 
 	JGEDisplayObjectContainer* m_lpStage;
 	JGE3D::FRAMECALLBACK m_frameCallback;
-	JGE3D::RELEASECALLBACK m_releaseCallback;
 	JGE3D::DEVICELOSECALLBACK m_deviceLoseCallback;
 	JGE3D::DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
 	bool m_mouseVisible;

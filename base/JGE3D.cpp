@@ -49,10 +49,6 @@ JGE3D::JGE3D()
 
 JGE3D::~JGE3D()
 {
-	if(releaseCallback != null)
-	{
-		releaseCallback();
-	}
 	jgeReleaseCom(m_lpd3dd);
 }
 
@@ -277,6 +273,11 @@ void JGE3D::run()
 			}
 			lastTime = currTime;
 		}
+	}
+
+	if(releaseCallback != null)
+	{
+		releaseCallback();
 	}
 }
 
