@@ -200,60 +200,82 @@ void JGE3D::run()
 	MSG msg;
 	jgeZeroMem(&msg, sizeof(MSG));
 
-	dword lastTime = timeGetTime();
-	while(msg.message != WM_QUIT)
+	DWORD lastTime = timeGetTime();
+	DWORD timeDeltaSum = 0;
+	uint fps = 0;
+	for(;;)
 	{
 		if(PeekMessage(&msg, null, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&msg);
+			if (msg.message == WM_QUIT)	
+			{
+				break;
+			}
 			DispatchMessage(&msg);
+			continue;
 		}
 		else
 		{
-			dword currTime = timeGetTime();
-			if(currTime - lastTime >= m_fpsTime)
+			dword currTime;
+			dword timeDelta;
+			do 
 			{
-				if(jgeWin32KeyDown(VK_ESCAPE) && (wmEscapeKeyDownCallback == null || wmEscapeKeyDownCallback()))
-				{
-					jgeWin32DestroyWindow(m_hWnd);
-					break;
-				}
+				currTime = timeGetTime();
+				timeDelta = currTime - lastTime;
+			} while (timeDelta < 1);
 
-				dword timeDelta = currTime - lastTime;
-				m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
-				m_lpd3dd->BeginScene();
-				if(frameCallback != null)
+			if(jgeWin32KeyDown(VK_ESCAPE) && (wmEscapeKeyDownCallback == null || wmEscapeKeyDownCallback()))
+			{
+				jgeWin32DestroyWindow(m_hWnd);
+				break;
+			}
+				
+			m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00000000, 1.0f, 0);
+			m_lpd3dd->BeginScene();
+			if(frameCallback != null)
+			{
+				frameCallback(timeDelta);
+			}
+			m_lpd3dd->EndScene();
+
+			HRESULT presentH = m_lpd3dd->Present(null, null, null, null);
+			// device lose
+			if(presentH == D3DERR_DEVICELOST)
+			{
+				if(m_lpd3dd->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
 				{
-					frameCallback(currTime - lastTime);
-				}
-				m_lpd3dd->EndScene();
-				HRESULT presentH = m_lpd3dd->Present(null, null, null, null);
-				// device lose
-				if(presentH == D3DERR_DEVICELOST)
-				{
-					if(m_lpd3dd->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+					// release resource
+					if(deviceLoseCallback != null)
 					{
-						// release resource
-						if(deviceLoseCallback != null)
-						{
-							deviceLoseCallback();
-						}
+						deviceLoseCallback();
+					}
 						
-						// reset device
-						m_lpd3dd->Reset(&m_presentParams);
+					// reset device
+					m_lpd3dd->Reset(&m_presentParams);
 
-						// rebuild resource
-						if(deviceLoseResetCallback != null)
+					// rebuild resource
+					if(deviceLoseResetCallback != null)
+					{
+						if(!deviceLoseResetCallback())
 						{
-							if(!deviceLoseResetCallback())
-							{
-								break;
-							}
+							break;
 						}
 					}
 				}
-				lastTime = currTime;
 			}
+
+			timeDeltaSum += timeDelta;
+			if(timeDeltaSum <= 1000)
+			{
+				++fps;
+			}
+			else
+			{
+				m_fps = fps;
+				fps = 0;
+				timeDeltaSum = 0;
+			}
+			lastTime = currTime;
 		}
 	}
 }

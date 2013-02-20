@@ -103,18 +103,17 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 	{
 		return false;
 	}
-	else
+
+	EventHandlerList* lpHandlerList = iterMap->second;
+	for (EventHandlerList::iterator iterList = lpHandlerList->begin(); iterList != lpHandlerList->end(); ++iterList)
 	{
-		EventHandlerList* lpHandlerList = iterMap->second;
-		for (EventHandlerList::iterator iterList = lpHandlerList->begin(); iterList != lpHandlerList->end(); ++iterList)
-		{
-			((EventHandler)*iterList)(lpEvent);
-		}
-		return true;
+		((EventHandler)*iterList)(lpEvent);
 	}
 
 	if(bubble && m_lpParentBubble != null)
 	{
 		m_lpParentBubble->dispatchEvent(lpEvent, bubble);
 	}
+
+	return true;
 }

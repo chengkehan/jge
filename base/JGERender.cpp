@@ -29,13 +29,13 @@ bool JGERender::init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount)
 		m_lpd3dd = lpd3dd;
 		m_bufferDisplayObjectAmount = bufferDisplayObjectAmount;
 		if(FAILED(m_lpd3dd->CreateVertexBuffer(
-			m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), D3DUSAGE_WRITEONLY, JGEDisplayObject::Vertex::FVF, D3DPOOL_MANAGED, &m_lpVbBuffer, null
+			m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC, JGEDisplayObject::Vertex::FVF, D3DPOOL_DEFAULT, &m_lpVbBuffer, null
 		)))
 		{
 			return false;
 		}
 		if(FAILED(m_lpd3dd->CreateIndexBuffer(
-			m_bufferDisplayObjectAmount * 6 * sizeof(word), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &m_lpIbBuffer, null
+			m_bufferDisplayObjectAmount * 6 * sizeof(word), D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_lpIbBuffer, null
 		)))
 		{
 			return false;
@@ -60,13 +60,13 @@ void JGERender::beginScene()
 
 bool JGERender::renderDisplayObject(JGEDisplayObject* lpDisplayObject)
 {
-	if(lpDisplayObject == null || lpDisplayObject->getTexture() == null || lpDisplayObject->getTexture()->getTexture() == null || m_displayObjectCount + 1 > m_bufferDisplayObjectAmount)
+	if(lpDisplayObject == null || lpDisplayObject->getTexture() == null || lpDisplayObject->getTexture()->getTexture() == null)
 	{
 		return false;
 	}
 	else
 	{
-		if(m_lpTextureCurrent != null && (lpDisplayObject->getTexture()->getTexture() != m_lpTextureCurrent || lpDisplayObject->getAlphaEnabled() != m_alphaEnbaledCurrent))
+		if(m_lpTextureCurrent != null && (lpDisplayObject->getTexture()->getTexture() != m_lpTextureCurrent || lpDisplayObject->getAlphaEnabled() != m_alphaEnbaledCurrent || m_displayObjectCount + 1 > m_bufferDisplayObjectAmount))
 		{
 			renderBuffer(true);
 		}
@@ -129,8 +129,8 @@ void JGERender::lockVbIb()
 {
 	if(!m_vbibLocked)
 	{
-		m_lpVbBuffer->Lock(0, m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), (void**)&m_lpVbBufferData, 0);
-		m_lpIbBuffer->Lock(0, m_bufferDisplayObjectAmount * 6 * sizeof(word), (void**)&m_lpIbBufferData, 0);
+		m_lpVbBuffer->Lock(0, m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), (void**)&m_lpVbBufferData, D3DLOCK_DISCARD);
+		m_lpIbBuffer->Lock(0, m_bufferDisplayObjectAmount * 6 * sizeof(word), (void**)&m_lpIbBufferData, D3DLOCK_DISCARD);
 		m_vbibLocked = true;
 	}
 }

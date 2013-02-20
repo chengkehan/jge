@@ -1,13 +1,15 @@
 #include "JGEEvent.h"
+#include "jgeUtil.h"
 
 JGEEvent::JGEEvent(int id)
 {
 	m_id = id;
+	m_lpEventDispatcher = null;
 }
 
 JGEEvent::~JGEEvent()
 {
-	// Do nothing
+	m_lpEventDispatcher = null;
 }
 
 // 0x eventCategory(0xFF0000) | eventType(0x00FF00) | eventId(0x0000FF)

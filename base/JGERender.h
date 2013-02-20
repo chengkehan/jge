@@ -9,7 +9,7 @@ class JGERender
 JGE_SINGLETON_DECLARE(JGERender)
 
 public:
-	bool init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount = 4000);
+	bool init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount = 500);
 	void beginScene();
 	bool renderDisplayObject(JGEDisplayObject* lpDisplayObject);
 	void endScene();

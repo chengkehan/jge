@@ -3,6 +3,8 @@
 
 #include "JGEObject.h"
 
+class JGEEventDispatcher;
+
 class JGEEvent : public JGEObject
 {
 public:
@@ -10,6 +12,7 @@ public:
 	~JGEEvent();
 
 	int m_id;
+	JGEEventDispatcher* m_lpEventDispatcher;
 
 	static int MOUSE_DOWN_LEFT;
 	static int MOUSE_DOWN_RIGHT;
