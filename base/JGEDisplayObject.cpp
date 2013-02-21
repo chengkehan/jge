@@ -1,5 +1,6 @@
 #include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
+#include "JGEDisplayObjectType.h"
 
 const DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
@@ -16,7 +17,7 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
 	m_lpVBData = null;
 	m_alpha = 1.0f; m_alphaEnabled = true;
 	m_lpParent = null;
-	m_isContainer = false;
+	m_displayObjectType = JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE;
 }
 
 JGEDisplayObject::~JGEDisplayObject()
@@ -55,7 +56,7 @@ JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
 		return null;
 	}
 
-	if(m_lpVBData == null)
+	if(m_lpVBData == null || m_lpTexture == null)
 	{
 		return null;
 	}

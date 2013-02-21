@@ -8,6 +8,7 @@
 #include "JGETextureManager.h"
 #include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
+#include "JGEText.h"
 #include "jgeUtil.h"
 
 #pragma comment(lib, "d3d9.lib")
@@ -194,6 +195,19 @@ namespace jge
 	inline void releaseDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
 	{
 		jgeDelete(lpContainer);
+	}
+
+	inline JGEText* newText()
+	{
+		JGEText* lpText = null;
+		jgeNewArgs1(lpText, JGEText, JGE3D::getInstance()->getDirect3DDevice());
+		return lpText;
+	}
+
+	inline void releaseText(JGEText* lpText)
+	{
+		JGE2D::jgeResetMouseEvent(lpText);
+		jgeDelete(lpText);
 	}
 }
 

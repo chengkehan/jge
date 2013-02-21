@@ -3,6 +3,8 @@
 #include "JGERender.h"
 #include "JGEDisplayObject.h"
 #include "JGE2DQtree.h"
+#include "JGEDisplayObjectType.h"
+#include "JGEText.h"
 
 JGE_SINGLETON_IMPLEMENTS(JGE2D)
 
@@ -136,17 +138,25 @@ void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContain
 		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
 		{
 			JGEDisplayObject* lpChild = *iter;
-			if(lpChild->m_isContainer)
+			if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_CONTAINER_TYPE)
 			{
 				jgeRenderDisplayObjectContainer((JGEDisplayObjectContainer*)lpChild);
 			}
-			else
+			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
+			{
+				((JGEText*)lpChild)->drawText();
+			}
+			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
 			{
 				if(lpChild->m_lpTexture != null)
 				{
 					lpChild->updateVertexBufferData();
 					JGERender::getInstance()->renderDisplayObject(lpChild);
 				}
+			}
+			else
+			{
+				// Do nothing
 			}
 		}
 	}
@@ -170,7 +180,7 @@ void JGE2D::jgeUpdateMouseEvent()
 	while(lpNodeData != null)
 	{
 		JGEDisplayObject* lpDisplayObject = (JGEDisplayObject*)lpNodeData;
-		if(!lpDisplayObject->m_isContainer)
+		if(lpDisplayObject->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
 		{
 			if(lpDisplayObject->getBounds(&rect)->contains(mouseX, mouseY) && 
 				JGEDisplayObject::inBounds(lpDisplayObject->getBounds(pointBounds), mouseX, mouseY) && 
@@ -180,6 +190,20 @@ void JGE2D::jgeUpdateMouseEvent()
 				indexMax = lpDisplayObject->m_index;
 				lpDisplayObjectResult = lpDisplayObject;
 			}
+		}
+		else if(lpDisplayObject->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
+		{
+			if(lpDisplayObject->getBounds(&rect)->contains(mouseX, mouseY) && 
+				lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
+			{
+				depthMax = lpDisplayObject->m_depth;
+				indexMax = lpDisplayObject->m_index;
+				lpDisplayObjectResult = lpDisplayObject;
+			}
+		}
+		else 
+		{
+			// Do nothing
 		}
 		lpNodeData = lpNodeData->m_lpNodeDataNext;
 	}
@@ -324,11 +348,11 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
 		{
 			JGEDisplayObject* lpChildren = *iter;
-			if(lpChildren->m_isContainer)
+			if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_CONTAINER_TYPE)
 			{
 				jgeUpdateQtree((JGEDisplayObjectContainer*)lpContainer);
 			}
-			else
+			else if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
 			{
 				if(lpChildren->getTexture() == null || lpChildren->m_lpVBData == null)
 				{
@@ -338,6 +362,21 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 				{
 					JGE2DQtree::getInstance()->getQtree()->setObject(lpChildren, lpChildren->getBounds(&rect));
 				}
+			}
+			else if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
+			{
+				if(jgewcslen(((JGEText*)lpChildren)->getText()) == 0)
+				{
+					JGE2DQtree::getInstance()->getQtree()->clearObject(lpChildren);
+				}
+				else
+				{
+					JGE2DQtree::getInstance()->getQtree()->setObject(lpChildren, lpChildren->getBounds(&rect));
+				}
+			}
+			else
+			{
+				// Do nothing
 			}
 		}
 	}

@@ -1,11 +1,12 @@
 #include <algorithm>
 #include "JGEDisplayObjectContainer.h"
+#include "JGEDisplayObjectType.h"
 
 using namespace std;
 
 JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
 {
-	m_isContainer = true;
+	m_displayObjectType = JGE_DISPLAYOBJECT_CONTAINER_TYPE;
 }
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()

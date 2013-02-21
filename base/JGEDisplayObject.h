@@ -85,8 +85,10 @@ public:
 	static bool inBounds(JGEPoint* lpBounds, JGEPoint* lpPoint);
 	static bool inBounds(JGEPoint* lpBounds, float pointX, float pointY);
 
+	inline IDirect3DDevice9* getDirect3DDevice() { return m_lpd3dd; }
+
 protected:
-	bool m_isContainer;
+	enum JGE_DISPLAYOBJECT_TYPE m_displayObjectType;
 
 private:
 	JGEDisplayObject();
