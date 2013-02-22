@@ -353,7 +353,7 @@ void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
 			JGEDisplayObject* lpChildren = *iter;
 			if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_CONTAINER_TYPE)
 			{
-				jgeUpdateQtree((JGEDisplayObjectContainer*)lpContainer);
+				jgeUpdateQtree((JGEDisplayObjectContainer*)lpChildren);
 			}
 			else if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
 			{
