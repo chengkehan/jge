@@ -5,6 +5,7 @@
 JGEText::JGEText(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
 {
 	m_displayObjectType = JGE_DISPLAYOBJECT_TEXT_TYPE;
+	m_lpSprite = null;
 	m_lpFont = null;
 	m_lpStr = null;
 	m_textColor = 0xFFFFFFFF;
@@ -17,6 +18,7 @@ JGEText::~JGEText()
 {
 	jgeReleaseCom(m_lpFont);
 	jgewcsfree(m_lpStr);
+	jgeReleaseCom(m_lpSprite);
 }
 
 void JGEText::setText(wchar_t* lpStr)
@@ -110,6 +112,11 @@ void JGEText::drawText()
 		return;
 	}
 
+	if(m_lpSprite == null)
+	{
+		jgeDXVerifyIf(D3DXCreateSprite(getDirect3DDevice(), &m_lpSprite))jgeDXVerifyEndIf
+	}
+
 	static RECT rect;
 	rect.left = m_rect.left;
 	rect.top = m_rect.top;
@@ -130,5 +137,10 @@ void JGEText::drawText()
 	rect.right += (LONG)x;
 	rect.bottom += (LONG)y;
 
-	m_lpFont->DrawText(null, m_lpStr, -1, &rect, m_dt_foramt, m_textColor);
+	static D3DXMATRIX matrix;
+	D3DXMatrixTranslation(&matrix, 0.0f, 0.0f, 0.0f);
+	m_lpSprite->SetTransform(&matrix);
+	m_lpSprite->Begin(D3DXSPRITE_ALPHABLEND);
+	m_lpFont->DrawText(m_lpSprite, m_lpStr, -1, &rect, m_dt_foramt, m_textColor);
+	m_lpSprite->End();
 }

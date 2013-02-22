@@ -35,8 +35,8 @@ void createBox(uint index)
 {
 	JGEDisplayObject* lpBox = newDisplayObject();
 	lpBox->setTexture(getTexture(0));
-	lpBox->setX(100.0f);
-	lpBox->setY(100.0f + 30.0f * (index + 1));
+	lpBox->setX(0.0f);
+	lpBox->setY(0.0f + 30.0f * (index + 1));
 	lpBox->setRefX(lpBox->getWidth() * 0.5f);
 	lpBox->setRefY(lpBox->getHeight() * 0.5f);
 	lpBox->addEventListener(JGEEvent::MOUSE_OVER, lpBoxMouseOverHandler);
@@ -57,12 +57,15 @@ bool setupCallback()
 	for(uint i = 0; i < numBoxes; ++i)
 	{
 		createBox(i);
-	}
 
-	lpText = newText();
-	lpText->addEventListener(JGEEvent::MOUSE_OVER, lpTextMouseOverHandler);
-	lpText->addEventListener(JGEEvent::MOUSE_OUT, lpTextMouseOutHandler);
-	getStage()->addChild(lpText);
+		if(i == 0)
+		{
+			lpText = newText();
+			lpText->addEventListener(JGEEvent::MOUSE_OVER, lpTextMouseOverHandler);
+			lpText->addEventListener(JGEEvent::MOUSE_OUT, lpTextMouseOutHandler);
+			getStage()->addChild(lpText);
+		}
+	}
 
 	setFPS(60);
 

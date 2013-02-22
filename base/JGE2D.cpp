@@ -121,6 +121,7 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 		JGE2D::getInstance()->m_frameCallback(timeDelta);
 	}
 
+	JGE3D::getInstance()->getDirect3DDevice()->SetRenderState(D3DRS_ZENABLE, false);
 	JGERender::getInstance()->beginScene();
 	jgeRenderDisplayObjectContainer(JGE2D::getInstance()->getStage());
 	JGERender::getInstance()->endScene();
@@ -144,7 +145,9 @@ void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContain
 			}
 			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
 			{
+				JGERender::getInstance()->endScene();
 				((JGEText*)lpChild)->drawText();
+				JGERender::getInstance()->beginScene();
 			}
 			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
 			{

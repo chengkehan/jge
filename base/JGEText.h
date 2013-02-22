@@ -43,6 +43,7 @@ private:
 	RECT m_rect;
 	uint m_dt_foramt;
 	D3DXFONT_DESCW m_desc;
+	ID3DXSprite* m_lpSprite;
 
 	void resetFont();
 	void drawText();
