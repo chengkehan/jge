@@ -9,7 +9,7 @@ JGEAbstractDisplayObject::JGEAbstractDisplayObject(IDirect3DDevice9* lpd3dd)
 	m_widthOriginal = 0.0f; m_heightOriginal = 0.0f;
 	m_scaleX = 1.0f; m_scaleY = 1.0f;
 	m_rotation = 0.0f;
-	m_alpha = 1.0f; m_alphaEnabled = true;
+	m_alpha = 1.0f;
 	m_lpParent = null;
 	m_interactive = false;
 }

@@ -31,6 +31,9 @@ public:
 	JGEDisplayObject(IDirect3DDevice9* lpd3dd);
 	~JGEDisplayObject();
 
+	inline void setAlphaEnabled(bool value) { m_alphaEnabled = value; }
+	inline bool getAlphaEnabled() const { return m_alphaEnabled; }
+
 	inline void setRefX(float value) { m_refX = value; }
 	inline float getRefX() const { return m_refX; }
 
@@ -59,6 +62,7 @@ private:
 	float m_refY;
 	JGETexture* m_lpTexture;
 	Vertex* m_lpVBData;
+	bool m_alphaEnabled;
 
 	JGEPoint* getBoundsVectorGlobal(JGEPoint* lpBoundsResult);
 };

@@ -45,11 +45,8 @@ public:
 	inline void setRotation(float value) { m_rotation = value; }
 	inline float getRotation() const { return m_rotation; }
 
-	inline void setAlpha(float value) { m_alpha = min(max(value, 0.0f), 1.0f); }
+	inline virtual void setAlpha(float value) { m_alpha = min(max(value, 0.0f), 1.0f); }
 	inline float getAlpha() const { return m_alpha; }
-
-	inline void setAlphaEnabled(bool value) { m_alphaEnabled = value; }
-	inline bool getAlphaEnabled() const { return m_alphaEnabled; }
 
 	inline void setVisible(bool value) { m_visible = value; }
 	inline bool getVisible() const { return m_visible; }
@@ -82,7 +79,6 @@ private:
 	float m_scaleX, m_scaleY;
 	float m_rotation;
 	float m_alpha;
-	bool m_alphaEnabled;
 	JGEDisplayObjectContainer* m_lpParent;
 	IDirect3DDevice9* m_lpd3dd;
 	bool m_visible;

@@ -7,11 +7,12 @@ JGEText::JGEText(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayObject(lpd3dd)
 	m_lpSprite = null;
 	m_lpFont = null;
 	m_lpStr = null;
-	m_textColor = 0xFFFFFFFF;
+	m_color = 0xFFFFFF;
 	m_rect.left = 0; m_rect.top = 0; m_rect.right = 1; m_rect.bottom = 1;
 	m_dt_foramt = DT_LEFT | DT_TOP | DT_NOCLIP;
 	m_interactive = true;
 	setConfig(12, 25, 500, false, L"DefaultFont");
+	updateColor();
 }
 
 JGEText::~JGEText()
@@ -44,12 +45,13 @@ const wchar_t* JGEText::getText() const
 
 void JGEText::setTextColor(uint color)
 {
-	m_textColor = color;
+	m_color = color;
+	updateColor();
 }
 
 uint JGEText::getTextColor() const
 {
-	return m_textColor;
+	return m_color;
 }
 
 void JGEText::setTextBounds(RECT* lpRect)

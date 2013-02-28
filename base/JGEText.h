@@ -9,6 +9,8 @@ public:
 	JGEText(IDirect3DDevice9* lpd3dd);
 	~JGEText();
 
+	inline virtual void setAlpha(float value) { JGEAbstractDisplayObject::setAlpha(value); updateColor(); }
+
 	void setText(wchar_t* lpStr);
 	const wchar_t* getText() const;
 
@@ -41,6 +43,7 @@ private:
 
 	ID3DXFont* m_lpFont;
 	wchar_t* m_lpStr;
+	uint m_color;
 	uint m_textColor;
 	RECT m_rect;
 	uint m_dt_foramt;
@@ -48,6 +51,7 @@ private:
 	ID3DXSprite* m_lpSprite;
 
 	void resetFont();
+	inline void updateColor() { m_textColor = (((int)(getAlpha() * 255.0) & 0xFF) << 24) + (m_color & 0xFFFFFF); }
 };
 
 #endif
