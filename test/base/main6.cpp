@@ -60,6 +60,9 @@ bool setupCallback()
 			lpText = newText();
 			lpText->setX(10);
 			lpText->setY(5);
+			//lpText->setScaleX(1.5f);
+			//lpText->setRotation(0.5f);
+			//lpText->setAlpha(0.5f);
 			getStage()->addChild(lpText);
 		}
 	}
