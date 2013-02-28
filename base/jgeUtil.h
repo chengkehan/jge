@@ -7,7 +7,11 @@
 #include <cstdio>
 #include <ctime>
 #include <memory>
+#include <d3d9.h>
+#include <d3dx9.h>
 #include "JGEPoint.h"
+#include "JGEVector2D.h"
+#include "JGEMatrix2D.h"
 
 #define JGE_SINGLETON_DECLARE(clazz) \
 	friend class std::auto_ptr<##clazz##>; \
@@ -195,5 +199,14 @@ inline bool jgeFloatEqual(float a, float b)
 	float value = a - b;
 	return value > -0.0001 && value < 0.0001;
 }
+
+JGEVector2D* jgeVector2DTransform(JGEVector2D* lpVector, const JGEMatrix2D* lpMatrix);
+JGEMatrix2D* jgeMatrix2DDotProduct(const JGEMatrix2D* lpMat1, const JGEMatrix2D* lpMat2, JGEMatrix2D* lpMatResult);
+JGEMatrix2D* jgeMatrix2DIdentity(JGEMatrix2D* lpMatrix);
+JGEMatrix2D* jgeMatrix2DRotation(JGEMatrix2D* lpMatrix, float radian);
+JGEMatrix2D* jgeMatrix2DTranslation(JGEMatrix2D* lpMatrix, float x, float y);
+JGEMatrix2D* jgeMatrix2DScaling(JGEMatrix2D* lpMatrix, float sx, float sy);
+JGEMatrix2D* jgeMatrix2DRotationScalingTranslationDotProductAlpha(float radian, float sx, float sy, float x, float y, const JGEMatrix2D* lpMatrix, float alpha, JGEMatrix2D* lpMatrixResult);
+D3DXMATRIX* jgeMatrix2DToD3DXMatrix(const JGEMatrix2D* lpMatrix, D3DXMATRIX* lpD3DMatrix);
 
 #endif

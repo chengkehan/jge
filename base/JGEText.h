@@ -1,14 +1,10 @@
 #ifndef __JGE_TEXT_H__
 #define __JGE_TEXT_H__
 
-#include "JGEDisplayObject.h"
+#include "JGEAbstractDisplayObject.h"
 
-class JGE2D;
-
-class JGEText : public JGEDisplayObject
+class JGEText : public JGEAbstractDisplayObject
 {
-friend class JGE2D;
-
 public:
 	JGEText(IDirect3DDevice9* lpd3dd);
 	~JGEText();
@@ -28,10 +24,16 @@ public:
 	void setConfig(int width = -1, int height = -1, int weight = -1, bool italic = false, const wchar_t* lpFaceName = null);
 	const D3DXFONT_DESCW* getConfig() const;
 
-	bool setTexture(JGETexture* texture);
+	virtual JGERect* getBoundsGlobal(JGERect* lpRectResult);
+	virtual bool inBoundsGlobal(float x, float y);
 
-	JGERect* getBounds(JGERect* lpRectResult);
-	JGEPoint* getBounds(JGEPoint* lpBoundsResult);
+protected:
+	virtual void render();
+	virtual bool shownInDisplayList();
+	virtual void qtreeSet();
+	virtual void qtreeClear();
+	virtual void qtreeSetClear();
+	virtual void updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent);
 
 private:
 	JGEText();
@@ -46,7 +48,6 @@ private:
 	ID3DXSprite* m_lpSprite;
 
 	void resetFont();
-	void drawText();
 };
 
 #endif

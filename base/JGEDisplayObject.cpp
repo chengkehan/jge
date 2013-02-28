@@ -1,36 +1,26 @@
 #include "JGEDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
-#include "JGEDisplayObjectType.h"
+#include "JGERender.h"
 
 const DWORD JGEDisplayObject::Vertex::FVF = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
-JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd)
+JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayObject(lpd3dd)
 {
-	jgeAssert(lpd3dd != null);
-	m_lpd3dd = lpd3dd;
 	m_refX = 0.0f; m_refY = 0.0f;
-	m_x = 0.0f; m_y = 0.0f;
-	m_widthOriginal = 0.0f; m_heightOriginal = 0.0f;
-	m_scaleX = 1.0f; m_scaleY = 1.0f;
-	m_rotation = 0.0f;
 	m_lpTexture = null;
 	m_lpVBData = null;
-	m_alpha = 1.0f; m_alphaEnabled = true;
-	m_lpParent = null;
-	m_displayObjectType = JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE;
+	m_interactive = true;
 }
 
 JGEDisplayObject::~JGEDisplayObject()
 {
-	if(m_lpParent != null)
+	if(getParent() != null)
 	{
-		m_lpParent->removeChild(this);
+		getParent()->removeChild(this);
 	}
-	m_lpd3dd = null;
+
 	m_lpTexture = null;
-	m_lpParent = null;
 	jgeDelete(m_lpVBData);
-	JGE2DQtree::getInstance()->getQtree()->clearObject(this);
 }
 
 bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
@@ -49,7 +39,7 @@ bool JGEDisplayObject::setTexture(JGETexture* lpTexture)
 	return true;
 }
 
-JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
+JGERect* JGEDisplayObject::getBoundsGlobal(JGERect* lpRectResult)
 {
 	if(lpRectResult == null)
 	{
@@ -70,7 +60,129 @@ JGERect* JGEDisplayObject::getBounds(JGERect* lpRectResult)
 	}
 }
 
-JGEPoint* JGEDisplayObject::getBounds(JGEPoint* lpBoundsResult)
+bool JGEDisplayObject::inBoundsGlobal(float x, float y)
+{
+	static JGERect bounds;
+	static JGEPoint bounds2[4];
+	static JGEPoint point;
+	if(getBoundsGlobal(&bounds) == null)
+	{
+		return false;
+	}
+	if(!bounds.contains(x, y))
+	{
+		return false;
+	}
+	if(getBoundsVectorGlobal(bounds2) == null)
+	{
+		return false;
+	}
+	point.m_x = x; point.m_y = y;
+	if(
+		(jgeVectorABPointSide(&bounds2[1], &bounds2[0], &point) != -1 || 
+		jgeVectorABPointSide(&bounds2[2], &bounds2[1], &point) != -1 || 
+		jgeVectorABPointSide(&bounds2[0], &bounds2[2], &point) != -1)
+		&& 
+		(jgeVectorABPointSide(&bounds2[2], &bounds2[0], &point) != -1 || 
+		jgeVectorABPointSide(&bounds2[3], &bounds2[2], &point) != -1 || 
+		jgeVectorABPointSide(&bounds2[0], &bounds2[3], &point) != -1)
+		)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void JGEDisplayObject::render()
+{
+	if(!shownInDisplayList())
+	{
+		return;
+	}
+
+	if(m_lpVBData == null)
+	{
+		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
+		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 1.0f; m_lpVBData[0].z = 0.0f;
+		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 1.0f; m_lpVBData[1].z = 0.0f;
+		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 1.0f; m_lpVBData[2].z = 0.0f;
+		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 1.0f; m_lpVBData[3].z = 0.0f;
+	}
+
+	static JGEVector2D point;
+
+	point.m_x = -m_refX;
+	point.m_y = m_heightOriginal - m_refY;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[0].x = point.m_x;
+	m_lpVBData[0].y = point.m_y;
+
+	point.m_x = -m_refX;
+	point.m_y = -m_refY;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[1].x = point.m_x;
+	m_lpVBData[1].y = point.m_y;
+
+	point.m_x = m_widthOriginal - m_refX;
+	point.m_y = m_heightOriginal - m_refY;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[2].x = point.m_x;
+	m_lpVBData[2].y = point.m_y;
+
+	point.m_x = m_widthOriginal - m_refX;
+	point.m_y = -m_refY;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[3].x = point.m_x;
+	m_lpVBData[3].y = point.m_y;
+
+	m_lpVBData[0].diffuse = (((int)(m_matrixGlobal.m_13 * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
+	m_lpVBData[1].diffuse = m_lpVBData[0].diffuse;
+	m_lpVBData[2].diffuse = m_lpVBData[0].diffuse;
+	m_lpVBData[3].diffuse = m_lpVBData[0].diffuse;
+
+	JGERender::getInstance()->renderDisplayObject(this);
+}
+
+bool JGEDisplayObject::shownInDisplayList()
+{
+	return getVisible() && m_lpTexture != null;
+}
+
+void JGEDisplayObject::qtreeSet()
+{
+	static JGERect rect;
+	JGE2DQtree::getInstance()->getQtree()->setObject(this, getBoundsGlobal(&rect));
+}
+
+void JGEDisplayObject::qtreeClear()
+{
+	JGE2DQtree::getInstance()->getQtree()->clearObject(this);
+}
+
+void JGEDisplayObject::qtreeSetClear()
+{
+	if(shownInDisplayList())
+	{
+		qtreeSet();
+	}
+	else
+	{
+		qtreeClear();
+	}
+}
+
+void JGEDisplayObject::updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent)
+{
+	if(lpMatrixGlobalParent == null)
+	{
+		return;
+	}
+
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), getScaleY(), getX(), getY(), lpMatrixGlobalParent, getAlpha(), &m_matrixGlobal);
+}
+
+JGEPoint* JGEDisplayObject::getBoundsVectorGlobal(JGEPoint* lpBoundsResult)
 {
 	if(lpBoundsResult == null || m_lpVBData == null || m_lpTexture == null)
 	{
@@ -92,96 +204,4 @@ JGEPoint* JGEDisplayObject::getBounds(JGEPoint* lpBoundsResult)
 
 		return lpBoundsResult;
 	}
-}
-
-bool JGEDisplayObject::inBounds(JGEPoint* lpBounds, JGEPoint* lpPoint)
-{
-	if(lpBounds == null || lpPoint == null)
-	{
-		return false;
-	}
-
-	if(
-		(jgeVectorABPointSide(&lpBounds[1], &lpBounds[0], lpPoint) != -1 || 
-		jgeVectorABPointSide(&lpBounds[2], &lpBounds[1], lpPoint) != -1 || 
-		jgeVectorABPointSide(&lpBounds[0], &lpBounds[2], lpPoint) != -1)
-		&& 
-		(jgeVectorABPointSide(&lpBounds[2], &lpBounds[0], lpPoint) != -1 || 
-		jgeVectorABPointSide(&lpBounds[3], &lpBounds[2], lpPoint) != -1 || 
-		jgeVectorABPointSide(&lpBounds[0], &lpBounds[3], lpPoint) != -1)
-	)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool JGEDisplayObject::inBounds(JGEPoint* lpBounds, float pointX, float pointY)
-{
-	static JGEPoint point;
-	point.m_x = pointX;
-	point.m_y = pointY;
-	return inBounds(lpBounds, &point);
-}
-
-void JGEDisplayObject::updateVertexBufferData()
-{
-	// x1=cos(angle)*x-sin(angle)*y;
-	// y1=cos(angle)*y+sin(angle)*x;
-
-	if(m_lpVBData == null)
-	{
-		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
-		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 1.0f; m_lpVBData[0].z = 0.0f;
-		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 1.0f; m_lpVBData[1].z = 0.0f;
-		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 1.0f; m_lpVBData[2].z = 0.0f;
-		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 1.0f; m_lpVBData[3].z = 0.0f;
-	}
-
-	float global_x = 0.0f;
-	float global_y = 0.0f;
-	float global_scaleX = 1.0f;
-	float global_scaleY = 1.0f;
-	float global_rotation = 0.0f;
-	float global_alpha = 1.0f;
-	JGEDisplayObjectContainer * lpTarget = m_lpParent;
-	while(lpTarget != null)
-	{
-		global_x += lpTarget->getX() + lpTarget->getRefX();
-		global_y += lpTarget->getY() + lpTarget->getRefY();
-		global_scaleX *= lpTarget->getScaleX();
-		global_scaleY *= lpTarget->getScaleY();
-		global_rotation += lpTarget->getRotation();
-		global_alpha *= lpTarget->getAlpha();
-		lpTarget = lpTarget->getParent();
-	}
-
-	float x = global_x + m_x;
-	float y = global_y + m_y;
-	float width = m_widthOriginal * m_scaleX * global_scaleX;
-	float height = m_heightOriginal * m_scaleY * global_scaleY;
-	float rotation = m_rotation + global_rotation;
-	float refX = m_refX * m_scaleX * global_scaleX;
-	float refY = m_refY * m_scaleY * global_scaleY;
-
-	float cosRot = cosf(rotation);
-	float sinRot = sinf(rotation);
-
-	m_lpVBData[0].x = x + cosRot * (-refX) - sinRot * (height - refY);
-	m_lpVBData[0].y = y + cosRot * (height - refY) + sinRot * (-refX);
-
-	m_lpVBData[1].x = x + cosRot * (-refX) - sinRot * (-refY);
-	m_lpVBData[1].y = y + cosRot * (-refY) + sinRot * (-refX);
-
-	m_lpVBData[2].x = x + cosRot * (width - refX) - sinRot * (height - refY);
-	m_lpVBData[2].y = y + cosRot * (height - refY) + sinRot * (width - refX);
-
-	m_lpVBData[3].x = x + cosRot * (width - refX) - sinRot * (-refY);
-	m_lpVBData[3].y = y + cosRot * (-refY) + sinRot * (width - refX);
-
-	m_lpVBData[0].diffuse = (((int)(global_alpha * m_alpha * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
-	m_lpVBData[1].diffuse = m_lpVBData[0].diffuse;
-	m_lpVBData[2].diffuse = m_lpVBData[0].diffuse;
-	m_lpVBData[3].diffuse = m_lpVBData[0].diffuse;
 }

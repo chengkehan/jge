@@ -3,15 +3,15 @@
 #include "JGERender.h"
 #include "JGEDisplayObject.h"
 #include "JGE2DQtree.h"
-#include "JGEDisplayObjectType.h"
 #include "JGEText.h"
+#include "JGEAbstractDisplayObject.h"
 
 JGE_SINGLETON_IMPLEMENTS(JGE2D)
 
-JGEDisplayObject* JGE2D::m_lpMouseLeftButtonTarget = null;
-JGEDisplayObject* JGE2D::m_lpMouseRightButtonTarget = null;
-JGEDisplayObject* JGE2D::m_lpMouseMiddleButtonTarget = null;
-JGEDisplayObject* JGE2D::m_lpMouseAreaTarget = null;
+JGEAbstractDisplayObject* JGE2D::m_lpMouseLeftButtonTarget = null;
+JGEAbstractDisplayObject* JGE2D::m_lpMouseRightButtonTarget = null;
+JGEAbstractDisplayObject* JGE2D::m_lpMouseMiddleButtonTarget = null;
+JGEAbstractDisplayObject* JGE2D::m_lpMouseAreaTarget = null;
 
 JGE2D::JGE2D()
 {
@@ -114,55 +114,23 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 {
 	JGEInput::getInstance()->updateInput();
 
-	jgeUpdateQtree(JGE2D::getInstance()->getStage());
-	jgeUpdateMouseEvent();
 	if(JGE2D::getInstance()->m_frameCallback != null)
 	{
 		JGE2D::getInstance()->m_frameCallback(timeDelta);
 	}
 
+	JGE2D::getInstance()->getStage()->qtreeSetClear();
+
+	jgeUpdateMouseEvent();
+
+	static JGEMatrix2D matrixGlobal;
+	matrixGlobal.m_13 = JGE2D::getInstance()->getStage()->getAlpha();
+	JGE2D::getInstance()->getStage()->updateMatrixGlobal(&matrixGlobal);
+
 	JGE3D::getInstance()->getDirect3DDevice()->SetRenderState(D3DRS_ZENABLE, false);
 	JGERender::getInstance()->beginScene();
-	jgeRenderDisplayObjectContainer(JGE2D::getInstance()->getStage());
+	JGE2D::getInstance()->getStage()->render();
 	JGERender::getInstance()->endScene();
-}
-
-void JGE2D::jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer)
-{
-	if(lpContainer == null)
-	{
-		return;
-	}
-	else
-	{
-		JGEDisplayObjectContainer::ChildrenList* lpChildren = &lpContainer->m_childrenList;
-		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
-		{
-			JGEDisplayObject* lpChild = *iter;
-			if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_CONTAINER_TYPE)
-			{
-				jgeRenderDisplayObjectContainer((JGEDisplayObjectContainer*)lpChild);
-			}
-			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
-			{
-				JGERender::getInstance()->endScene();
-				((JGEText*)lpChild)->drawText();
-				JGERender::getInstance()->beginScene();
-			}
-			else if(lpChild->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
-			{
-				if(lpChild->m_lpTexture != null)
-				{
-					lpChild->updateVertexBufferData();
-					JGERender::getInstance()->renderDisplayObject(lpChild);
-				}
-			}
-			else
-			{
-				// Do nothing
-			}
-		}
-	}
 }
 
 void JGE2D::jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam)
@@ -177,36 +145,17 @@ void JGE2D::jgeUpdateMouseEvent()
 	float mouseX = JGE2D::getInstance()->m_clientMouse ? (float)JGEInput::getInstance()->getClientMouseX() : (float)JGEInput::getInstance()->getMouseX();
 	float mouseY = JGE2D::getInstance()->m_clientMouse ? (float)JGEInput::getInstance()->getClientMouseY() : (float)JGEInput::getInstance()->getMouseY();
 	JGEQtreeNodeData* lpNodeData = JGE2DQtree::getInstance()->getQtree()->search((float)mouseX, (float)mouseY);
-	JGEDisplayObject* lpDisplayObjectResult = null;
+	JGEAbstractDisplayObject* lpDisplayObjectResult = null;
 	uint depthMax = 0;
 	uint indexMax = 0;
 	while(lpNodeData != null)
 	{
-		JGEDisplayObject* lpDisplayObject = (JGEDisplayObject*)lpNodeData;
-		if(lpDisplayObject->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
+		JGEAbstractDisplayObject* lpDisplayObject = (JGEAbstractDisplayObject*)lpNodeData;
+		if(lpDisplayObject->inBoundsGlobal(mouseX, mouseY) && lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
 		{
-			if(lpDisplayObject->getBounds(&rect)->contains(mouseX, mouseY) && 
-				JGEDisplayObject::inBounds(lpDisplayObject->getBounds(pointBounds), mouseX, mouseY) && 
-				lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
-			{
-				depthMax = lpDisplayObject->m_depth;
-				indexMax = lpDisplayObject->m_index;
-				lpDisplayObjectResult = lpDisplayObject;
-			}
-		}
-		else if(lpDisplayObject->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
-		{
-			if(lpDisplayObject->getBounds(&rect)->contains(mouseX, mouseY) && 
-				lpDisplayObject->m_depth >= depthMax && lpDisplayObject->m_index >= indexMax)
-			{
-				depthMax = lpDisplayObject->m_depth;
-				indexMax = lpDisplayObject->m_index;
-				lpDisplayObjectResult = lpDisplayObject;
-			}
-		}
-		else 
-		{
-			// Do nothing
+			depthMax = lpDisplayObject->m_depth;
+			indexMax = lpDisplayObject->m_index;
+			lpDisplayObjectResult = lpDisplayObject;
 		}
 		lpNodeData = lpNodeData->m_lpNodeDataNext;
 	}
@@ -318,7 +267,7 @@ void JGE2D::jgeUpdateMouseEvent()
 	mouseMiddleButtonDown = mouseMiddleButtonDownCurrent;
 }
 
-void JGE2D::jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject)
+void JGE2D::jgeResetMouseEvent(JGEAbstractDisplayObject* lpDisplayObject)
 {
 	if(lpDisplayObject == m_lpMouseLeftButtonTarget)
 	{
@@ -335,53 +284,6 @@ void JGE2D::jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject)
 	if(lpDisplayObject == m_lpMouseAreaTarget)
 	{
 		m_lpMouseAreaTarget = null;
-	}
-}
-
-void JGE2D::jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer)
-{
-	if(lpContainer == null)
-	{
-		return;
-	}
-	else
-	{
-		JGERect rect;
-		JGEDisplayObjectContainer::ChildrenList* lpChildren = &lpContainer->m_childrenList;
-		for(JGEDisplayObjectContainer::ChildrenList::iterator iter = lpChildren->begin(); iter != lpChildren->end(); ++iter)
-		{
-			JGEDisplayObject* lpChildren = *iter;
-			if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_CONTAINER_TYPE)
-			{
-				jgeUpdateQtree((JGEDisplayObjectContainer*)lpChildren);
-			}
-			else if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_DISPLAYOBJECT_TYPE)
-			{
-				if(lpChildren->getTexture() == null || lpChildren->m_lpVBData == null)
-				{
-					JGE2DQtree::getInstance()->getQtree()->clearObject(lpChildren);
-				}
-				else
-				{
-					JGE2DQtree::getInstance()->getQtree()->setObject(lpChildren, lpChildren->getBounds(&rect));
-				}
-			}
-			else if(lpChildren->m_displayObjectType == JGE_DISPLAYOBJECT_TEXT_TYPE)
-			{
-				if(jgewcslen(((JGEText*)lpChildren)->getText()) == 0)
-				{
-					JGE2DQtree::getInstance()->getQtree()->clearObject(lpChildren);
-				}
-				else
-				{
-					JGE2DQtree::getInstance()->getQtree()->setObject(lpChildren, lpChildren->getBounds(&rect));
-				}
-			}
-			else
-			{
-				// Do nothing
-			}
-		}
 	}
 }
 

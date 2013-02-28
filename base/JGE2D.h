@@ -1,6 +1,7 @@
 #ifndef __JGE_2D_H__
 #define __JGE_2D_H__
 
+#include "JGEAbstractDisplayObject.h"
 #include "JGEDisplayObjectContainer.h"
 #include "JGEDisplayObject.h"
 #include "JGE3D.h"
@@ -24,7 +25,7 @@ public:
 	inline bool getMouseLockOnWindow() const { return JGEInput::getInstance()->getMouseLockedOnWindow(); }
 	inline bool getClientMouse() const { return m_clientMouse; }
 
-	static void jgeResetMouseEvent(JGEDisplayObject* lpDisplayObject);
+	static void jgeResetMouseEvent(JGEAbstractDisplayObject* lpDisplayObject);
 
 private:
 	JGE2D();
@@ -38,15 +39,13 @@ private:
 	bool m_init;
 	bool m_clientMouse;
 	
-	static JGEDisplayObject* m_lpMouseLeftButtonTarget;
-	static JGEDisplayObject* m_lpMouseRightButtonTarget;
-	static JGEDisplayObject* m_lpMouseMiddleButtonTarget;
-	static JGEDisplayObject* m_lpMouseAreaTarget;
+	static JGEAbstractDisplayObject* m_lpMouseLeftButtonTarget;
+	static JGEAbstractDisplayObject* m_lpMouseRightButtonTarget;
+	static JGEAbstractDisplayObject* m_lpMouseMiddleButtonTarget;
+	static JGEAbstractDisplayObject* m_lpMouseAreaTarget;
 	static void jgeFrameCallback(uint timeDelta);
-	static void jgeRenderDisplayObjectContainer(JGEDisplayObjectContainer* lpContainer);
 	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);
 	static void jgeUpdateMouseEvent();
-	static void jgeUpdateQtree(JGEDisplayObjectContainer* lpContainer);
 	static void jgeDeviceLoseCallback();
 	static bool jgeDeviceLoseResetCallback();
 };

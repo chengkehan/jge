@@ -1,12 +1,11 @@
 #include <algorithm>
 #include "JGEDisplayObjectContainer.h"
-#include "JGEDisplayObjectType.h"
 
 using namespace std;
 
-JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
+JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayObject(lpd3dd)
 {
-	m_displayObjectType = JGE_DISPLAYOBJECT_CONTAINER_TYPE;
+	m_interactive = false;
 }
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()
@@ -14,7 +13,7 @@ JGEDisplayObjectContainer::~JGEDisplayObjectContainer()
 
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::addChild(JGEDisplayObject* lpChild)
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::addChild(JGEAbstractDisplayObject* lpChild)
 {
 	if(lpChild == null)
 	{
@@ -32,7 +31,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::addChild(JGEDisplayObject* lpChild)
 	return lpChild;
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::addChildAt(JGEDisplayObject* lpChild, uint index)
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::addChildAt(JGEAbstractDisplayObject* lpChild, uint index)
 {
 	if(lpChild == null)
 	{
@@ -56,7 +55,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::addChildAt(JGEDisplayObject* lpChil
 		}
 
 		uint indexCount = 0;
-		JGEDisplayObject* childAdded = null;
+		JGEAbstractDisplayObject* childAdded = null;
 		for (ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter, ++indexCount)
 		{
 			if(indexCount == index)
@@ -83,7 +82,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::addChildAt(JGEDisplayObject* lpChil
 	}
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::removeChild(JGEDisplayObject* lpChild)
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::removeChild(JGEAbstractDisplayObject* lpChild)
 {
 	if(!containsChild(lpChild))
 	{
@@ -94,10 +93,11 @@ JGEDisplayObject* JGEDisplayObjectContainer::removeChild(JGEDisplayObject* lpChi
 	jgeAssert(iter != m_childrenList.end());
 	m_childrenList.erase(iter);
 	lpChild->setParent(null);
+	lpChild->qtreeClear();
 	return lpChild;
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::removeChildAt(uint index)
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::removeChildAt(uint index)
 {
 	if(index >= getNumChildren())
 	{
@@ -110,9 +110,10 @@ JGEDisplayObject* JGEDisplayObjectContainer::removeChildAt(uint index)
 		{
 			if(index == indexCount)
 			{
-				JGEDisplayObject* lpChild = *iter;
+				JGEAbstractDisplayObject* lpChild = *iter;
 				m_childrenList.erase(iter);
 				lpChild->setParent(null);
+				lpChild->qtreeClear();
 				return lpChild;
 			}
 		}
@@ -122,11 +123,11 @@ JGEDisplayObject* JGEDisplayObjectContainer::removeChildAt(uint index)
 	}
 }
 
-bool JGEDisplayObjectContainer::getChildIndex(JGEDisplayObject* lpChild, uint* lpIndex) const
+int JGEDisplayObjectContainer::getChildIndex(JGEAbstractDisplayObject* lpChild) const
 {
 	if(!containsChild(lpChild))
 	{
-		return false;
+		return -1;
 	}
 
 	uint index = 0;
@@ -134,16 +135,15 @@ bool JGEDisplayObjectContainer::getChildIndex(JGEDisplayObject* lpChild, uint* l
 	{
 		if(lpChild == *iter)
 		{
-			*lpIndex = index;
-			return true;
+			return index;
 		}
 	}
 
 	jgeAssert(false);
-	return false;
+	return -1;
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::getChildAt(uint index) const
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::getChildAt(uint index) const
 {
 	if(index >= getNumChildren())
 	{
@@ -165,7 +165,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::getChildAt(uint index) const
 	}
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::getChildByName(const char* lpName) const
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::getChildByName(const char* lpName) const
 {
 	for (ChildrenList::const_iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
 	{
@@ -178,7 +178,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::getChildByName(const char* lpName) 
 	return null;
 }
 
-JGEDisplayObject* JGEDisplayObjectContainer::setChildIndex(JGEDisplayObject* lpChild, uint index)
+JGEAbstractDisplayObject* JGEDisplayObjectContainer::setChildIndex(JGEAbstractDisplayObject* lpChild, uint index)
 {
 	if(index >= getNumChildren())
 	{
@@ -192,12 +192,7 @@ JGEDisplayObject* JGEDisplayObjectContainer::setChildIndex(JGEDisplayObject* lpC
 	return addChildAt(lpChild, index);
 }
 
-bool JGEDisplayObjectContainer::setTexture(JGETexture* texture)
-{
-	return false;
-}
-
-JGERect* JGEDisplayObjectContainer::getBounds(JGERect* lpRectResult)
+JGERect* JGEDisplayObjectContainer::getBoundsGlobal(JGERect* lpRectResult)
 {
 	if(lpRectResult == null)
 	{
@@ -211,20 +206,103 @@ JGERect* JGEDisplayObjectContainer::getBounds(JGERect* lpRectResult)
 	}
 	else
 	{
-		ChildrenList::iterator iter = m_childrenList.begin();
-		(*iter)->getBounds(lpRectResult);
-		JGERect rect;
-		for (++iter; iter != m_childrenList.end(); ++iter)
+		bool boundsGot = false;
+		static JGERect rect;
+		for (ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
 		{
-			(*iter)->getBounds(&rect);
-			lpRectResult->combine(&rect, lpRectResult);
+			if((*iter)->getBoundsGlobal(&rect) != null)
+			{
+				if(boundsGot)
+				{
+					lpRectResult->combine(&rect, lpRectResult);
+				}
+				else
+				{
+					boundsGot = true;
+					lpRectResult->copy(&rect);
+				}
+			}
+		}
+
+		return boundsGot ? lpRectResult : null;
+	}
+}
+
+bool JGEDisplayObjectContainer::inBoundsGlobal(float x, float y)
+{
+	if(m_childrenList.size() <= 0)
+	{
+		return false;
+	}
+
+	static JGERect childBounds;
+	for(ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		if((*iter)->getBoundsGlobal(&childBounds) != null && childBounds.contains(x, y))
+		{
+			return true;
 		}
 	}
 
-	return lpRectResult;
+	return false;
 }
 
-JGEPoint* JGEDisplayObjectContainer::getBounds(JGEPoint* lpVectorBoundsResult)
+void JGEDisplayObjectContainer::render()
 {
-	return null;
+	if(!shownInDisplayList())
+	{
+		return;
+	}
+
+	for (ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		(*iter)->render();
+	}
+}
+
+bool JGEDisplayObjectContainer::shownInDisplayList()
+{
+	return getVisible() && m_childrenList.size() > 0;
+}
+
+void JGEDisplayObjectContainer::qtreeSet()
+{
+	for(ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		(*iter)->qtreeSetClear();
+	}
+}
+
+void JGEDisplayObjectContainer::qtreeClear()
+{
+	for(ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		(*iter)->qtreeClear();
+	}
+}
+
+void JGEDisplayObjectContainer::qtreeSetClear()
+{
+	if(shownInDisplayList())
+	{
+		qtreeSet();
+	}
+	else
+	{
+		qtreeClear();
+	}
+}
+
+void JGEDisplayObjectContainer::updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent)
+{
+	if(lpMatrixGlobalParent == null && !shownInDisplayList())
+	{
+		return;
+	}
+
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(m_rotation, m_scaleX, m_scaleY, m_x, m_y, lpMatrixGlobalParent, getAlpha(), &m_matrixGlobal);
+	for(ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		(*iter)->updateMatrixGlobal(&m_matrixGlobal);
+	}
 }

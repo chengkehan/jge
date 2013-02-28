@@ -76,3 +76,144 @@ int jgeVectorABPointSide(JGEPoint* lpPointA, JGEPoint* lpPointB, JGEPoint* lpPoi
 		return -1;
 	}
 }
+
+JGEVector2D* jgeVector2DTransform(JGEVector2D* lpVector, const JGEMatrix2D* lpMatrix)
+{
+	if(lpVector == null || lpMatrix == null)
+	{
+		return null;
+	}
+
+	JGEVector2D vector = *lpVector;
+	lpVector->m_x = vector.m_x * lpMatrix->m_11 + vector.m_y * lpMatrix->m_21 + vector.m_w * lpMatrix->m_31;
+	lpVector->m_y = vector.m_x * lpMatrix->m_12 + vector.m_y * lpMatrix->m_22 + vector.m_w * lpMatrix->m_32;
+
+	return lpVector;
+}
+
+JGEMatrix2D* jgeMatrix2DDotProduct(const JGEMatrix2D* lpMat1, const JGEMatrix2D* lpMat2, JGEMatrix2D* lpMatResult)
+{
+	if(lpMat1 == null || lpMat2 == null || lpMatResult == null)
+	{
+		return null;
+	}
+
+	JGEMatrix2D mat1 = *lpMat1;
+	JGEMatrix2D mat2 = *lpMat2;
+	lpMatResult->m_11 = mat1.m_11 * mat2.m_11 + mat1.m_12 * mat2.m_21 + mat1.m_13 * mat2.m_31;
+	lpMatResult->m_12 = mat1.m_11 * mat2.m_12 + mat1.m_12 * mat2.m_22 + mat1.m_13 * mat2.m_32;
+	lpMatResult->m_13 = 0.0f;
+
+	lpMatResult->m_21 = mat1.m_21 * mat2.m_11 + mat1.m_22 * mat2.m_21 + mat1.m_23 * mat2.m_31;
+	lpMatResult->m_22 = mat1.m_21 * mat2.m_12 + mat1.m_22 * mat2.m_22 + mat1.m_23 * mat2.m_32;
+	lpMatResult->m_23 = 0.0f;
+
+	lpMatResult->m_31 = mat1.m_31 * mat2.m_11 + mat1.m_32 * mat2.m_21 + mat1.m_33 * mat2.m_31;
+	lpMatResult->m_32 = mat1.m_31 * mat2.m_12 + mat1.m_32 * mat2.m_22 + mat1.m_33 * mat2.m_32;
+	lpMatResult->m_33 = 1.0f;
+
+	return lpMatResult;
+}
+
+JGEMatrix2D* jgeMatrix2DIdentity(JGEMatrix2D* lpMatrix)
+{
+	if(lpMatrix == null)
+	{
+		return null;
+	}
+
+	jgeZeroMem(lpMatrix->m_data, sizeof(float) * 9);
+	lpMatrix->m_11 = 1.0f; lpMatrix->m_22 = 1.0f; lpMatrix->m_33 = 1.0f;
+
+	return lpMatrix;
+}
+
+JGEMatrix2D* jgeMatrix2DRotation(JGEMatrix2D* lpMatrix, float radian)
+{
+	if(lpMatrix == null)
+	{
+		return null;
+	}
+
+	float cosValue = cosf(radian);
+	float sinValue = sinf(radian);
+	lpMatrix->m_11 = cosValue; lpMatrix->m_12 = sinValue;
+	lpMatrix->m_21 = -sinValue; lpMatrix->m_22 = cosValue;
+	lpMatrix->m_31 = 0.0f; lpMatrix->m_32 = 0.0f;
+
+	return lpMatrix;
+}
+
+JGEMatrix2D* jgeMatrix2DTranslation(JGEMatrix2D* lpMatrix, float x, float y)
+{
+	if(lpMatrix == null)
+	{
+		return null;
+	}
+
+	jgeZeroMem(lpMatrix->m_data, sizeof(float) * 9);
+	lpMatrix->m_11 = 1.0f; lpMatrix->m_22 = 1.0f;
+	lpMatrix->m_31 = x;
+	lpMatrix->m_32 = y;
+
+	return lpMatrix;
+}
+
+JGEMatrix2D* jgeMatrix2DScaling(JGEMatrix2D* lpMatrix, float sx, float sy)
+{
+	if(lpMatrix == null)
+	{
+		return null;
+	}
+
+	jgeZeroMem(lpMatrix->m_data, sizeof(float) * 9);
+	lpMatrix->m_11 = sx;
+	lpMatrix->m_22 = sy;
+
+	return lpMatrix;
+}
+
+JGEMatrix2D* jgeMatrix2DRotationScalingTranslationDotProductAlpha(float radian, float sx, float sy, float x, float y, const JGEMatrix2D* lpMatrix, float alpha, JGEMatrix2D* lpMatrixResult)
+{
+	if(lpMatrixResult == null)
+	{
+		return null;
+	}
+
+	static JGEMatrix2D matrixRotation;
+	jgeMatrix2DRotation(&matrixRotation, radian);
+	static JGEMatrix2D matrixScaling;
+	jgeMatrix2DScaling(&matrixScaling, sx, sy);
+	static JGEMatrix2D matrixTranslation;
+	jgeMatrix2DTranslation(&matrixTranslation, x, y);
+
+	jgeMatrix2DDotProduct(&matrixRotation, &matrixScaling, lpMatrixResult);
+	jgeMatrix2DDotProduct(lpMatrixResult, &matrixTranslation, lpMatrixResult);
+
+	if(lpMatrix == null)
+	{
+		lpMatrixResult->m_13 = alpha;
+	}
+	else
+	{
+		jgeMatrix2DDotProduct(lpMatrixResult, lpMatrix, lpMatrixResult);
+		lpMatrixResult->m_13 = lpMatrix->m_13 * alpha;
+	}
+
+	return lpMatrixResult;
+}
+
+D3DXMATRIX* jgeMatrix2DToD3DXMatrix(const JGEMatrix2D* lpMatrix, D3DXMATRIX* lpD3DMatrix)
+{
+	if(lpMatrix == null || lpD3DMatrix == null)
+	{
+		return null;
+	}
+
+	D3DXMatrixIdentity(lpD3DMatrix);
+	lpD3DMatrix->_11 = lpMatrix->m_11; lpD3DMatrix->_12 = lpMatrix->m_12; lpD3DMatrix->_14 = lpMatrix->m_13;
+	lpD3DMatrix->_21 = lpMatrix->m_21; lpD3DMatrix->_22 = lpMatrix->m_22; lpD3DMatrix->_24 = lpMatrix->m_23;
+	lpD3DMatrix->_41 = lpMatrix->m_31; lpD3DMatrix->_42 = lpMatrix->m_32; lpD3DMatrix->_44 = lpMatrix->m_33;
+
+	return lpD3DMatrix;
+}
