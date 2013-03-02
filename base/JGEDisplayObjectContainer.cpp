@@ -5,7 +5,7 @@ using namespace std;
 
 JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayObject(lpd3dd)
 {
-	m_interactive = false;
+
 }
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()

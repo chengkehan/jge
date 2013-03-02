@@ -30,11 +30,9 @@ public:
 
 	inline void setWidth(float value) { m_scaleX = value / m_widthOriginal; }
 	inline float getWidth() const { return m_widthOriginal * m_scaleX; }
-	inline float getWidthOriginal() const { return m_widthOriginal; }
 
 	inline void setHeight(float value) { m_scaleY = value / m_heightOriginal; }
 	inline float getHeight() const { return m_heightOriginal * m_scaleY; }
-	inline float getHeightOriginal() const { return m_heightOriginal; }
 
 	inline void setScaleX(float value) { m_scaleX = value; }
 	inline float getScaleX() const { return m_scaleX; }
@@ -51,8 +49,6 @@ public:
 	inline void setVisible(bool value) { m_visible = value; }
 	inline bool getVisible() const { return m_visible; }
 
-	inline bool getInteractive() const { return m_interactive; }
-
 	inline JGEDisplayObjectContainer* getParent() const { return m_lpParent; }
 	inline IDirect3DDevice9* getDirect3DDevice() { return m_lpd3dd; }
 
@@ -61,7 +57,6 @@ public:
 
 protected:
 	float m_widthOriginal, m_heightOriginal;
-	bool m_interactive;
 	JGEMatrix2D m_matrixGlobal;
 
 	virtual void render() = 0;

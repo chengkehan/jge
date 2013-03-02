@@ -10,7 +10,6 @@ JGEText::JGEText(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayObject(lpd3dd)
 	m_color = 0xFFFFFF;
 	m_rect.left = 0; m_rect.top = 0; m_rect.right = 1; m_rect.bottom = 1;
 	m_dt_foramt = DT_LEFT | DT_TOP | DT_NOCLIP;
-	m_interactive = true;
 	setConfig(12, 25, 500, false, L"DefaultFont");
 	updateColor();
 }
