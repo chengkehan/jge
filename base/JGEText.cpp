@@ -126,6 +126,9 @@ JGERect* JGEText::getBoundsGlobal(JGERect* lpRectResult)
 
 		m_lpFont->DrawText(null, m_lpStr, -1, &rect, m_dt_foramt | DT_CALCRECT, m_textColor);
 		
+		m_widthOriginal = (float)(rect.right - rect.left);
+		m_heightOriginal = (float)(rect.bottom - rect.top);
+
 		vect.m_x = (float)rect.left;
 		vect.m_y = (float)rect.top;
 		jgeVector2DTransform(&vect, &m_matrixGlobal);
