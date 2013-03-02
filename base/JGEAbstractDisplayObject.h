@@ -12,11 +12,13 @@
 
 class JGEDisplayObjectContainer;
 class JGE2D;
+class JGEButton;
 
 class JGEAbstractDisplayObject : public JGEEventDispatcher, public JGEQtreeNodeData
 {
 friend class JGEDisplayObjectContainer;
 friend class JGE2D;
+friend class JGEButton;
 
 public:
 	JGEAbstractDisplayObject(IDirect3DDevice9* lpd3dd);

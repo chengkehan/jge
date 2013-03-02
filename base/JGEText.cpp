@@ -39,22 +39,6 @@ void JGEText::setText(const wchar_t* lpStr)
 	m_lpStr = jgewcsclone(lpStr);
 }
 
-const wchar_t* JGEText::getText() const
-{
-	return m_lpStr;
-}
-
-void JGEText::setTextColor(uint color)
-{
-	m_color = color;
-	updateColor();
-}
-
-uint JGEText::getTextColor() const
-{
-	return m_color;
-}
-
 void JGEText::setTextBounds(const RECT* lpRect)
 {
 	if(lpRect == null)
@@ -66,21 +50,15 @@ void JGEText::setTextBounds(const RECT* lpRect)
 	m_rect.top = lpRect->top;
 	m_rect.right = lpRect->right;
 	m_rect.bottom = lpRect->bottom;
-}
 
-const RECT* JGEText::getTextBounds() const
-{
-	return &m_rect;
-}
-
-void JGEText::setTextFormat(uint dt_format)
-{
-	m_dt_foramt = dt_format;
-}
-
-uint JGEText::getTextFormat() const
-{
-	return m_dt_foramt;
+	if(m_rect.right <= m_rect.left)
+	{
+		m_rect.right = m_rect.left + 1;
+	}
+	if(m_rect.bottom <= m_rect.top)
+	{
+		m_rect.bottom = m_rect.top + 1;
+	}
 }
 
 void JGEText::setConfig(int width, int height, int weight, bool italic, const wchar_t* lpFaceName)
@@ -106,11 +84,6 @@ void JGEText::setConfig(int width, int height, int weight, bool italic, const wc
 		jgewcsclone(lpFaceName, m_desc.FaceName);
 	}
 	resetFont();
-}
-
-const D3DXFONT_DESCW* JGEText::getConfig() const
-{
-	return &m_desc;
 }
 
 JGERect* JGEText::getBoundsGlobal(JGERect* lpRectResult)

@@ -3,8 +3,12 @@
 
 #include "JGEAbstractDisplayObject.h"
 
+class JGEButton;
+
 class JGEText : public JGEAbstractDisplayObject
 {
+friend JGEButton;
+
 public:
 	JGEText(IDirect3DDevice9* lpd3dd);
 	~JGEText();
@@ -12,19 +16,19 @@ public:
 	inline virtual void setAlpha(float value) { JGEAbstractDisplayObject::setAlpha(value); updateColor(); }
 
 	void setText(const wchar_t* lpStr);
-	const wchar_t* getText() const;
+	inline const wchar_t* getText() const { return m_lpStr; }
 
-	void setTextColor(uint color);
-	uint getTextColor() const;
+	inline void setTextColor(uint color) { m_color = color; updateColor(); }
+	inline uint getTextColor() const { return m_color; }
 
 	void setTextBounds(const RECT* lpRect);
-	const RECT* getTextBounds() const;
+	inline const RECT* getTextBounds() const { return &m_rect; }
 
-	void setTextFormat(uint dt_format);
-	uint getTextFormat() const;
+	inline void setTextFormat(uint dt_format) { m_dt_foramt = dt_format; }
+	inline uint getTextFormat() const { return m_dt_foramt; }
 
 	void setConfig(int width = -1, int height = -1, int weight = -1, bool italic = false, const wchar_t* lpFaceName = null);
-	const D3DXFONT_DESCW* getConfig() const;
+	inline const D3DXFONT_DESCW* getConfig() const { return &m_desc; }
 
 	virtual JGERect* getBoundsGlobal(JGERect* lpRectResult);
 	virtual bool inBoundsGlobal(float x, float y);
