@@ -14,6 +14,8 @@ bool setupCallback();
 void releaseCallback();
 void frameCallback(uint timeDelta);
 void createBox();
+void mouseOverTextHandler(JGEEvent* lpEvent);
+void mouseOutTextHandler(JGEEvent* lpEvent);
 
 INT WINAPI WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in LPSTR lpCmdLine, __in int nShowCmd )
 {
@@ -58,11 +60,13 @@ bool setupCallback()
 		if(i == 0)
 		{
 			lpText = newText();
-			lpText->setX(10);
-			lpText->setY(5);
-			//lpText->setScaleX(1.5f);
-			//lpText->setRotation(0.5f);
+			lpText->setX(100);
+			lpText->setY(200);
+			lpText->setScaleX(1.5f);
+			lpText->setRotation(4.14f);
 			//lpText->setAlpha(0.5f);
+			lpText->addEventListener(JGEEvent::MOUSE_OVER, mouseOverTextHandler);
+			lpText->addEventListener(JGEEvent::MOUSE_OUT, mouseOutTextHandler);
 			getStage()->addChild(lpText);
 		}
 	}
@@ -92,4 +96,14 @@ void frameCallback(uint timeDelta)
 	static wchar_t buffer[50];
 	wsprintf(buffer, L"FPS:%d", getFPS());
 	lpText->setText(buffer);
+}
+
+void mouseOverTextHandler(JGEEvent* lpEvent)
+{
+	((JGEText*)lpEvent->m_lpEventDispatcher)->setAlpha(0.5f);
+}
+
+void mouseOutTextHandler(JGEEvent* lpEvent)
+{
+	((JGEText*)lpEvent->m_lpEventDispatcher)->setAlpha(1.0f);
 }

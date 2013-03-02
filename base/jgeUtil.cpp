@@ -84,7 +84,10 @@ JGEVector2D* jgeVector2DTransform(JGEVector2D* lpVector, const JGEMatrix2D* lpMa
 		return null;
 	}
 
-	JGEVector2D vector = *lpVector;
+	static JGEVector2D vector;
+	vector.m_x = lpVector->m_x;
+	vector.m_y = lpVector->m_y;
+	vector.m_w = lpVector->m_w;
 	lpVector->m_x = vector.m_x * lpMatrix->m_11 + vector.m_y * lpMatrix->m_21 + vector.m_w * lpMatrix->m_31;
 	lpVector->m_y = vector.m_x * lpMatrix->m_12 + vector.m_y * lpMatrix->m_22 + vector.m_w * lpMatrix->m_32;
 
@@ -98,8 +101,15 @@ JGEMatrix2D* jgeMatrix2DDotProduct(const JGEMatrix2D* lpMat1, const JGEMatrix2D*
 		return null;
 	}
 
-	JGEMatrix2D mat1 = *lpMat1;
-	JGEMatrix2D mat2 = *lpMat2;
+	static JGEMatrix2D mat1;
+	mat1.m_11 = lpMat1->m_11; mat1.m_12 = lpMat1->m_12; mat1.m_13 = lpMat1->m_13;
+	mat1.m_21 = lpMat1->m_21; mat1.m_22 = lpMat1->m_22; mat1.m_23 = lpMat1->m_23;
+	mat1.m_31 = lpMat1->m_31; mat1.m_32 = lpMat1->m_32; mat1.m_33 = lpMat1->m_33;
+	static JGEMatrix2D mat2;
+	mat2.m_11 = lpMat2->m_11; mat2.m_12 = lpMat2->m_12; mat2.m_13 = lpMat2->m_13;
+	mat2.m_21 = lpMat2->m_21; mat2.m_22 = lpMat2->m_22; mat2.m_23 = lpMat2->m_23;
+	mat2.m_31 = lpMat2->m_31; mat2.m_32 = lpMat2->m_32; mat2.m_33 = lpMat2->m_33;
+
 	lpMatResult->m_11 = mat1.m_11 * mat2.m_11 + mat1.m_12 * mat2.m_21 + mat1.m_13 * mat2.m_31;
 	lpMatResult->m_12 = mat1.m_11 * mat2.m_12 + mat1.m_12 * mat2.m_22 + mat1.m_13 * mat2.m_32;
 	lpMatResult->m_13 = 0.0f;

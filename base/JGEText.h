@@ -11,13 +11,13 @@ public:
 
 	inline virtual void setAlpha(float value) { JGEAbstractDisplayObject::setAlpha(value); updateColor(); }
 
-	void setText(wchar_t* lpStr);
+	void setText(const wchar_t* lpStr);
 	const wchar_t* getText() const;
 
 	void setTextColor(uint color);
 	uint getTextColor() const;
 
-	void setTextBounds(RECT* lpRect);
+	void setTextBounds(const RECT* lpRect);
 	const RECT* getTextBounds() const;
 
 	void setTextFormat(uint dt_format);
@@ -49,6 +49,8 @@ private:
 	uint m_dt_foramt;
 	D3DXFONT_DESCW m_desc;
 	ID3DXSprite* m_lpSprite;
+
+	static JGEPoint m_boundsTemp[4];
 
 	void resetFont();
 	inline void updateColor() { m_textColor = (((int)(getAlpha() * 255.0) & 0xFF) << 24) + (m_color & 0xFFFFFF); }
