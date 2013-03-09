@@ -7,7 +7,7 @@ template<class Param>
 class JGEAbstractCallback
 {
 public:
-	virtual void operator()(Param* lpParam = null) = 0;
+	virtual void invoke(Param* lpParam = null) = 0;
 };
 
 template<class This, class Param>
@@ -18,7 +18,7 @@ public:
 	JGECallbackThis(This* lpThis, void (This::*lpCallback)(Param*)){ m_lpThis = lpThis; m_lpCallback = lpCallback; }
 	~JGECallbackThis() { m_lpThis = null; m_lpCallback = null; }
 	
-	virtual void operator()(Param* lpParam = null) { (m_lpThis->*m_lpCallback)(lpParam); }
+	virtual void invoke(Param* lpParam = null) { (m_lpThis->*m_lpCallback)(lpParam); }
 
 private:
 	JGECallbackThis();
@@ -41,7 +41,7 @@ public:
 	JGECallbackStd(void (*lpCallback)(Param*)) { m_lpCallback = lpCallback; }
 	~JGECallbackStd() { m_lpCallback = null; }
 
-	virtual void operator()(Param* lpParam = null) { m_lpCallback(lpParam); }
+	virtual void invoke(Param* lpParam = null) { m_lpCallback(lpParam); }
 
 private:
 	void (*m_lpCallback)(Param*);
