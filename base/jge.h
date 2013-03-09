@@ -10,6 +10,7 @@
 #include "JGEDisplayObjectContainer.h"
 #include "JGEText.h"
 #include "jgeUtil.h"
+#include "JGECallback.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
