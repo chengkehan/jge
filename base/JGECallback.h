@@ -28,9 +28,9 @@ private:
 };
 
 template<class This, class Param>
-JGECallbackThis<This, Param> jgeCallbackThis(This* lpThis, void (This::*lpCallback)(Param*))
+inline JGEAbstractCallback<Param>* jgeCallbackThis(This* lpThis, void (This::*lpCallback)(Param*))
 {
-	return JGECallbackThis<This, Param>(lpThis, lpCallback);
+	return (new JGECallbackThis<This, Param>(lpThis, lpCallback));
 }
 
 template<class Param>
@@ -48,9 +48,15 @@ private:
 };
 
 template<class Param>
-JGECallbackStd<Param> jgeCallbackStd(void (*lpCallback)(Param*))
+inline JGEAbstractCallback<Param>* jgeCallbackStd(void (*lpCallback)(Param*))
 {
-	return JGECallbackStd<Param>(lpCallback);
+	return (new JGECallbackStd<Param>(lpCallback));
+}
+
+template<class Param>
+inline void jgeCallbackRelease(JGEAbstractCallback<Param>* lpCallback)
+{
+	jgeDelete(lpCallback);
 }
 
 #endif
