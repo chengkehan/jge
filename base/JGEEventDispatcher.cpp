@@ -11,45 +11,47 @@ JGEEventDispatcher::JGEEventDispatcher()
 
 JGEEventDispatcher::~JGEEventDispatcher()
 {
-	if(m_lpEventMap != null)
-	{
-		for (EventMap::iterator iterMap = m_lpEventMap->begin(); iterMap != m_lpEventMap->end(); ++iterMap)
-		{
-			EventHandlerList* lpHandlerList = iterMap->second;
-			jgeDelete(lpHandlerList);
-		}
-	}
-	jgeDelete(m_lpEventMap);
+	destroyEventMap();
 	m_lpParentBubble = null;
 }
 
-bool JGEEventDispatcher::addEventListener(int eventID, EventHandler handler)
+bool JGEEventDispatcher::addEventListener(int eventID, JGECallbackStd<JGEEvent>& handler)
 {
-	if(handler == null)
-	{
-		return false;
-	}
-
 	initEventMap();
+
 	EventMap::iterator iter = m_lpEventMap->find(eventID);
+	EventHandlerList* lpHandlerList = null;
+	// new handlerList
 	if(iter == m_lpEventMap->end())
 	{
-		EventHandlerList* lpHandlerList = null;
 		jgeNew(lpHandlerList, EventHandlerList);
-		lpHandlerList->push_back(handler);
 		(*m_lpEventMap)[eventID] = lpHandlerList;
-		return true;
+	}
+
+	// push a handler to handlerList
+	JGECallbackStd<JGEEvent>* lpHandler = null;
+	jgeNew(lpHandler, JGECallbackStd<JGEEvent>);
+	handler.clone(lpHandler);
+	if(lpHandlerList == null)
+	{
+		iter->second->push_back(lpHandler);
 	}
 	else
 	{
-		iter->second->push_back(handler);
-		return true;
+		lpHandlerList->push_back(lpHandler);
 	}
+
+	return true;
 }
 
-bool JGEEventDispatcher::removeEventListener(int eventID, EventHandler handler)
+bool JGEEventDispatcher::removeEventListener(int eventID, JGECallbackStd<JGEEvent>& handler)
 {
-	if(handler == null || m_lpEventMap == null)
+	return removeEventListenerInternal(eventID, &handler);
+}
+
+bool JGEEventDispatcher::removeEventListenerInternal(int eventID, EventHandler lpHandler)
+{
+	if(m_lpEventMap == null || lpHandler == null)
 	{
 		return false;
 	}
@@ -62,21 +64,19 @@ bool JGEEventDispatcher::removeEventListener(int eventID, EventHandler handler)
 	else
 	{
 		EventHandlerList* handlerList = iterMap->second;
-		EventHandlerList::iterator iterList = find(handlerList->begin(), handlerList->end(), handler);
-		if(iterList == handlerList->end())
+		for(EventHandlerList::iterator iterList = handlerList->begin(); iterList != handlerList->end(); ++iterList)
 		{
-			return false;
-		}
-		else
-		{
-			handlerList->erase(iterList);
-			if(handlerList->empty())
+			EventHandler lpCallback = *iterList;
+			if(lpCallback->equal(lpHandler))
 			{
-				jgeDelete(handlerList);
-				m_lpEventMap->erase(iterMap);
+				handlerList->erase(iterList);
+				jgeDelete(lpCallback);
+
+				return true;
 			}
-			return true;
 		}
+
+		return false;
 	}
 }
 
@@ -107,7 +107,7 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 	EventHandlerList* lpHandlerList = iterMap->second;
 	for (EventHandlerList::iterator iterList = lpHandlerList->begin(); iterList != lpHandlerList->end(); ++iterList)
 	{
-		((EventHandler)*iterList)(lpEvent);
+		(*iterList)->invoke(lpEvent);
 	}
 
 	if(bubble && m_lpParentBubble != null)
@@ -116,4 +116,26 @@ bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
 	}
 
 	return true;
+}
+
+void JGEEventDispatcher::destroyEventMap()
+{
+	if(m_lpEventMap != null)
+	{
+		for (EventMap::iterator iterMap = m_lpEventMap->begin(); iterMap != m_lpEventMap->end(); ++iterMap)
+		{
+			EventHandlerList* lpHandlerList = iterMap->second;
+			for(EventHandlerList::iterator iterList = lpHandlerList->begin(); iterList != lpHandlerList->end(); ++iterList)
+			{
+				jgeDelete(*iterList);
+			}
+			jgeDelete(lpHandlerList);
+		}
+		jgeDelete(m_lpEventMap);
+	}
+}
+
+void JGEEventDispatcher::removeEventListeners()
+{
+	destroyEventMap();
 }

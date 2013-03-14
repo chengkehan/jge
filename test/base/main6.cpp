@@ -17,6 +17,21 @@ void createBox();
 void mouseOverTextHandler(JGEEvent* lpEvent);
 void mouseOutTextHandler(JGEEvent* lpEvent);
 
+typedef struct __CustomHandler
+{
+	void mouseOverTextHandler(JGEEvent* lpEvent)
+	{
+		((JGEText*)lpEvent->m_lpEventDispatcher)->setAlpha(0.5f);
+	}
+
+	void mouseOutTextHandler(JGEEvent* lpEvent)
+	{
+		((JGEText*)lpEvent->m_lpEventDispatcher)->setAlpha(1.0f);
+	}
+} CustomHandler;
+
+CustomHandler customHandler;
+
 INT WINAPI WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in LPSTR lpCmdLine, __in int nShowCmd )
 {
 	if(!init(hInstance, setupCallback, releaseCallback, frameCallback, null, null, null, null, -1, -1, 800, 600, true))
@@ -65,8 +80,10 @@ bool setupCallback()
 			lpText->setScaleX(1.5f);
 			lpText->setRotation(4.14f);
 			//lpText->setAlpha(0.5f);
-			lpText->addEventListener(JGEEvent::MOUSE_OVER, mouseOverTextHandler);
-			lpText->addEventListener(JGEEvent::MOUSE_OUT, mouseOutTextHandler);
+			//lpText->addEventListener(JGEEvent::MOUSE_OVER, jgeCallbackStd(mouseOverTextHandler));
+			//lpText->addEventListener(JGEEvent::MOUSE_OUT, jgeCallbackStd(mouseOutTextHandler));
+			lpText->addEventListener<CustomHandler>(JGEEvent::MOUSE_OVER, jgeCallbackThis(&customHandler, &CustomHandler::mouseOverTextHandler));
+			lpText->addEventListener<CustomHandler>(JGEEvent::MOUSE_OUT, jgeCallbackThis(&customHandler, &CustomHandler::mouseOutTextHandler));
 			getStage()->addChild(lpText);
 		}
 	}

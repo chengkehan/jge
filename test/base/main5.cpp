@@ -39,9 +39,9 @@ void createBox(uint index)
 	lpBox->setY(0.0f + 30.0f * (index + 1));
 	lpBox->setRefX(lpBox->getWidth() * 0.5f);
 	lpBox->setRefY(lpBox->getHeight() * 0.5f);
-	lpBox->addEventListener(JGEEvent::MOUSE_OVER, lpBoxMouseOverHandler);
-	lpBox->addEventListener(JGEEvent::MOUSE_OUT, lpBoxMouseOutHandler);
-	lpBox->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, lpBoxMouseClickLeftHandler);
+	lpBox->addEventListener(JGEEvent::MOUSE_OVER, jgeCallbackStd(lpBoxMouseOverHandler));
+	lpBox->addEventListener(JGEEvent::MOUSE_OUT, jgeCallbackStd(lpBoxMouseOutHandler));
+	lpBox->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, jgeCallbackStd(lpBoxMouseClickLeftHandler));
 	getStage()->addChild(lpBox);
 	lpBoxList[index] = lpBox;
 }
@@ -61,8 +61,8 @@ bool setupCallback()
 		if(i == 0)
 		{
 			lpText = newText();
-			lpText->addEventListener(JGEEvent::MOUSE_OVER, lpTextMouseOverHandler);
-			lpText->addEventListener(JGEEvent::MOUSE_OUT, lpTextMouseOutHandler);
+			lpText->addEventListener(JGEEvent::MOUSE_OVER, jgeCallbackStd(lpTextMouseOverHandler));
+			lpText->addEventListener(JGEEvent::MOUSE_OUT, jgeCallbackStd(lpTextMouseOutHandler));
 			lpText->setX(10);
 			lpText->setY(5);
 			getStage()->addChild(lpText);
