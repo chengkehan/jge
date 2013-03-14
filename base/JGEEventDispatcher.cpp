@@ -88,7 +88,7 @@ bool JGEEventDispatcher::hasEventListener(int eventID) const
 	}
 
 	EventMap::iterator iterMap = m_lpEventMap->find(eventID);
-	return iterMap != m_lpEventMap->end();
+	return iterMap != m_lpEventMap->end() && iterMap->second->size() > 0;
 }
 
 bool JGEEventDispatcher::dispatchEvent(JGEEvent* lpEvent, bool bubble)
