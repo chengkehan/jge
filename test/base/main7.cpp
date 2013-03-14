@@ -32,15 +32,9 @@ INT WINAPI WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, 
 {
 	ClassA classA;
 
-	JGEAbstractCallback<void>* lpCallback = null;
+	jgeCallbackThis(&classA, &ClassA::funcA)();
 
-	lpCallback = jgeCallbackThis(&classA, &ClassA::funcA);
-	lpCallback->invoke();
-	jgeCallbackRelease(lpCallback);
-
-	lpCallback = jgeCallbackStd(&funcB);
-	lpCallback->invoke();
-	jgeCallbackRelease(lpCallback);
+	jgeCallbackStd(&funcB)();
 
 	return 0;
 }
