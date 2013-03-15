@@ -52,6 +52,9 @@ bool setupCallback()
 	lpButton->setY(80);
 	//lpButton->setRotation(lpButton->getRotation() + 0.3f);
 	//lpButton->setEnabled(false);
+	lpButton->setLabel(L"看见没");
+	lpButton->setLabelColor(0xFF0000);
+	lpButton->setLabelConfig(7, 20, 300, false, L"华文行楷");
 	lpButton->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, jgeCallbackStd(buttonClickHandler));
 
 	return true;

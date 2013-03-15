@@ -46,7 +46,6 @@ void JGEButton::setLabel(const wchar_t* lpLabel)
 	{
 		m_lpLabel = newText();
 		m_lpLabel->setTextFormat(DT_VCENTER | DT_CENTER | DT_NOCLIP);
-		updateLabelBounds();
 	}
 	m_lpLabel->setText(lpLabel);
 }
@@ -106,8 +105,17 @@ void JGEButton::render()
 
 	if(m_lpCurrentSkin != null)
 	{
+		m_widthOriginal = m_lpCurrentSkin->getWidth();
+		m_heightOriginal = m_lpCurrentSkin->getHeight();
 		m_lpCurrentSkin->updateMatrixGlobal(&m_matrixGlobal);
 		m_lpCurrentSkin->render();
+	}
+
+	if(m_lpLabel != null)
+	{
+		updateLabelBounds();
+		m_lpLabel->updateMatrixGlobal(&m_matrixGlobal);
+		m_lpLabel->render();
 	}
 }
 
