@@ -10,7 +10,12 @@ JGEDisplayObjectContainer::JGEDisplayObjectContainer(IDirect3DDevice9* lpd3dd):J
 
 JGEDisplayObjectContainer::~JGEDisplayObjectContainer()
 {
-
+	for (ChildrenList::iterator iter = m_childrenList.begin(); iter != m_childrenList.end(); ++iter)
+	{
+		JGEAbstractDisplayObject* lpChild = *iter;
+		lpChild->setParent(null);
+		lpChild->qtreeClear();
+	}
 }
 
 JGEAbstractDisplayObject* JGEDisplayObjectContainer::addChild(JGEAbstractDisplayObject* lpChild)

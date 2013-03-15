@@ -11,8 +11,7 @@ JGETextureManager::~JGETextureManager()
 {
 	for (TextureMap::iterator iter = m_textureMap.begin(); iter != m_textureMap.end(); ++iter)
 	{
-		JGETexture* lpJGETexture = iter->second;
-		jgeDelete(lpJGETexture);
+		jgeDelete(iter->second);
 	}
 }
 

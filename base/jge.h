@@ -11,6 +11,7 @@
 #include "JGEText.h"
 #include "jgeUtil.h"
 #include "JGECallback.h"
+#include "JGEButton.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -209,6 +210,19 @@ namespace jge
 	{
 		JGE2D::jgeResetMouseEvent(lpText);
 		jgeDelete(lpText);
+	}
+
+	inline JGEButton* newButton()
+	{
+		JGEButton* lpButton = null;
+		jgeNewArgs1(lpButton, JGEButton, JGE3D::getInstance()->getDirect3DDevice());
+		return lpButton;
+	}
+
+	inline void releaseButton(JGEButton* lpButton)
+	{
+		JGE2D::jgeResetMouseEvent(lpButton);
+		jgeDelete(lpButton);
 	}
 }
 
