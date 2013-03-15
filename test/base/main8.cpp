@@ -51,6 +51,7 @@ bool setupCallback()
 	lpButton->setX(100);
 	lpButton->setY(80);
 	//lpButton->setRotation(lpButton->getRotation() + 0.3f);
+	//lpButton->setEnabled(false);
 	lpButton->addEventListener(JGEEvent::MOUSE_CLICK_LEFT, jgeCallbackStd(buttonClickHandler));
 
 	return true;

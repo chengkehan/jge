@@ -119,13 +119,13 @@ void JGE2D::jgeFrameCallback(uint timeDelta)
 		JGE2D::getInstance()->m_frameCallback(timeDelta);
 	}
 
-	JGE2D::getInstance()->getStage()->qtreeSetClear();
-
-	jgeUpdateMouseEvent();
-
 	static JGEMatrix2D matrixGlobal;
 	matrixGlobal.m_13 = JGE2D::getInstance()->getStage()->getAlpha();
 	JGE2D::getInstance()->getStage()->updateMatrixGlobal(&matrixGlobal);
+
+	JGE2D::getInstance()->getStage()->qtreeSetClear();
+
+	jgeUpdateMouseEvent();
 
 	JGE3D::getInstance()->getDirect3DDevice()->SetRenderState(D3DRS_ZENABLE, false);
 	JGERender::getInstance()->beginScene();

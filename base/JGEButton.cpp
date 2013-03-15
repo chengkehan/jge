@@ -106,6 +106,7 @@ void JGEButton::render()
 
 	if(m_lpCurrentSkin != null)
 	{
+		m_lpCurrentSkin->updateMatrixGlobal(&m_matrixGlobal);
 		m_lpCurrentSkin->render();
 	}
 }
@@ -146,11 +147,6 @@ void JGEButton::updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent)
 	}
 
 	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), getScaleY(), getX(), getY(), lpMatrixGlobalParent, getAlpha(), &m_matrixGlobal);
-
-	if(m_lpCurrentSkin != null)
-	{
-		m_lpCurrentSkin->updateMatrixGlobal(&m_matrixGlobal);
-	}
 }
 
 void JGEButton::mouseOverHandler(JGEEvent* lpEvent)
