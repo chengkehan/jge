@@ -36,7 +36,7 @@ bool JGERect::contains(const JGERect* lpRect) const
 	return 
 		lpRect == null ? false : 
 		lpRect == this ? true : 
-		containsPoint(lpRect->m_top, lpRect->m_left) && containsPoint(lpRect->m_right, lpRect->m_bottom);
+		containsPoint(lpRect->m_left, lpRect->m_top) && containsPoint(lpRect->m_right, lpRect->m_bottom);
 }
 
 bool JGERect::intersects(const JGERect* lpRect) const
