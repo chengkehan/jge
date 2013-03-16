@@ -1,7 +1,7 @@
 #ifndef __JGE_QTREE_H__
 #define __JGE_QTREE_H__
 
-#include <set>
+#include <hash_map>
 #include "JGERect.h"
 #include "jgeUtil.h"
 
@@ -11,10 +11,10 @@ class JGE2D;
 
 struct JGEQtreeNode
 {
-	typedef std::set<JGEQtreeNodeData*> DataSet;
+	typedef std::hash_map<JGEQtreeNodeData*, JGEQtreeNodeData*> DataMap;
 
 	JGERect rect;
-	DataSet* lpDataSet;
+	DataMap* lpDataMap;
 	JGEQtreeNode* lpSubNodes[4];
 };
 
