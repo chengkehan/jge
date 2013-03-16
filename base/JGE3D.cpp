@@ -142,7 +142,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	m_presentParams.BackBufferHeight = windowHeight;
 	m_presentParams.BackBufferFormat = D3DFMT_A8R8G8B8;
 	m_presentParams.BackBufferCount = 1;
-	m_presentParams.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
+	m_presentParams.MultiSampleType = D3DMULTISAMPLE_NONE;
 	m_presentParams.MultiSampleQuality = 0;
 	m_presentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	m_presentParams.hDeviceWindow = hwnd;
