@@ -2,6 +2,7 @@
 #define __JGE_UTIL_H__
 
 #include <Windows.h>
+#include <MMSystem.h>
 #include <DxErr.h>
 #include <cassert>
 #include <cstdio>
