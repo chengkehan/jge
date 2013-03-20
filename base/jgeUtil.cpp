@@ -46,6 +46,20 @@ wchar_t* jgewcsclone(const wchar_t* lpSrc, wchar_t* lpDest)
 	return lpStrClone;
 }
 
+void jgeWin32GetWindowAdjustedSize(uint widthSrc, uint heightSrc, uint* lpWidthResult, uint* lpHeightResult)
+{
+	uint widthResult = widthSrc + GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
+	uint heightResult = heightSrc + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+	if(lpWidthResult != null)
+	{
+		*lpWidthResult = widthResult;
+	}
+	if(lpHeightResult != null)
+	{
+		*lpHeightResult = heightResult;
+	}
+}
+
 //设有向线段AB，两端点A（xa,ya）,B(xb,yb)
 //另一点C(xc,yc)
 //float f = (xb - xa) * (yc - ya) - (xc - xa) * (yb - ya);

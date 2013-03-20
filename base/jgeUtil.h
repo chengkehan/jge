@@ -193,6 +193,8 @@ inline int jgeWin32GetWindowTextLength(HWND hwnd)
 	return GetWindowTextLengthW(hwnd);
 }
 
+void jgeWin32GetWindowAdjustedSize(uint widthSrc, uint heightSrc, uint* lpWidthResult, uint* lpHeightResult);
+
 int jgeVectorABPointSide(JGEPoint* lpPointA, JGEPoint* lpPointB, JGEPoint* lpPoint);
 
 inline bool jgeFloatEqual(float a, float b)

@@ -88,8 +88,8 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	HWND hwnd = null;
 	if(windowed)
 	{
-		uint width = windowWidth + GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
-		uint height = windowHeight + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+		uint width, height;
+		jgeWin32GetWindowAdjustedSize(windowWidth, windowHeight, &width, &height);
 
 		RECT rect;
 		rect.left = windowX == -1 ? (LONG)((GetSystemMetrics(SM_CXSCREEN) - width) * 0.5f) : 0;
