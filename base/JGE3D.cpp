@@ -10,7 +10,7 @@ LRESULT CALLBACK jge3d::winProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lpara
 	{
 		case WM_DESTROY:
 		{
-			if(JGE3D::getInstance()->wmDestroyCallback == null || JGE3D::getInstance()->wmDestroyCallback())
+			if(JGE3D::getInstance()->m_wmDestroyCallback == null || JGE3D::getInstance()->m_wmDestroyCallback())
 			{
 				jgeWin32Exit();
 			}
@@ -38,13 +38,13 @@ JGE3D::JGE3D()
 	m_windowd = false;
 	m_init = false;
 	m_running = false;
-	setupCallback = null;
-	releaseCallback = null;
-	frameCallback = null;
-	wmDestroyCallback = null;
-	wmEscapeKeyDownCallback = null;
-	deviceLoseCallback = null;
-	deviceLoseResetCallback = null;
+	m_setupCallback = null;
+	m_releaseCallback = null;
+	m_frameCallback = null;
+	m_wmDestroyCallback = null;
+	m_wmEscapeKeyDownCallback = null;
+	m_deviceLoseCallback = null;
+	m_deviceLoseResetCallback = null;
 }
 
 JGE3D::~JGE3D()
@@ -161,14 +161,14 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 		return false;
 	}
 
-	if(setupCallback != null)
+	if(m_setupCallback != null)
 	{
-		if(!setupCallback())
+		if(!m_setupCallback())
 		{
 			d3d9->Release();
-			if(releaseCallback != null)
+			if(m_releaseCallback != null)
 			{
-				releaseCallback();
+				m_releaseCallback();
 			}
 			jgeMessageBoxError("jcd3d_setup Failed");
 			return false;
@@ -220,7 +220,7 @@ void JGE3D::run()
 				timeDelta = currTime - lastTime;
 			} while (timeDelta < 1);
 
-			if(jgeWin32KeyDown(VK_ESCAPE) && (wmEscapeKeyDownCallback == null || wmEscapeKeyDownCallback()))
+			if(jgeWin32KeyDown(VK_ESCAPE) && (m_wmEscapeKeyDownCallback == null || m_wmEscapeKeyDownCallback()))
 			{
 				jgeWin32DestroyWindow(m_hWnd);
 				break;
@@ -228,9 +228,9 @@ void JGE3D::run()
 				
 			m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00000000, 1.0f, 0);
 			m_lpd3dd->BeginScene();
-			if(frameCallback != null)
+			if(m_frameCallback != null)
 			{
-				frameCallback(timeDelta);
+				m_frameCallback(timeDelta);
 			}
 			m_lpd3dd->EndScene();
 
@@ -241,18 +241,18 @@ void JGE3D::run()
 				if(m_lpd3dd->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
 				{
 					// release resource
-					if(deviceLoseCallback != null)
+					if(m_deviceLoseCallback != null)
 					{
-						deviceLoseCallback();
+						m_deviceLoseCallback();
 					}
 						
 					// reset device
 					m_lpd3dd->Reset(&m_presentParams);
 
 					// rebuild resource
-					if(deviceLoseResetCallback != null)
+					if(m_deviceLoseResetCallback != null)
 					{
-						if(!deviceLoseResetCallback())
+						if(!m_deviceLoseResetCallback())
 						{
 							break;
 						}
@@ -275,9 +275,9 @@ void JGE3D::run()
 		}
 	}
 
-	if(releaseCallback != null)
+	if(m_releaseCallback != null)
 	{
-		releaseCallback();
+		m_releaseCallback();
 	}
 }
 

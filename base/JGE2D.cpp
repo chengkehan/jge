@@ -38,13 +38,13 @@ bool JGE2D::init(HINSTANCE hInstance,
 		return true;
 	}
 
-	JGE3D::getInstance()->setupCallback = null;
-	JGE3D::getInstance()->releaseCallback = releaseCallback;
-	JGE3D::getInstance()->frameCallback = jgeFrameCallback;
-	JGE3D::getInstance()->wmDestroyCallback = wmDestroyCallback;
-	JGE3D::getInstance()->wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
-	JGE3D::getInstance()->deviceLoseCallback = jgeDeviceLoseCallback;
-	JGE3D::getInstance()->deviceLoseResetCallback = jgeDeviceLoseResetCallback;
+	JGE3D::getInstance()->m_setupCallback = null;
+	JGE3D::getInstance()->m_releaseCallback = releaseCallback;
+	JGE3D::getInstance()->m_frameCallback = jgeFrameCallback;
+	JGE3D::getInstance()->m_wmDestroyCallback = wmDestroyCallback;
+	JGE3D::getInstance()->m_wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
+	JGE3D::getInstance()->m_deviceLoseCallback = jgeDeviceLoseCallback;
+	JGE3D::getInstance()->m_deviceLoseResetCallback = jgeDeviceLoseResetCallback;
 	m_frameCallback = frameCallback;
 	m_deviceLoseCallback = deviceLoseCallback;
 	m_deviceLoseResetCallback = deviceLoseResetCallback;

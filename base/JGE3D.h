@@ -31,13 +31,13 @@ public:
 	typedef void (*DEVICELOSECALLBACK)();
 	typedef bool (*DEVICELOSERESETCALLBACK)();
 
-	SETUPCALLBACK setupCallback;
-	RELEASECALLBACK releaseCallback;
-	FRAMECALLBACK frameCallback;
-	WMDESTROYCALLBACK wmDestroyCallback;
-	WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback;
-	DEVICELOSECALLBACK deviceLoseCallback;
-	DEVICELOSERESETCALLBACK deviceLoseResetCallback;
+	SETUPCALLBACK m_setupCallback;
+	RELEASECALLBACK m_releaseCallback;
+	FRAMECALLBACK m_frameCallback;
+	WMDESTROYCALLBACK m_wmDestroyCallback;
+	WMESCAPEKEYDOWNCALLBACK m_wmEscapeKeyDownCallback;
+	DEVICELOSECALLBACK m_deviceLoseCallback;
+	DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
 
 	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, 
 		bool windowed = true, D3DDEVTYPE deviceType = D3DDEVTYPE_HAL, uint maxTextureBlendStages = 1, uint fps = 30, bool systemMenu = false);
