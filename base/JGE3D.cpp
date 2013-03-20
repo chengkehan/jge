@@ -53,7 +53,7 @@ JGE3D::~JGE3D()
 }
 
 bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, 
-	bool windowed, D3DDEVTYPE deviceType, uint maxTextureBlendStages, uint fps, bool systemMenu)
+	bool windowed, bool systemMenu)
 {
 	if(m_init)
 	{
@@ -64,7 +64,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	m_windowWidth = windowWidth;
 	m_windowHeight = windowHeight;
 
-	setFPS(fps);
+	setFPS(60);
 
 	// Create window
 	WNDCLASS wc;
@@ -122,7 +122,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 
 	D3DCAPS9 caps;
 	int vp;
-	d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, deviceType, &caps);
+	d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
 	if(caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
 	{
 		vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;
@@ -130,12 +130,6 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	else
 	{
 		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-	}
-
-	if(caps.MaxTextureBlendStages < maxTextureBlendStages)
-	{
-		jgeMessageBoxError("MaxTextureBlendStages Failed");
-		return false;
 	}
 
 	m_presentParams.BackBufferWidth = windowWidth;
@@ -153,7 +147,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	m_presentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	m_presentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-	HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT, deviceType, hwnd, vp, &m_presentParams, &m_lpd3dd);
+	HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, vp, &m_presentParams, &m_lpd3dd);
 	if(FAILED(hr))
 	{
 		d3d9->Release();
