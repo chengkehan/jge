@@ -83,6 +83,61 @@ bool JGE2D::init(HINSTANCE hInstance,
 	return true;
 }
 
+bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort, 
+	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
+	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
+	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback, bool clientMouse)
+{
+	if(m_init)
+	{
+		return true;
+	}
+
+	JGE3D::getInstance()->m_setupCallback = null;
+	JGE3D::getInstance()->m_releaseCallback = releaseCallback;
+	JGE3D::getInstance()->m_frameCallback = jgeFrameCallback;
+	JGE3D::getInstance()->m_wmDestroyCallback = wmDestroyCallback;
+	JGE3D::getInstance()->m_wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
+	JGE3D::getInstance()->m_deviceLoseCallback = jgeDeviceLoseCallback;
+	JGE3D::getInstance()->m_deviceLoseResetCallback = jgeDeviceLoseResetCallback;
+	m_frameCallback = frameCallback;
+	m_deviceLoseCallback = deviceLoseCallback;
+	m_deviceLoseResetCallback = deviceLoseResetCallback;
+
+	if(!JGE3D::getInstance()->initManual(hInstance, hwnd, viewPort))
+	{
+		return false;
+	}
+
+	m_clientMouse = clientMouse;
+	if(!JGEInput::getInstance()->initInput(hInstance, JGE3D::getInstance()->getHWnd()))
+	{
+		return false;
+	}
+	if(!JGERender::getInstance()->init(JGE3D::getInstance()->getDirect3DDevice()))
+	{
+		return false;
+	}
+
+	JGE2DQtree::getInstance()->init(7, viewPort.Width, viewPort.Height);
+
+	jgeNewArgs1(m_lpStage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
+	m_lpStage->setName("jge2dstage");
+	m_lpStage->m_depth = 0;
+	m_lpStage->m_index = 0;
+
+	if(setupCallback != null)
+	{
+		if(!setupCallback())
+		{
+			return false;
+		}
+	}
+
+	m_init = true;
+	return true;
+}
+
 void JGE2D::setMouseVisible(bool value)
 {
 	m_mouseVisible = value;

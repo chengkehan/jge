@@ -39,9 +39,10 @@ public:
 	DEVICELOSECALLBACK m_deviceLoseCallback;
 	DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
 
-	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, 
-		bool windowed = true, bool systemMenu = false);
+	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowed = true, bool systemMenu = false);
+	bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort);
 	void run();
+	void runManual();
 	inline HWND getHWnd() const { return m_hWnd; }
 	inline HINSTANCE getHInstance() const { return m_hInstance; }
 	inline IDirect3DDevice9* getDirect3DDevice() const { return m_lpd3dd; }
@@ -78,6 +79,7 @@ private:
 	uint m_fps;
 	uint m_fpsTime;
 	D3DPRESENT_PARAMETERS m_presentParams;
+	D3DVIEWPORT9 m_viewPort;
 };
 
 #endif

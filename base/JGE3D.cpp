@@ -175,6 +175,87 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	return true;
 }
 
+bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort)
+{
+	if(m_init)
+	{
+		return true;
+	}
+
+	m_hInstance = hInstance;
+	m_hWnd = hwnd;
+	m_viewPort = viewPort;
+
+	setFPS(60);
+
+	// init D3D
+	LPDIRECT3D9 d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
+	if(!d3d9)
+	{
+		jgeMessageBoxError("Direct3DCreate9 Failed");
+		return false;
+	}
+
+	D3DCAPS9 caps;
+	int vp;
+	d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
+	if(caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+	{
+		vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+	}
+	else
+	{
+		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+	}
+
+	m_presentParams.BackBufferWidth = viewPort.Width;
+	m_presentParams.BackBufferHeight = viewPort.Height;
+	m_presentParams.BackBufferFormat = D3DFMT_A8R8G8B8;
+	m_presentParams.BackBufferCount = 1;
+	m_presentParams.MultiSampleType = D3DMULTISAMPLE_NONE;
+	m_presentParams.MultiSampleQuality = 0;
+	m_presentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	m_presentParams.hDeviceWindow = hwnd;
+	m_presentParams.Windowed = true;
+	m_presentParams.EnableAutoDepthStencil = true;
+	m_presentParams.AutoDepthStencilFormat = D3DFMT_D24S8;
+	m_presentParams.Flags = 0;
+	m_presentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	m_presentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+
+	if(FAILED(d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, vp, &m_presentParams, &m_lpd3dd)))
+	{
+		d3d9->Release();
+		jgeMessageBoxError("CreateDevice Failed");
+		return false;
+	}
+	if(!setProjectionPerspectiveTransform(m_lpd3dd, viewPort.Width, viewPort.Height))
+	{
+		d3d9->Release();
+		jgeMessageBoxError("Projection Perspective Transform Failed");
+		return false;
+	}
+
+	if(m_setupCallback != null)
+	{
+		if(!m_setupCallback())
+		{
+			d3d9->Release();
+			if(m_releaseCallback != null)
+			{
+				m_releaseCallback();
+			}
+			jgeMessageBoxError("jcd3d_setup Failed");
+			return false;
+		}
+	}
+
+	d3d9->Release();
+	m_init = true;
+
+	return true;
+}
+
 void JGE3D::run()
 {
 	if(!m_init)
@@ -213,13 +294,13 @@ void JGE3D::run()
 				currTime = timeGetTime();
 				timeDelta = currTime - lastTime;
 			} while (timeDelta < 1);
-
+			
 			if(jgeWin32KeyDown(VK_ESCAPE) && (m_wmEscapeKeyDownCallback == null || m_wmEscapeKeyDownCallback()))
 			{
 				jgeWin32DestroyWindow(m_hWnd);
-				break;
+				return;
 			}
-				
+
 			m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00000000, 1.0f, 0);
 			m_lpd3dd->BeginScene();
 			if(m_frameCallback != null)
@@ -273,6 +354,70 @@ void JGE3D::run()
 	{
 		m_releaseCallback();
 	}
+}
+
+void JGE3D::runManual()
+{
+	static RECT presentSrc = { 0, 0, m_viewPort.Width, m_viewPort.Height };
+	static RECT presentDest = { m_viewPort.X, m_viewPort.Y, m_viewPort.X + m_viewPort.Width, m_viewPort.Y + m_viewPort.Height};
+
+	static DWORD lastTime = timeGetTime();
+	static DWORD timeDeltaSum = 0;
+	static uint fps = 0;
+	dword currTime;
+	dword timeDelta;
+	do 
+	{
+		currTime = timeGetTime();
+		timeDelta = currTime - lastTime;
+	} while (timeDelta < 1);
+
+	m_lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00000000, 1.0f, 0);
+	m_lpd3dd->BeginScene();
+	if(m_frameCallback != null)
+	{
+		m_frameCallback(timeDelta);
+	}
+	m_lpd3dd->EndScene();
+
+	HRESULT presentH = m_lpd3dd->Present(&presentSrc, &presentDest, null, null);
+	// device lose
+	if(presentH == D3DERR_DEVICELOST)
+	{
+		if(m_lpd3dd->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+		{
+			// release resource
+			if(m_deviceLoseCallback != null)
+			{
+				m_deviceLoseCallback();
+			}
+
+			// reset device
+			m_lpd3dd->Reset(&m_presentParams);
+
+			// rebuild resource
+			if(m_deviceLoseResetCallback != null)
+			{
+				if(!m_deviceLoseResetCallback())
+				{
+					return;
+				}
+			}
+		}
+	}
+
+	timeDeltaSum += timeDelta;
+	if(timeDeltaSum <= 1000)
+	{
+		++fps;
+	}
+	else
+	{
+		m_fps = fps;
+		fps = 0;
+		timeDeltaSum = 0;
+	}
+	lastTime = currTime;
 }
 
 void JGE3D::setFPS(uint value)

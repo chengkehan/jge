@@ -44,6 +44,21 @@ namespace jge
 			windowX, windowY, windowWidth, windowHeight, windowd);
 	}
 
+	inline bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort, 
+		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
+		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
+		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback = null)
+	{
+		lp2D = JGE2D::getInstance();
+		lp3D = JGE3D::getInstance();
+		lpInput = JGEInput::getInstance();
+		lpTextureManger = JGETextureManager::getInstance();
+		return lp2D->initManual(hInstance, hwnd, viewPort, 
+			setupCallback, releaseCallback, frameCallback, 
+			wmDestroyCallback, wmEscapeKeyDownCallback, 
+			deviceLoseCallback, deviceLoseResetCallback);
+	}
+
 	inline JGE3D* getJGE3D()
 	{
 		return JGE3D::getInstance();
@@ -62,6 +77,19 @@ namespace jge
 	inline void run()
 	{
 		JGE3D::getInstance()->run();
+	}
+
+	inline void runManual()
+	{
+		JGE3D::getInstance()->runManual();
+	}
+
+	inline void releaseManual()
+	{
+		if(JGE3D::getInstance()->m_releaseCallback != null)
+		{
+			JGE3D::getInstance()->m_releaseCallback();
+		}
 	}
 
 	inline bool setWindowTitle(const wchar_t* lpTitle)
