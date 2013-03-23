@@ -54,6 +54,9 @@ protected:
 	virtual void qtreeSetClear();
 	virtual void updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent);
 
+	uint m_numRenderRect;
+	Vertex* m_lpVBData;
+
 private:
 	JGEDisplayObject();
 	JGEDisplayObject(const JGEDisplayObject& value);
@@ -61,7 +64,6 @@ private:
 	float m_refX;
 	float m_refY;
 	JGETexture* m_lpTexture;
-	Vertex* m_lpVBData;
 	bool m_alphaEnabled;
 
 	JGEPoint* getBoundsVectorGlobal(JGEPoint* lpBoundsResult);

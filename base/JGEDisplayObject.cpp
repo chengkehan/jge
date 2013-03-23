@@ -10,6 +10,7 @@ JGEDisplayObject::JGEDisplayObject(IDirect3DDevice9* lpd3dd):JGEAbstractDisplayO
 	m_lpTexture = null;
 	m_lpVBData = null;
 	m_alphaEnabled = true;
+	m_numRenderRect = 1;
 }
 
 JGEDisplayObject::~JGEDisplayObject()

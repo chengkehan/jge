@@ -66,20 +66,23 @@ bool JGERender::renderDisplayObject(JGEDisplayObject* lpDisplayObject)
 	}
 	else
 	{
-		if(m_lpTextureCurrent != null && (lpDisplayObject->getTexture()->getTexture() != m_lpTextureCurrent || lpDisplayObject->getAlphaEnabled() != m_alphaEnbaledCurrent || m_displayObjectCount + 1 > m_bufferDisplayObjectAmount))
+		if(m_lpTextureCurrent != null && (lpDisplayObject->getTexture()->getTexture() != m_lpTextureCurrent || lpDisplayObject->getAlphaEnabled() != m_alphaEnbaledCurrent || m_displayObjectCount + lpDisplayObject->m_numRenderRect > m_bufferDisplayObjectAmount))
 		{
 			renderBuffer(true);
 		}
 		m_lpTextureCurrent = lpDisplayObject->getTexture()->getTexture();
 		m_alphaEnbaledCurrent = lpDisplayObject->getAlphaEnabled();
-		jgeMemCpy(lpDisplayObject->m_lpVBData, &m_lpVbBufferData[m_displayObjectCount * 4], sizeof(JGEDisplayObject::Vertex) * 4);
-		m_lpIbBufferData[m_displayObjectCount * 6] = m_displayObjectCount * 4;
-		m_lpIbBufferData[m_displayObjectCount * 6 + 1] = m_displayObjectCount * 4 + 1;
-		m_lpIbBufferData[m_displayObjectCount * 6 + 2] = m_displayObjectCount * 4 + 2;
-		m_lpIbBufferData[m_displayObjectCount * 6 + 3] = m_displayObjectCount * 4 + 3;
-		m_lpIbBufferData[m_displayObjectCount * 6 + 4] = m_displayObjectCount * 4 + 2;
-		m_lpIbBufferData[m_displayObjectCount * 6 + 5] = m_displayObjectCount * 4 + 1;
-		++m_displayObjectCount;
+		jgeMemCpy(lpDisplayObject->m_lpVBData, &m_lpVbBufferData[m_displayObjectCount * 4], sizeof(JGEDisplayObject::Vertex) * 4 * lpDisplayObject->m_numRenderRect);
+		for (UINT i = 0; i < lpDisplayObject->m_numRenderRect; ++i)
+		{
+			m_lpIbBufferData[m_displayObjectCount * 6] = m_displayObjectCount * 4;
+			m_lpIbBufferData[m_displayObjectCount * 6 + 1] = m_displayObjectCount * 4 + 1;
+			m_lpIbBufferData[m_displayObjectCount * 6 + 2] = m_displayObjectCount * 4 + 2;
+			m_lpIbBufferData[m_displayObjectCount * 6 + 3] = m_displayObjectCount * 4 + 3;
+			m_lpIbBufferData[m_displayObjectCount * 6 + 4] = m_displayObjectCount * 4 + 2;
+			m_lpIbBufferData[m_displayObjectCount * 6 + 5] = m_displayObjectCount * 4 + 1;
+			++m_displayObjectCount;
+		}
 		return true;
 	}
 }
