@@ -22,7 +22,7 @@ JGERender::~JGERender()
 	jgeReleaseCom(m_lpIbBuffer);
 }
 
-bool JGERender::init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount)
+bool JGERender::init(IDirect3DDevice9* lpd3dd, uint bufferDisplayObjectAmount)
 {
 	if(lpd3dd != null && bufferDisplayObjectAmount > 0 && m_lpVbBuffer == null && m_lpIbBuffer == null)
 	{

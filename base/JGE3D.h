@@ -40,7 +40,7 @@ public:
 	DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
 
 	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowed = true, bool systemMenu = false);
-	bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort);
+	bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort);
 	void run();
 	void runManual();
 	inline HWND getHWnd() const { return m_hWnd; }

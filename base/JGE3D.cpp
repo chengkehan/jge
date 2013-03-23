@@ -175,7 +175,7 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	return true;
 }
 
-bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort)
+bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort)
 {
 	if(m_init)
 	{
@@ -184,7 +184,7 @@ bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewP
 
 	m_hInstance = hInstance;
 	m_hWnd = hwnd;
-	m_viewPort = viewPort;
+	m_viewPort = *lpViewPort;
 
 	setFPS(60);
 
@@ -208,8 +208,8 @@ bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewP
 		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 	}
 
-	m_presentParams.BackBufferWidth = viewPort.Width;
-	m_presentParams.BackBufferHeight = viewPort.Height;
+	m_presentParams.BackBufferWidth = m_viewPort.Width;
+	m_presentParams.BackBufferHeight = m_viewPort.Height;
 	m_presentParams.BackBufferFormat = D3DFMT_A8R8G8B8;
 	m_presentParams.BackBufferCount = 1;
 	m_presentParams.MultiSampleType = D3DMULTISAMPLE_NONE;
@@ -229,7 +229,7 @@ bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewP
 		jgeMessageBoxError("CreateDevice Failed");
 		return false;
 	}
-	if(!setProjectionPerspectiveTransform(m_lpd3dd, viewPort.Width, viewPort.Height))
+	if(!setProjectionPerspectiveTransform(m_lpd3dd, m_viewPort.Width, m_viewPort.Height))
 	{
 		d3d9->Release();
 		jgeMessageBoxError("Projection Perspective Transform Failed");

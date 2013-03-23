@@ -12,6 +12,7 @@
 #include "jgeUtil.h"
 #include "JGECallback.h"
 #include "JGEButton.h"
+#include "JGEScale9GridDisplayObject.h"
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -44,7 +45,7 @@ namespace jge
 			windowX, windowY, windowWidth, windowHeight, windowd);
 	}
 
-	inline bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort, 
+	inline bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort, 
 		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
 		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
 		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback = null)
@@ -53,7 +54,7 @@ namespace jge
 		lp3D = JGE3D::getInstance();
 		lpInput = JGEInput::getInstance();
 		lpTextureManger = JGETextureManager::getInstance();
-		return lp2D->initManual(hInstance, hwnd, viewPort, 
+		return lp2D->initManual(hInstance, hwnd, lpViewPort, 
 			setupCallback, releaseCallback, frameCallback, 
 			wmDestroyCallback, wmEscapeKeyDownCallback, 
 			deviceLoseCallback, deviceLoseResetCallback);
@@ -251,6 +252,19 @@ namespace jge
 	{
 		JGE2D::jgeResetMouseEvent(lpButton);
 		jgeDelete(lpButton);
+	}
+
+	inline JGEScale9GridDisplayObject* newScale9GridDisplayObject()
+	{
+		JGEScale9GridDisplayObject* lpDisplayobject = null;
+		jgeNewArgs1(lpDisplayobject, JGEScale9GridDisplayObject, JGE3D::getInstance()->getDirect3DDevice());
+		return lpDisplayobject;
+	}
+
+	inline void releaseScale9GridDisplayObject(JGEScale9GridDisplayObject* lpDisplayObject)
+	{
+		JGE2D::jgeResetMouseEvent(lpDisplayObject);
+		jgeDelete(lpDisplayObject);
 	}
 }
 

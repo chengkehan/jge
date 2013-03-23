@@ -15,7 +15,7 @@ JGETextureManager::~JGETextureManager()
 	}
 }
 
-JGETexture* JGETextureManager::addTexture(int id, IDirect3DTexture9* lpTexture, D3DXIMAGE_INFO* lpInfo)
+JGETexture* JGETextureManager::addTexture(int id, IDirect3DTexture9* lpTexture, const D3DXIMAGE_INFO* lpInfo, const D3DSURFACE_DESC* lpSurfaceDesc)
 {
 	if(lpTexture == null)
 	{
@@ -29,7 +29,7 @@ JGETexture* JGETextureManager::addTexture(int id, IDirect3DTexture9* lpTexture, 
 	else
 	{
 		JGETexture* lpJGETexture = null;
-		jgeNewArgs2(lpJGETexture, JGETexture, lpTexture, lpInfo);
+		jgeNewArgs3(lpJGETexture, JGETexture, lpTexture, lpInfo, lpSurfaceDesc);
 		m_textureMap[id] = lpJGETexture;
 		return lpJGETexture;
 	}
@@ -75,15 +75,21 @@ JGETexture* JGETextureManager::loadFileTexture(int id, const char* lpPath, IDire
 		IDirect3DTexture9* lpTexture = NULL;
 		D3DXIMAGE_INFO imgInfo;
 		if(FAILED(D3DXCreateTextureFromFileExA(
-			lpd3dd, lpPath, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, &imgInfo, NULL, &lpTexture
+			lpd3dd, lpPath, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &imgInfo, NULL, &lpTexture
 		)))
 		{
 			return null;
 		}
 		else
 		{
+			D3DSURFACE_DESC desc;
+			if(FAILED(lpTexture->GetLevelDesc(0, &desc)))
+			{
+				jgeReleaseCom(lpTexture);
+				return null;
+			}
 			JGETexture* lpJGETexture = null;
-			jgeNewArgs2(lpJGETexture, JGETexture, lpTexture, &imgInfo);
+			jgeNewArgs3(lpJGETexture, JGETexture, lpTexture, &imgInfo, &desc);
 			m_textureMap[id] = lpJGETexture;
 			return lpJGETexture;
 		}

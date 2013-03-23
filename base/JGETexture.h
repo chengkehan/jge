@@ -9,18 +9,20 @@
 class JGETexture : public JGEObject
 {
 public:
-	JGETexture(IDirect3DTexture9* lpTexture, D3DXIMAGE_INFO* lpImgInfo = null);
+	JGETexture(IDirect3DTexture9* lpTexture, const D3DXIMAGE_INFO* lpImgInfo, const D3DSURFACE_DESC* lpSurfaceDesc);
 	~JGETexture();
 
 	inline IDirect3DTexture9* getTexture() const { return m_lpTexture; }
-	inline const D3DXIMAGE_INFO* getImageInfo() const { return m_lpImgInfo; };
+	inline const D3DXIMAGE_INFO* getImageInfo() const { return &m_imgInfo; };
+	inline const D3DSURFACE_DESC* getSurfaceDesc() const { return &m_surfaceDesc; }
 
 private:
 	JGETexture();
 	JGETexture(const JGETexture& value);
 
 	IDirect3DTexture9* m_lpTexture;
-	D3DXIMAGE_INFO* m_lpImgInfo;
+	D3DXIMAGE_INFO m_imgInfo;
+	D3DSURFACE_DESC m_surfaceDesc;
 };
 
 #endif

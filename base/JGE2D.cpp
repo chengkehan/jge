@@ -83,7 +83,7 @@ bool JGE2D::init(HINSTANCE hInstance,
 	return true;
 }
 
-bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewPort, 
+bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort, 
 	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
 	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
 	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback, bool clientMouse)
@@ -104,7 +104,7 @@ bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewP
 	m_deviceLoseCallback = deviceLoseCallback;
 	m_deviceLoseResetCallback = deviceLoseResetCallback;
 
-	if(!JGE3D::getInstance()->initManual(hInstance, hwnd, viewPort))
+	if(!JGE3D::getInstance()->initManual(hInstance, hwnd, lpViewPort))
 	{
 		return false;
 	}
@@ -119,7 +119,7 @@ bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9& viewP
 		return false;
 	}
 
-	JGE2DQtree::getInstance()->init(7, viewPort.Width, viewPort.Height);
+	JGE2DQtree::getInstance()->init(7, lpViewPort->Width, lpViewPort->Height);
 
 	jgeNewArgs1(m_lpStage, JGEDisplayObjectContainer, JGE3D::getInstance()->getDirect3DDevice());
 	m_lpStage->setName("jge2dstage");

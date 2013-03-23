@@ -9,7 +9,7 @@ class JGERender
 JGE_SINGLETON_DECLARE(JGERender)
 
 public:
-	bool init(IDirect3DDevice9* lpd3dd, int bufferDisplayObjectAmount = 500);
+	bool init(IDirect3DDevice9* lpd3dd, uint bufferDisplayObjectAmount = 500);
 	void beginScene();
 	bool renderDisplayObject(JGEDisplayObject* lpDisplayObject);
 	void endScene();
@@ -23,8 +23,8 @@ private:
 	JGEDisplayObject::Vertex* m_lpVbBufferData;
 	IDirect3DIndexBuffer9* m_lpIbBuffer;
 	word* m_lpIbBufferData;
-	int m_bufferDisplayObjectAmount;
-	int m_displayObjectCount;
+	uint m_bufferDisplayObjectAmount;
+	uint m_displayObjectCount;
 	IDirect3DTexture9* m_lpTextureCurrent;
 	bool m_alphaEnbaledCurrent;
 	bool m_vbibLocked;

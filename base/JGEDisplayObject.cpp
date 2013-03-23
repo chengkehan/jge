@@ -102,15 +102,25 @@ void JGEDisplayObject::render()
 		return;
 	}
 
+	// create vb
 	if(m_lpVBData == null)
 	{
-		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex));
+		jgeNewArray(m_lpVBData, JGEDisplayObject::Vertex, 4 * sizeof(JGEDisplayObject::Vertex) * m_numRenderRect);
 		m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = 1.0f; m_lpVBData[0].diffuse = 0xFF000000; m_lpVBData[0].x = 0.0f; m_lpVBData[0].y = 0.0f; m_lpVBData[0].rhw = 1.0f; m_lpVBData[0].z = 0.0f;
 		m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f; m_lpVBData[1].diffuse = 0xFF000000; m_lpVBData[1].x = 0.0f; m_lpVBData[1].y = 0.0f; m_lpVBData[1].rhw = 1.0f; m_lpVBData[1].z = 0.0f;
 		m_lpVBData[2].u = 1.0f; m_lpVBData[2].v = 1.0f; m_lpVBData[2].diffuse = 0xFF000000; m_lpVBData[2].x = 0.0f; m_lpVBData[2].y = 0.0f; m_lpVBData[2].rhw = 1.0f; m_lpVBData[2].z = 0.0f;
 		m_lpVBData[3].u = 1.0f; m_lpVBData[3].v = 0.0f; m_lpVBData[3].diffuse = 0xFF000000; m_lpVBData[3].x = 0.0f; m_lpVBData[3].y = 0.0f; m_lpVBData[3].rhw = 1.0f; m_lpVBData[3].z = 0.0f;
 	}
 
+	// update uv
+	float u = (float)m_lpTexture->getImageInfo()->Width / (float)m_lpTexture->getSurfaceDesc()->Width;
+	float v = (float)m_lpTexture->getImageInfo()->Height / (float)m_lpTexture->getSurfaceDesc()->Height;
+	m_lpVBData[0].u = 0.0f; m_lpVBData[0].v = v;
+	m_lpVBData[1].u = 0.0f; m_lpVBData[1].v = 0.0f;
+	m_lpVBData[2].u = u; m_lpVBData[2].v = v;
+	m_lpVBData[3].u = u; m_lpVBData[3].v = 0.0f;
+
+	// update xy
 	static JGEVector2D point;
 
 	point.m_x = -m_refX;
@@ -137,11 +147,13 @@ void JGEDisplayObject::render()
 	m_lpVBData[3].x = point.m_x;
 	m_lpVBData[3].y = point.m_y;
 
+	// update color & alpha
 	m_lpVBData[0].diffuse = (((int)(m_matrixGlobal.m_13 * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
 	m_lpVBData[1].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[2].diffuse = m_lpVBData[0].diffuse;
 	m_lpVBData[3].diffuse = m_lpVBData[0].diffuse;
 
+	// render
 	JGERender::getInstance()->renderDisplayObject(this);
 }
 
