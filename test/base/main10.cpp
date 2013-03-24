@@ -32,12 +32,11 @@ bool setupCallback()
 	//lpDisplay->setScaleX(4.0f);
 	//lpDisplay->setScaleY(4.0f);
 	//lpDisplay->setRotation(0.5f);
-	//lpDisplay->setX(getStageWidth() * 0.5f);
-	//lpDisplay->setY(getStageHeight() * 0.5f);
+	lpDisplay->setX(getStageWidth() * 0.5f);
+	lpDisplay->setY(getStageHeight() * 0.5f);
 	//lpDisplay->setRefX(38.0f);
 	//lpDisplay->setRefY(12.0f);
 	getStage()->addChild(lpDisplay);
-
 	//JGE3D::getInstance()->getDirect3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	//JGE3D::getInstance()->getDirect3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
@@ -52,6 +51,8 @@ void releaseCallback()
 void frameCallback(uint timeDelta)
 {
 	//lpDisplay->setRotation(lpDisplay->getRotation() + 0.01f);
-	lpDisplay->setWidth((float)getClientMouseX());
-	lpDisplay->setHeight((float)getClientMouseY());
+	//lpDisplay->setWidth(lpDisplay->getWidth() + 1);
+	//lpDisplay->setHeight(lpDisplay->getHeight() + 1);
+	lpDisplay->setWidth((float)getClientMouseX() - lpDisplay->getX());
+	lpDisplay->setHeight((float)getClientMouseY() - lpDisplay->getY());
 }

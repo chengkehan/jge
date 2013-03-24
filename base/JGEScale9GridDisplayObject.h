@@ -17,12 +17,15 @@ public:
 protected:
 	virtual void render();
 	virtual JGEPoint* getBoundsVectorGlobal(JGEPoint* lpBoundsResult);
+	virtual void updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent);
+	virtual bool shownInDisplayList();
 
 private:
 	JGEScale9GridDisplayObject();
 	JGEScale9GridDisplayObject(const JGEScale9GridDisplayObject& value);
 
 	JGERect m_scale9Grid;
+	const JGEMatrix2D* m_lpMatrixGlobalParent;
 };
 
 #endif

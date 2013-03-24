@@ -4,11 +4,12 @@
 JGEScale9GridDisplayObject::JGEScale9GridDisplayObject(IDirect3DDevice9* lpd3dd):JGEDisplayObject(lpd3dd)
 {
 	m_numRenderRect = 9;
+	m_lpMatrixGlobalParent = null;
 }
 
 JGEScale9GridDisplayObject::~JGEScale9GridDisplayObject()
 {
-	// Do nothing
+	m_lpMatrixGlobalParent = null;
 }
 
 bool JGEScale9GridDisplayObject::setScale9Grid(const JGERect* lpRect)
@@ -177,31 +178,119 @@ void JGEScale9GridDisplayObject::render()
 
 	// update xy
 	static JGEVector2D point;
+	static JGEMatrix2D matrix;
 
 	// (1)
-	point.m_x = -m_refX;
-	point.m_y = -m_refY + m_lpVBData[0].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[0].x = point.m_x;
-	m_lpVBData[0].y = point.m_y;
-
 	point.m_x = -m_refX;
 	point.m_y = -m_refY;
 	jgeVector2DTransform(&point, &m_matrixGlobal);
 	m_lpVBData[1].x = point.m_x;
 	m_lpVBData[1].y = point.m_y;
 
-	point.m_x = -m_refX + m_lpVBData[2].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[2].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
+	point.m_x = -m_refX;
+	point.m_y = -m_refY + m_scale9Grid.m_top;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), (-m_refY * getScaleY() + m_scale9Grid.m_top) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[0].x = point.m_x;
+	m_lpVBData[0].y = point.m_y;
+
+	point.m_x = -m_refX + m_scale9Grid.m_left;
+	point.m_y = -m_refY + m_scale9Grid.m_top;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), (-m_refX * getScaleX() + m_scale9Grid.m_left) / point.m_x, (-m_refY * getScaleY() + m_scale9Grid.m_top) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
 	m_lpVBData[2].x = point.m_x;
 	m_lpVBData[2].y = point.m_y;
 
-	point.m_x = -m_refX + m_lpVBData[3].u / u * width;
+	point.m_x = -m_refX + m_scale9Grid.m_left;
 	point.m_y = -m_refY;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), (-m_refX * getScaleX() + m_scale9Grid.m_left) / point.m_x, getScaleY(), getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
 	m_lpVBData[3].x = point.m_x;
 	m_lpVBData[3].y = point.m_y;
+
+	// (3)
+	point.m_x = -m_refX + width;
+	point.m_y = -m_refY;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[11].x = point.m_x;
+	m_lpVBData[11].y = point.m_y;
+
+	point.m_x = -m_refX + width - m_scale9Grid.m_right;
+	point.m_y = -m_refY + m_scale9Grid.m_top;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), ((-m_refX + width) * getScaleX() - m_scale9Grid.m_right) / point.m_x, (-m_refY * getScaleY() + m_scale9Grid.m_top) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[8].x = point.m_x;
+	m_lpVBData[8].y = point.m_y;
+
+	point.m_x = -m_refX + width - m_scale9Grid.m_right;
+	point.m_y = -m_refY;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), ((-m_refX + width) * getScaleX() - m_scale9Grid.m_right) / point.m_x, getScaleY(), getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[9].x = point.m_x;
+	m_lpVBData[9].y = point.m_y;
+
+	point.m_x = -m_refX + width;
+	point.m_y = -m_refY + m_scale9Grid.m_top;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), (-m_refY * getScaleY() + m_scale9Grid.m_top) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[10].x = point.m_x;
+	m_lpVBData[10].y = point.m_y;
+
+	// (7)
+	point.m_x = -m_refX;
+	point.m_y = -m_refY + height;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[24].x = point.m_x;
+	m_lpVBData[24].y = point.m_y;
+
+	point.m_x = -m_refX;
+	point.m_y = -m_refY + height - m_scale9Grid.m_bottom;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), ((-m_refY + height) * getScaleY() - m_scale9Grid.m_bottom) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[25].x = point.m_x;
+	m_lpVBData[25].y = point.m_y;
+
+	point.m_x = -m_refX + m_scale9Grid.m_left;
+	point.m_y = -m_refY + height;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), (-m_refX * getScaleX() + m_scale9Grid.m_left) / point.m_x, getScaleY(), getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[26].x = point.m_x;
+	m_lpVBData[26].y = point.m_y;
+	
+	point.m_x = -m_refX + m_scale9Grid.m_left;
+	point.m_y = -m_refY + height - m_scale9Grid.m_bottom;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), (-m_refX * getScaleX() + m_scale9Grid.m_left) / point.m_x, ((-m_refY + height) * getScaleY() - m_scale9Grid.m_top) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[27].x = point.m_x;
+	m_lpVBData[27].y = point.m_y;
+
+	// (9)
+	point.m_x = -m_refX + width;
+	point.m_y = -m_refY + height;
+	jgeVector2DTransform(&point, &m_matrixGlobal);
+	m_lpVBData[34].x = point.m_x;
+	m_lpVBData[34].y = point.m_y;
+
+	point.m_x = -m_refX + width - m_scale9Grid.m_right;
+	point.m_y = -m_refY + height;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), ((-m_refX + width) * getScaleX() - m_scale9Grid.m_right) / point.m_x, getScaleY(), getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[32].x = point.m_x;
+	m_lpVBData[32].y = point.m_y;
+
+	point.m_x = -m_refX + width - m_scale9Grid.m_right;
+	point.m_y = -m_refY + height - m_scale9Grid.m_bottom;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), ((-m_refX + width) * getScaleX() - m_scale9Grid.m_right) / point.m_x, ((-m_refY + height) * getScaleY() - m_scale9Grid.m_bottom) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[33].x = point.m_x;
+	m_lpVBData[33].y = point.m_y;
+
+	point.m_x = -m_refX + width;
+	point.m_y = -m_refY + height - m_scale9Grid.m_bottom;
+	jgeMatrix2DRotationScalingTranslationDotProductAlpha(getRotation(), getScaleX(), ((-m_refY + height) * getScaleY() - m_scale9Grid.m_bottom) / point.m_y, getX(), getY(), m_lpMatrixGlobalParent, getAlpha(), &matrix);
+	jgeVector2DTransform(&point, &matrix);
+	m_lpVBData[35].x = point.m_x;
+	m_lpVBData[35].y = point.m_y;
 
 	// (2)
 	m_lpVBData[4].x = m_lpVBData[2].x;
@@ -210,106 +299,37 @@ void JGEScale9GridDisplayObject::render()
 	m_lpVBData[5].x = m_lpVBData[3].x;
 	m_lpVBData[5].y = m_lpVBData[3].y;
 
-	point.m_x = -m_refX + m_lpVBData[6].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[6].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[6].x = point.m_x;
-	m_lpVBData[6].y = point.m_y;
+	m_lpVBData[6].x = m_lpVBData[8].x;
+	m_lpVBData[6].y = m_lpVBData[8].y;
 
-	point.m_x = -m_refX + m_lpVBData[7].u / u * width;
-	point.m_y = -m_refY;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[7].x = point.m_x;
-	m_lpVBData[7].y = point.m_y;
-
-	// (3)
-	m_lpVBData[8].x = m_lpVBData[6].x;
-	m_lpVBData[8].y = m_lpVBData[6].y;
-
-	m_lpVBData[9].x = m_lpVBData[7].x;
-	m_lpVBData[9].y = m_lpVBData[7].y;
-
-	point.m_x = -m_refX + m_lpVBData[10].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[10].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[10].x = point.m_x;
-	m_lpVBData[10].y = point.m_y;
-
-	point.m_x = -m_refX + m_lpVBData[11].u / u * width;
-	point.m_y = -m_refY;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[11].x = point.m_x;
-	m_lpVBData[11].y = point.m_y;
+	m_lpVBData[7].x = m_lpVBData[9].x;
+	m_lpVBData[7].y = m_lpVBData[9].y;
 	
 	// (4)
-	point.m_x = -m_refX;
-	point.m_y = -m_refY + m_lpVBData[12].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[12].x = point.m_x;
-	m_lpVBData[12].y = point.m_y;
+	m_lpVBData[12].x = m_lpVBData[25].x;
+	m_lpVBData[12].y = m_lpVBData[25].y;
 
 	m_lpVBData[13].x = m_lpVBData[0].x;
 	m_lpVBData[13].y = m_lpVBData[0].y;
 
-	point.m_x = -m_refX + m_lpVBData[14].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[14].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[14].x = point.m_x;
-	m_lpVBData[14].y = point.m_y;
+	m_lpVBData[14].x = m_lpVBData[27].x;
+	m_lpVBData[14].y = m_lpVBData[27].y;
 
 	m_lpVBData[15].x = m_lpVBData[2].x;
 	m_lpVBData[15].y = m_lpVBData[2].y;
 
-	// (5)
-	m_lpVBData[16].x = m_lpVBData[14].x;
-	m_lpVBData[16].y = m_lpVBData[14].y;
-
-	m_lpVBData[17].x = m_lpVBData[15].x;
-	m_lpVBData[17].y = m_lpVBData[15].y;
-
-	point.m_x = -m_refX + m_lpVBData[18].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[18].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[18].x = point.m_x;
-	m_lpVBData[18].y = point.m_y;
-
-	m_lpVBData[19].x = m_lpVBData[6].x;
-	m_lpVBData[19].y = m_lpVBData[6].y;
-
 	// (6)
-	m_lpVBData[20].x = m_lpVBData[18].x;
-	m_lpVBData[20].y = m_lpVBData[18].y;
+	m_lpVBData[20].x = m_lpVBData[33].x;
+	m_lpVBData[20].y = m_lpVBData[33].y;
 
-	m_lpVBData[21].x = m_lpVBData[19].x;
-	m_lpVBData[21].y = m_lpVBData[19].y;
+	m_lpVBData[21].x = m_lpVBData[8].x;
+	m_lpVBData[21].y = m_lpVBData[8].y;
 
-	point.m_x = -m_refX + m_lpVBData[22].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[22].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[22].x = point.m_x;
-	m_lpVBData[22].y = point.m_y;
+	m_lpVBData[22].x = m_lpVBData[35].x;
+	m_lpVBData[22].y = m_lpVBData[35].y;
 
 	m_lpVBData[23].x = m_lpVBData[10].x;
 	m_lpVBData[23].y = m_lpVBData[10].y;
-
-	// (7)
-	point.m_x = -m_refX;
-	point.m_y = -m_refY + m_lpVBData[24].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[24].x = point.m_x;
-	m_lpVBData[24].y = point.m_y;
-
-	m_lpVBData[25].x = m_lpVBData[12].x;
-	m_lpVBData[25].y = m_lpVBData[12].y;
-
-	point.m_x = -m_refX + m_lpVBData[26].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[26].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[26].x = point.m_x;
-	m_lpVBData[26].y = point.m_y;
-
-	m_lpVBData[27].x = m_lpVBData[14].x;
-	m_lpVBData[27].y = m_lpVBData[14].y;
 
 	// (8)
 	m_lpVBData[28].x = m_lpVBData[26].x;
@@ -318,30 +338,24 @@ void JGEScale9GridDisplayObject::render()
 	m_lpVBData[29].x = m_lpVBData[27].x;
 	m_lpVBData[29].y = m_lpVBData[27].y;
 
-	point.m_x = -m_refX + m_lpVBData[30].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[30].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[30].x = point.m_x;
-	m_lpVBData[30].y = point.m_y;
+	m_lpVBData[30].x = m_lpVBData[32].x;
+	m_lpVBData[30].y = m_lpVBData[32].y;
 
-	m_lpVBData[31].x = m_lpVBData[18].x;
-	m_lpVBData[31].y = m_lpVBData[18].y;
+	m_lpVBData[31].x = m_lpVBData[33].x;
+	m_lpVBData[31].y = m_lpVBData[33].y;
 
-	// (9)
-	m_lpVBData[32].x = m_lpVBData[30].x;
-	m_lpVBData[32].y = m_lpVBData[30].y;
+	// (5)
+	m_lpVBData[16].x = m_lpVBData[14].x;
+	m_lpVBData[16].y = m_lpVBData[14].y;
 
-	m_lpVBData[33].x = m_lpVBData[31].x;
-	m_lpVBData[33].y = m_lpVBData[31].y;
+	m_lpVBData[17].x = m_lpVBData[15].x;
+	m_lpVBData[17].y = m_lpVBData[15].y;
 
-	point.m_x = -m_refX + m_lpVBData[34].u / u * width;
-	point.m_y = -m_refY + m_lpVBData[34].v / v * height;
-	jgeVector2DTransform(&point, &m_matrixGlobal);
-	m_lpVBData[34].x = point.m_x;
-	m_lpVBData[34].y = point.m_y;
+	m_lpVBData[18].x = m_lpVBData[20].x;
+	m_lpVBData[18].y = m_lpVBData[20].y;
 
-	m_lpVBData[35].x = m_lpVBData[22].x;
-	m_lpVBData[35].y = m_lpVBData[22].y;
+	m_lpVBData[19].x = m_lpVBData[21].x;
+	m_lpVBData[19].y = m_lpVBData[21].y;
 
 	// update color & alpha
 	m_lpVBData[0].diffuse = (((int)(m_matrixGlobal.m_13 * 255.0f) & 0xFF) << 24) + (m_lpVBData[0].diffuse & 0xFFFFFF);
@@ -376,4 +390,15 @@ JGEPoint* JGEScale9GridDisplayObject::getBoundsVectorGlobal(JGEPoint* lpBoundsRe
 
 		return lpBoundsResult;
 	}
+}
+
+void JGEScale9GridDisplayObject::updateMatrixGlobal(const JGEMatrix2D* lpMatrixGlobalParent)
+{
+	JGEDisplayObject::updateMatrixGlobal(lpMatrixGlobalParent);
+	m_lpMatrixGlobalParent = lpMatrixGlobalParent;
+}
+
+bool JGEScale9GridDisplayObject::shownInDisplayList()
+{
+	return JGEDisplayObject::shownInDisplayList() && m_lpMatrixGlobalParent != null;
 }
