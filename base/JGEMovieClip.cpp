@@ -84,3 +84,25 @@ void JGEMovieClip::destroyFrames()
 	setRefX(0.0f);
 	setRefY(0.0f);
 }
+
+JGEMovieClipData::JGEMovieClipData()
+{
+	m_lpFrames = null;
+	m_numFrames = 0;
+}
+
+JGEMovieClipData::~JGEMovieClipData()
+{
+	jgeDelete(m_lpFrames);
+	m_numFrames = 0;
+}
+
+bool JGEMovieClipData::loadDataFromFile(const char* lpPath, const JGEMovieClipFrame** lpFrames, uint* lpNumFrames)
+{
+	if(lpPath == null)
+	{
+		return false;
+	}
+
+	return false;
+}

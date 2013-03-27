@@ -64,7 +64,7 @@ JGETexture* JGETextureManager::getTexture(int id) const
 	}
 }
 
-JGETexture* JGETextureManager::loadFileTexture(int id, const char* lpPath, IDirect3DDevice9* lpd3dd)
+JGETexture* JGETextureManager::loadTextureFromFile(int id, const char* lpPath, IDirect3DDevice9* lpd3dd)
 {
 	if(containsTexture(id))
 	{

@@ -40,4 +40,21 @@ private:
 	void destroyFrames();
 };
 
+class JGEMovieClipData
+{
+public:
+	JGEMovieClipData();
+	~JGEMovieClipData();
+
+	bool loadDataFromFile(const char* lpPath, const JGEMovieClipFrame** lpFrames = null, uint* lpNumFrames = null);
+	inline const JGEMovieClipFrame* getFrames() const { return m_lpFrames; }
+	inline const uint getNumFrames() const { return m_numFrames; }
+
+private:
+	JGEMovieClipData(const JGEMovieClipData& value);
+
+	JGEMovieClipFrame* m_lpFrames;
+	uint m_numFrames;
+};
+
 #endif

@@ -193,7 +193,7 @@ inline int jgeWin32GetWindowTextLength(HWND hwnd)
 	return GetWindowTextLengthW(hwnd);
 }
 
-void jgeWin32GetWindowAdjustedSize(uint widthSrc, uint heightSrc, uint* lpWidthResult, uint* lpHeightResult);
+void jgeWin32GetWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult = null, int* lpYResult = null, uint* lpWidthResult = null, uint* lpHeightResult = null);
 
 int jgeVectorABPointSide(JGEPoint* lpPointA, JGEPoint* lpPointB, JGEPoint* lpPoint);
 

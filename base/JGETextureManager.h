@@ -13,7 +13,7 @@ public:
 	JGETexture* addTexture(int id, IDirect3DTexture9* lpTexture, const D3DXIMAGE_INFO* lpInfo, const D3DSURFACE_DESC* lpSurfaceDesc);
 	bool removeTexture(int id);
 	JGETexture* getTexture(int id) const;
-	JGETexture* loadFileTexture(int id, const char* lpPath, IDirect3DDevice9* lpd3dd);
+	JGETexture* loadTextureFromFile(int id, const char* lpPath, IDirect3DDevice9* lpd3dd);
 	bool containsTexture(int id) const;
 
 private:

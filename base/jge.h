@@ -100,7 +100,7 @@ namespace jge
 
 	inline JGETexture* loadTexture(int id, const char* lpPath)
 	{
-		return JGETextureManager::getInstance()->loadFileTexture(id, lpPath, JGE3D::getInstance()->getDirect3DDevice());
+		return JGETextureManager::getInstance()->loadTextureFromFile(id, lpPath, JGE3D::getInstance()->getDirect3DDevice());
 	}
 
 	inline JGETexture* getTexture(int id)

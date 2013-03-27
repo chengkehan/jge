@@ -89,11 +89,12 @@ bool JGE3D::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth
 	if(windowed)
 	{
 		uint width, height;
-		jgeWin32GetWindowAdjustedSize(windowWidth, windowHeight, &width, &height);
+		int x, y;
+		jgeWin32GetWindowAdjustedSize(windowWidth, windowHeight, &x, &y, &width, &height);
 
 		RECT rect;
-		rect.left = windowX == -1 ? (LONG)((GetSystemMetrics(SM_CXSCREEN) - width) * 0.5f) : 0;
-		rect.top = windowY == -1 ? (LONG)((GetSystemMetrics(SM_CYSCREEN) - height) * 0.5f) : 0;
+		rect.left = windowX == -1 ? x : 0;
+		rect.top = windowY == -1 ? y : 0;
 		rect.right = rect.left + width;
 		rect.bottom = rect.top + height;
 		hwnd = CreateWindowEx(0, L"jcd3dApp", L"jcd3dApp", WS_POPUP | WS_CAPTION | (systemMenu ? WS_SYSMENU : 0) | WS_MINIMIZEBOX | WS_VISIBLE, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, null, null, hInstance, null);
@@ -181,6 +182,8 @@ bool JGE3D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpVie
 	{
 		return true;
 	}
+
+	jgeAssert(lpViewPort != null);
 
 	m_hInstance = hInstance;
 	m_hWnd = hwnd;
