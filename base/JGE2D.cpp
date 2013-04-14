@@ -30,7 +30,7 @@ JGE2D::~JGE2D()
 bool JGE2D::init(HINSTANCE hInstance, 
 	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
 	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
-	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback, 
+	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICERESETCALLBACK deviceResetCallback, 
 	int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, bool clientMouse)
 {
 	if(m_init)
@@ -44,10 +44,10 @@ bool JGE2D::init(HINSTANCE hInstance,
 	JGE3D::getInstance()->m_wmDestroyCallback = wmDestroyCallback;
 	JGE3D::getInstance()->m_wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
 	JGE3D::getInstance()->m_deviceLoseCallback = jgeDeviceLoseCallback;
-	JGE3D::getInstance()->m_deviceLoseResetCallback = jgeDeviceLoseResetCallback;
+	JGE3D::getInstance()->m_deviceResetCallback = jgeDeviceResetCallback;
 	m_frameCallback = frameCallback;
 	m_deviceLoseCallback = deviceLoseCallback;
-	m_deviceLoseResetCallback = deviceLoseResetCallback;
+	m_deviceResetCallback = deviceResetCallback;
 
 	if(!JGE3D::getInstance()->init(hInstance, windowX, windowY, windowWidth, windowHeight, windowd))
 	{
@@ -86,7 +86,7 @@ bool JGE2D::init(HINSTANCE hInstance,
 bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort, 
 	JGE3D::SETUPCALLBACK setupCallback, JGE3D::RELEASECALLBACK releaseCallback, JGE3D::FRAMECALLBACK frameCallback, 
 	JGE3D::WMDESTROYCALLBACK wmDestroyCallback, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback, 
-	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback, bool clientMouse)
+	JGE3D::DEVICELOSECALLBACK deviceLoseCallback, JGE3D::DEVICERESETCALLBACK deviceLoseResetCallback, bool clientMouse)
 {
 	if(m_init)
 	{
@@ -99,10 +99,10 @@ bool JGE2D::initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpVie
 	JGE3D::getInstance()->m_wmDestroyCallback = wmDestroyCallback;
 	JGE3D::getInstance()->m_wmEscapeKeyDownCallback = wmEscapeKeyDownCallback;
 	JGE3D::getInstance()->m_deviceLoseCallback = jgeDeviceLoseCallback;
-	JGE3D::getInstance()->m_deviceLoseResetCallback = jgeDeviceLoseResetCallback;
+	JGE3D::getInstance()->m_deviceResetCallback = jgeDeviceResetCallback;
 	m_frameCallback = frameCallback;
 	m_deviceLoseCallback = deviceLoseCallback;
-	m_deviceLoseResetCallback = deviceLoseResetCallback;
+	m_deviceResetCallback = deviceLoseResetCallback;
 
 	if(!JGE3D::getInstance()->initManual(hInstance, hwnd, lpViewPort))
 	{
@@ -344,7 +344,7 @@ void JGE2D::jgeResetMouseEvent(JGEAbstractDisplayObject* lpDisplayObject)
 
 void JGE2D::jgeDeviceLoseCallback()
 {
-	// release 2d
+	JGERender::getInstance()->loseDevice();
 
 	if(JGE2D::getInstance()->m_deviceLoseCallback != null)
 	{
@@ -352,16 +352,17 @@ void JGE2D::jgeDeviceLoseCallback()
 	}
 }
 
-bool JGE2D::jgeDeviceLoseResetCallback()
+bool JGE2D::jgeDeviceResetCallback()
 {
-	// reset 2d
+	if(!JGERender::getInstance()->resetDevice())
+	{
+		return false;
+	}
 
-	if(JGE2D::getInstance()->m_deviceLoseResetCallback != null)
+	if(JGE2D::getInstance()->m_deviceResetCallback != null && !JGE2D::getInstance()->m_deviceResetCallback())
 	{
-		return JGE2D::getInstance()->m_deviceLoseResetCallback();
+		return false;
 	}
-	else
-	{
-		return true;
-	}
+
+	return true;
 }

@@ -44,7 +44,7 @@ JGE3D::JGE3D()
 	m_wmDestroyCallback = null;
 	m_wmEscapeKeyDownCallback = null;
 	m_deviceLoseCallback = null;
-	m_deviceLoseResetCallback = null;
+	m_deviceResetCallback = null;
 }
 
 JGE3D::~JGE3D()
@@ -325,12 +325,12 @@ void JGE3D::run()
 					}
 						
 					// reset device
-					m_lpd3dd->Reset(&m_presentParams);
+					jgeDXVerifyIf(m_lpd3dd->Reset(&m_presentParams))jgeDXVerifyEndIf
 
 					// rebuild resource
-					if(m_deviceLoseResetCallback != null)
+					if(m_deviceResetCallback != null)
 					{
-						if(!m_deviceLoseResetCallback())
+						if(!m_deviceResetCallback())
 						{
 							break;
 						}
@@ -396,12 +396,12 @@ void JGE3D::runManual()
 			}
 
 			// reset device
-			m_lpd3dd->Reset(&m_presentParams);
+			jgeDXVerifyIf(m_lpd3dd->Reset(&m_presentParams))jgeDXVerifyEndIf
 
 			// rebuild resource
-			if(m_deviceLoseResetCallback != null)
+			if(m_deviceResetCallback != null)
 			{
-				if(!m_deviceLoseResetCallback())
+				if(!m_deviceResetCallback())
 				{
 					return;
 				}

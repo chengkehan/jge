@@ -13,6 +13,8 @@ public:
 	void beginScene();
 	bool renderDisplayObject(JGEDisplayObject* lpDisplayObject);
 	void endScene();
+	void loseDevice();
+	bool resetDevice();
 
 private:
 	JGERender();

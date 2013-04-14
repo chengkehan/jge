@@ -28,6 +28,9 @@ bool JGERender::init(IDirect3DDevice9* lpd3dd, uint bufferDisplayObjectAmount)
 	{
 		m_lpd3dd = lpd3dd;
 		m_bufferDisplayObjectAmount = bufferDisplayObjectAmount;
+		m_displayObjectCount = 0;
+		m_lpTextureCurrent = null;
+		m_alphaEnbaledCurrent = false;
 		if(FAILED(m_lpd3dd->CreateVertexBuffer(
 			m_bufferDisplayObjectAmount * 4 * sizeof(JGEDisplayObject::Vertex), D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC, JGEDisplayObject::Vertex::FVF, D3DPOOL_DEFAULT, &m_lpVbBuffer, null
 		)))
@@ -90,6 +93,17 @@ bool JGERender::renderDisplayObject(JGEDisplayObject* lpDisplayObject)
 void JGERender::endScene()
 {
 	renderBuffer(false);	
+}
+
+void JGERender::loseDevice()
+{
+	jgeReleaseCom(m_lpVbBuffer);
+	jgeReleaseCom(m_lpIbBuffer);
+}
+
+bool JGERender::resetDevice()
+{
+	return init(m_lpd3dd, m_bufferDisplayObjectAmount);
 }
 
 void JGERender::renderBuffer(bool relock)

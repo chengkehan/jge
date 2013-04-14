@@ -29,7 +29,7 @@ public:
 	typedef bool (*WMDESTROYCALLBACK)();
 	typedef bool (*WMESCAPEKEYDOWNCALLBACK)();
 	typedef void (*DEVICELOSECALLBACK)();
-	typedef bool (*DEVICELOSERESETCALLBACK)();
+	typedef bool (*DEVICERESETCALLBACK)();
 
 	SETUPCALLBACK m_setupCallback;
 	RELEASECALLBACK m_releaseCallback;
@@ -37,7 +37,7 @@ public:
 	WMDESTROYCALLBACK m_wmDestroyCallback;
 	WMESCAPEKEYDOWNCALLBACK m_wmEscapeKeyDownCallback;
 	DEVICELOSECALLBACK m_deviceLoseCallback;
-	DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
+	DEVICERESETCALLBACK m_deviceResetCallback;
 
 	bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowed = true, bool systemMenu = false);
 	bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort);

@@ -16,12 +16,12 @@ public:
 	bool init(HINSTANCE hInstance, 
 		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
 		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
-		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback = null, 
+		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICERESETCALLBACK deviceResetCallback = null, 
 		int windowX = 0, int windowY = 0, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, bool clientMouse = true);
 	bool initManual(HINSTANCE hInstance, HWND hwnd, const D3DVIEWPORT9* lpViewPort, 
 		JGE3D::SETUPCALLBACK setupCallback = null, JGE3D::RELEASECALLBACK releaseCallback = null, JGE3D::FRAMECALLBACK frameCallback = null, 
 		JGE3D::WMDESTROYCALLBACK wmDestroyCallback = null, JGE3D::WMESCAPEKEYDOWNCALLBACK wmEscapeKeyDownCallback = null, 
-		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICELOSERESETCALLBACK deviceLoseResetCallback = null, bool clientMouse = true);
+		JGE3D::DEVICELOSECALLBACK deviceLoseCallback = null, JGE3D::DEVICERESETCALLBACK deviceLoseResetCallback = null, bool clientMouse = true);
 	inline JGEDisplayObjectContainer* getStage() const { return m_lpStage; }
 	void setMouseVisible(bool value);
 	inline bool getMouseVisible() const { return m_mouseVisible; }
@@ -38,7 +38,7 @@ private:
 	JGEDisplayObjectContainer* m_lpStage;
 	JGE3D::FRAMECALLBACK m_frameCallback;
 	JGE3D::DEVICELOSECALLBACK m_deviceLoseCallback;
-	JGE3D::DEVICELOSERESETCALLBACK m_deviceLoseResetCallback;
+	JGE3D::DEVICERESETCALLBACK m_deviceResetCallback;
 	bool m_mouseVisible;
 	bool m_init;
 	bool m_clientMouse;
@@ -51,7 +51,7 @@ private:
 	static void jgeMouseLockOnWindowProc(HWND hWnd, uint msg, WPARAM wparam, LPARAM lparam);
 	static void jgeUpdateMouseEvent();
 	static void jgeDeviceLoseCallback();
-	static bool jgeDeviceLoseResetCallback();
+	static bool jgeDeviceResetCallback();
 };
 
 #endif
