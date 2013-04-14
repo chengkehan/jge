@@ -10,6 +10,7 @@
 #include <memory>
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <fstream>
 #include "JGEPoint.h"
 #include "JGEVector2D.h"
 #include "JGEMatrix2D.h"
@@ -211,5 +212,7 @@ JGEMatrix2D* jgeMatrix2DTranslation(JGEMatrix2D* lpMatrix, float x, float y);
 JGEMatrix2D* jgeMatrix2DScaling(JGEMatrix2D* lpMatrix, float sx, float sy);
 JGEMatrix2D* jgeMatrix2DRotationScalingTranslationDotProductAlpha(float radian, float sx, float sy, float x, float y, const JGEMatrix2D* lpMatrix, float alpha, JGEMatrix2D* lpMatrixResult);
 D3DXMATRIX* jgeMatrix2DToD3DXMatrix(const JGEMatrix2D* lpMatrix, D3DXMATRIX* lpD3DMatrix);
+
+bool jgeReadFile(const char* lpFile, char* lpFileData, uint* lpFileDataBytes, bool isBinary = true);
 
 #endif

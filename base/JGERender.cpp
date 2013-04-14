@@ -95,13 +95,13 @@ void JGERender::endScene()
 	renderBuffer(false);	
 }
 
-void JGERender::loseDevice()
+void JGERender::deviceLose()
 {
 	jgeReleaseCom(m_lpVbBuffer);
 	jgeReleaseCom(m_lpIbBuffer);
 }
 
-bool JGERender::resetDevice()
+bool JGERender::deviceReset()
 {
 	return init(m_lpd3dd, m_bufferDisplayObjectAmount);
 }

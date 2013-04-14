@@ -249,3 +249,29 @@ D3DXMATRIX* jgeMatrix2DToD3DXMatrix(const JGEMatrix2D* lpMatrix, D3DXMATRIX* lpD
 
 	return lpD3DMatrix;
 }
+
+bool jgeReadFile(const char* lpFile, char* lpFileData, uint* lpFileDataBytes, bool isBinary)
+{
+	std::ifstream reader;
+	reader.open(lpFile, std::ios_base::in | (isBinary ? std::ios_base::binary : 0));
+	bool r = false;
+	if(reader.good())
+	{
+		reader.seekg(0, std::ios_base::end);
+		UINT bytes = (UINT)reader.tellg();
+		reader.seekg(0, std::ios_base::beg);
+		if(lpFileDataBytes != null)
+		{
+			*lpFileDataBytes = bytes;
+		}
+		if(lpFileData != null)
+		{
+			jgeZeroMem(lpFileData, bytes);
+			reader.read(lpFileData, bytes);
+		}
+		r = true;
+	}
+	reader.close();
+
+	return r;
+}

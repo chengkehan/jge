@@ -15,26 +15,6 @@ JGETextureManager::~JGETextureManager()
 	}
 }
 
-JGETexture* JGETextureManager::addTexture(int id, IDirect3DTexture9* lpTexture, const D3DXIMAGE_INFO* lpInfo, const D3DSURFACE_DESC* lpSurfaceDesc)
-{
-	if(lpTexture == null)
-	{
-		return null;
-	}
-
-	if(containsTexture(id))
-	{
-		return getTexture(id);
-	}
-	else
-	{
-		JGETexture* lpJGETexture = null;
-		jgeNewArgs3(lpJGETexture, JGETexture, lpTexture, lpInfo, lpSurfaceDesc);
-		m_textureMap[id] = lpJGETexture;
-		return lpJGETexture;
-	}
-}
-
 bool JGETextureManager::removeTexture(int id)
 {
 	TextureMap::iterator iter = m_textureMap.find(id);
@@ -64,7 +44,7 @@ JGETexture* JGETextureManager::getTexture(int id) const
 	}
 }
 
-JGETexture* JGETextureManager::loadTextureFromFile(int id, const char* lpPath, IDirect3DDevice9* lpd3dd)
+JGETexture* JGETextureManager::loadTextureFromFile(int id, const char* lpPath, IDirect3DDevice9* lpd3dd, D3DPOOL pool)
 {
 	if(containsTexture(id))
 	{
@@ -72,26 +52,17 @@ JGETexture* JGETextureManager::loadTextureFromFile(int id, const char* lpPath, I
 	}
 	else
 	{
-		IDirect3DTexture9* lpTexture = NULL;
-		D3DXIMAGE_INFO imgInfo;
-		if(FAILED(D3DXCreateTextureFromFileExA(
-			lpd3dd, lpPath, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, &imgInfo, NULL, &lpTexture
-		)))
+		JGETexture* lpJGETexture = null;
+		jgeNewArgs3(lpJGETexture, JGETexture, lpd3dd, lpPath, pool);
+		if(lpJGETexture->load())
 		{
-			return null;
+			m_textureMap[id] = lpJGETexture;
+			return lpJGETexture;
 		}
 		else
 		{
-			D3DSURFACE_DESC desc;
-			if(FAILED(lpTexture->GetLevelDesc(0, &desc)))
-			{
-				jgeReleaseCom(lpTexture);
-				return null;
-			}
-			JGETexture* lpJGETexture = null;
-			jgeNewArgs3(lpJGETexture, JGETexture, lpTexture, &imgInfo, &desc);
-			m_textureMap[id] = lpJGETexture;
-			return lpJGETexture;
+			jgeDelete(lpJGETexture);
+			return null;
 		}
 	}
 }
@@ -99,4 +70,25 @@ JGETexture* JGETextureManager::loadTextureFromFile(int id, const char* lpPath, I
 bool JGETextureManager::containsTexture(int id) const
 {
 	return m_textureMap.find(id) != m_textureMap.end();
+}
+
+void JGETextureManager::deviceLose()
+{
+	for (TextureMap::iterator iter = m_textureMap.begin(); iter != m_textureMap.end(); ++iter)
+	{
+		iter->second->deviceLose();
+	}
+}
+
+bool JGETextureManager::deviceReset()
+{
+	for (TextureMap::iterator iter = m_textureMap.begin(); iter != m_textureMap.end(); ++iter)
+	{
+		if(!iter->second->deviceReset())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

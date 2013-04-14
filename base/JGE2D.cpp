@@ -344,7 +344,8 @@ void JGE2D::jgeResetMouseEvent(JGEAbstractDisplayObject* lpDisplayObject)
 
 void JGE2D::jgeDeviceLoseCallback()
 {
-	JGERender::getInstance()->loseDevice();
+	JGERender::getInstance()->deviceLose();
+	JGETextureManager::getInstance()->deviceLose();
 
 	if(JGE2D::getInstance()->m_deviceLoseCallback != null)
 	{
@@ -354,7 +355,12 @@ void JGE2D::jgeDeviceLoseCallback()
 
 bool JGE2D::jgeDeviceResetCallback()
 {
-	if(!JGERender::getInstance()->resetDevice())
+	if(!JGETextureManager::getInstance()->deviceReset())
+	{
+		return false;
+	}
+
+	if(!JGERender::getInstance()->deviceReset())
 	{
 		return false;
 	}
