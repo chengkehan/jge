@@ -215,4 +215,9 @@ D3DXMATRIX* jgeMatrix2DToD3DXMatrix(const JGEMatrix2D* lpMatrix, D3DXMATRIX* lpD
 
 bool jgeReadFile(const char* lpFile, char* lpFileData, uint* lpFileDataBytes, bool isBinary = true);
 
+bool jgeInitRenderState(IDirect3DDevice9* lpd3dd, DWORD cullMode = D3DCULL_CCW, BOOL lighting = TRUE, BOOL zEnable = TRUE, DWORD shadeMode = D3DSHADE_GOURAUD, DWORD fillMode = D3DFILL_SOLID, BOOL alphaBlendEnable = FALSE);
+bool jgeSetProjectionPerspectiveTransform(IDirect3DDevice9* lpd3dd, int windowWidth, int windowHeight);
+bool jgeSetViewTransform(IDirect3DDevice9* lpd3dd, D3DXVECTOR3* lpeye, D3DXVECTOR3* lptarget, D3DXVECTOR3* lpup);
+bool jgeSetViewTransform(IDirect3DDevice9* lpd3dd, float eyeX, float eyeY, float eyeZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ);
+
 #endif

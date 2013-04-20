@@ -275,3 +275,106 @@ bool jgeReadFile(const char* lpFile, char* lpFileData, uint* lpFileDataBytes, bo
 
 	return r;
 }
+
+bool jgeInitRenderState(IDirect3DDevice9* lpd3dd, DWORD cullMode, BOOL lighting, BOOL zEnable, DWORD shadeMode, DWORD fillMode, BOOL alphaBlendEnable)
+{
+	if(lpd3dd == null)
+	{
+		return false;
+	}
+	else
+	{
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_CULLMODE, cullMode)))
+		{
+			return false;
+		}
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_LIGHTING, lighting)))
+		{
+			return false;
+		}
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_ZENABLE, zEnable)))
+		{
+			return false;
+		}
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_SHADEMODE, shadeMode)))
+		{
+			return false;
+		}
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_FILLMODE, fillMode)))
+		{
+			return false;
+		}
+		if(FAILED(lpd3dd->SetRenderState(D3DRS_ALPHABLENDENABLE, alphaBlendEnable)))
+		{
+			return false;
+		}
+
+		return true;
+	}
+}
+
+bool jgeSetProjectionPerspectiveTransform(IDirect3DDevice9* lpd3dd, int windowWidth, int windowHeight)
+{
+	if(lpd3dd == null)
+	{
+		return null;
+	}
+	else
+	{
+		D3DXMATRIX out;
+		D3DXMatrixPerspectiveFovLH(&out, D3DX_PI * 0.5f, (float)windowWidth / (float)windowHeight, 1.0f, 1000.0f);
+		if(FAILED(lpd3dd->SetTransform(D3DTS_PROJECTION, &out)))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
+
+bool jgeSetViewTransform(IDirect3DDevice9* lpd3dd, D3DXVECTOR3* lpeye, D3DXVECTOR3* lptarget, D3DXVECTOR3* lpup)
+{
+	if(lpd3dd == null || lpeye == null || lptarget == null || lpup == null)
+	{
+		return false;
+	}
+	else
+	{
+		D3DXMATRIX out;
+		D3DXMatrixLookAtLH(&out, lpeye, lptarget, lpup);
+		if(FAILED(lpd3dd->SetTransform(D3DTS_VIEW, &out)))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
+
+bool jgeSetViewTransform(IDirect3DDevice9* lpd3dd, float eyeX, float eyeY, float eyeZ, float targetX, float targetY, float targetZ, float upX, float upY, float upZ)
+{
+	if(lpd3dd == null)
+	{
+		return false;
+	}
+	else
+	{
+		D3DXMATRIX out;
+		D3DXVECTOR3 eye(eyeX, eyeY, eyeZ);
+		D3DXVECTOR3 target(targetX, targetY, targetZ);
+		D3DXVECTOR3 up(upX, upY, upZ);
+		D3DXMatrixLookAtLH(&out, &eye, &target, &up);
+		if(FAILED(lpd3dd->SetTransform(D3DTS_VIEW, &out)))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
