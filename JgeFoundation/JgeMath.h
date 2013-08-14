@@ -11,6 +11,8 @@ namespace jge
 		Point(const Point& value);
 		~Point();
 
+		Point& operator=(const Point& value);
+
 		float x, y;
 	};
 
@@ -22,6 +24,8 @@ namespace jge
 		Rect(float left, float top, float right, float bottom);
 		Rect(const Rect& value);
 		~Rect();
+
+		Rect& operator=(const Rect& value);
 
 		float left, top, right, bottom;
 
@@ -53,9 +57,11 @@ namespace jge
 		float x, y, w;
 
 		Vector2D();
-		~Vector2D();
 		Vector2D(const Vector2D& value);
 		Vector2D(float x, float y, float w);
+		~Vector2D();
+
+		Vector2D& operator=(const Vector2D& value);
 	};
 
 	// Vector3D-----------------------------------------------------------------------------------
@@ -65,9 +71,11 @@ namespace jge
 		float x, y, z, w;
 
 		Vector3D();
-		~Vector3D();
 		Vector3D(const Vector3D& value);
 		Vector3D(float x, float y, float z, float w);
+		~Vector3D();
+
+		Vector3D& operator=(const Vector3D& value);
 	};
 
 	// Matrix4x4-----------------------------------------------------------------------------------
@@ -87,7 +95,6 @@ namespace jge
 		};
 
 		Matrix4x4();
-		~Matrix4x4();
 		Matrix4x4(const Matrix4x4& value);
 		Matrix4x4(
 			float m_11, float m_12, float m_13, float m_14, 
@@ -95,6 +102,9 @@ namespace jge
 			float m_31, float m_32, float m_33, float m_34, 
 			float m_41, float m_42, float m_43, float m_44
 		);
+		~Matrix4x4();
+
+		Matrix4x4& operator=(const Matrix4x4& value);
 
 		void identity();
 	};

@@ -27,6 +27,13 @@ jge::Point::~Point()
 	// Do nothing
 }
 
+jge::Point& jge::Point::operator=(const jge::Point& value)
+{
+	x = value.x;
+	y = value.y;
+	return *this;
+}
+
 // Rect-----------------------------------------------------------------------------------
 jge::Rect::Rect():
 	left(0.0f), top(0.0f), right(0.0f), bottom(0.0f)
@@ -49,6 +56,15 @@ jge::Rect::Rect(const Rect& value):
 jge::Rect::~Rect()
 {
 	// Do nothing
+}
+
+jge::Rect& jge::Rect::operator=(const jge::Rect& value)
+{
+	left = value.left;
+	top = value.top;
+	right = value.right;
+	bottom = value.bottom;
+	return *this;
 }
 
 bool jge::Rect::contains(float x, float y)
@@ -191,11 +207,6 @@ jge::Vector2D::Vector2D():
 	// Do nothing
 }
 
-jge::Vector2D::~Vector2D()
-{
-	// Do nothing
-}
-
 jge::Vector2D::Vector2D(const Vector2D& value):
 	x(value.x), y(value.y), w(value.w)
 {
@@ -208,14 +219,22 @@ jge::Vector2D::Vector2D(float xValue, float yValue, float wValue):
 	// Do nothing
 }
 
-// Vector3D-----------------------------------------------------------------------------------
-jge::Vector3D::Vector3D():
-	x(0.0f), y(0.0f), z(0.0f), w(1.0f)
+jge::Vector2D::~Vector2D()
 {
 	// Do nothing
 }
 
-jge::Vector3D::~Vector3D()
+jge::Vector2D& jge::Vector2D::operator=(const jge::Vector2D& value)
+{
+	x = value.x;
+	y = value.y;
+	w = value.w;
+	return *this;
+}
+
+// Vector3D-----------------------------------------------------------------------------------
+jge::Vector3D::Vector3D():
+	x(0.0f), y(0.0f), z(0.0f), w(1.0f)
 {
 	// Do nothing
 }
@@ -232,17 +251,26 @@ jge::Vector3D::Vector3D(float xValue, float yValue, float zValue, float wValue):
 	// Do nothing
 }
 
+jge::Vector3D::~Vector3D()
+{
+	// Do nothing
+}
+
+jge::Vector3D& jge::Vector3D::operator=(const jge::Vector3D& value)
+{
+	x = value.x;
+	y = value.y;
+	z = value.z;
+	w = value.w;
+	return *this;
+}
+
 // Matrix4x4-----------------------------------------------------------------------------------
 jge::Matrix4x4::Matrix4x4():
 	m_11(1.0f), m_12(0.0f), m_13(0.0f), m_14(0.0f), 
 	m_21(0.0f), m_22(1.0f), m_23(0.0f), m_24(0.0f), 
 	m_31(0.0f), m_32(0.0f), m_33(1.0f), m_34(0.0f), 
 	m_41(0.0f), m_42(0.0f), m_43(0.0f), m_44(1.0f)
-{
-	// Do nothing
-}
-
-jge::Matrix4x4::~Matrix4x4()
 {
 	// Do nothing
 }
@@ -269,4 +297,15 @@ void jge::Matrix4x4::identity()
 {
 	jgeZeroMem(m_data, sizeof(float) * 16);
 	m_11 = 1.0f; m_22 = 1.0f; m_33 = 1.0f; m_44 = 1.0f;
+}
+
+jge::Matrix4x4::~Matrix4x4()
+{
+	// Do nothing
+}
+
+jge::Matrix4x4& jge::Matrix4x4::operator=(const jge::Matrix4x4& value)
+{
+	jgeMemCpy(value.m_data, m_data, sizeof(float) * 16);
+	return *this;
 }
