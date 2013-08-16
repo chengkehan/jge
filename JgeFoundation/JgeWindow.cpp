@@ -77,7 +77,7 @@ bool jge::Window::registerWndProc(HWND hWnd, UINT msg, WNDPROC wndProc)
 	}
 
 	std::pair<jge::Window::WndProcMap::iterator, bool> result = lpWndProcMap->insert(jge::Window::WndProcMap::value_type(msg, wndProc));
-	return false;
+	return result.second;
 }
 
 LRESULT CALLBACK jge::Window::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
