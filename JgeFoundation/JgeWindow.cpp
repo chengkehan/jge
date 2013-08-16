@@ -1,5 +1,6 @@
 #include "JgeStdafx.h"
-#include "JgeWindow.h" 
+#include "JgeWindow.h"
+#include "JgeMemory.h"
 
 jge::Window::HWndMap* jge::Window::s_lpMsgMap = null;
 
@@ -61,14 +62,14 @@ bool jge::Window::registerWndProc(HWND hWnd, UINT msg, WNDPROC wndProc)
 
 	if(s_lpMsgMap == null)
 	{
-		s_lpMsgMap = new jge::Window::HWndMap();
+		jgeNew(s_lpMsgMap, jge::Window::HWndMap);
 	}
 
 	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
 	jge::Window::WndProcMap* lpWndProcMap = null;
 	if(hWndIter == s_lpMsgMap->end())
 	{
-		lpWndProcMap = new jge::Window::WndProcMap();
+		jgeNew(lpWndProcMap, jge::Window::WndProcMap);
 		s_lpMsgMap->insert(jge::Window::HWndMap::value_type(hWnd, lpWndProcMap));
 	}
 	else
@@ -76,8 +77,65 @@ bool jge::Window::registerWndProc(HWND hWnd, UINT msg, WNDPROC wndProc)
 		lpWndProcMap = hWndIter->second;
 	}
 
-	std::pair<jge::Window::WndProcMap::iterator, bool> result = lpWndProcMap->insert(jge::Window::WndProcMap::value_type(msg, wndProc));
-	return result.second;
+	if(lpWndProcMap == null)
+	{
+		return false;
+	}
+	
+	(*lpWndProcMap)[msg] = wndProc;
+	//std::pair<jge::Window::WndProcMap::iterator, bool> result = lpWndProcMap->insert(jge::Window::WndProcMap::value_type(msg, wndProc));
+	return true;
+}
+
+bool jge::Window::unregisterWndProc(HWND hWnd, UINT msg)
+{
+	if(hWnd == null || s_lpMsgMap == null)
+	{
+		return false;
+	}
+
+	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
+	if(hWndIter == s_lpMsgMap->end())
+	{
+		return false;
+	}
+
+	jge::Window::WndProcMap* lpWndProcMap = hWndIter->second;
+	if(lpWndProcMap == null)
+	{
+		return false;
+	}
+
+	jge::Window::WndProcMap::size_type numErase = lpWndProcMap->erase(msg);
+	if(numErase > 0)
+	{
+		if(lpWndProcMap->empty())
+		{
+			jgeDelete(lpWndProcMap);
+			s_lpMsgMap->erase(hWnd);
+		}
+		return true;
+	}
+	return false;
+}
+
+bool jge::Window::unregisterAllWndProc(HWND hWnd)
+{
+	if(hWnd == null || s_lpMsgMap == null)
+	{
+		return false;
+	}
+
+	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
+	if(hWndIter == s_lpMsgMap->end())
+	{
+		return false;
+	}
+
+	jge::Window::WndProcMap* lpWndProcMap = hWndIter->second;
+	s_lpMsgMap->erase(hWnd);
+	jgeDelete(lpWndProcMap);
+	return true;
 }
 
 LRESULT CALLBACK jge::Window::wndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)

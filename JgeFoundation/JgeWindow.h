@@ -16,6 +16,7 @@ namespace jge
 
 		static bool registerWndProc(HWND hWnd, UINT msg, WNDPROC wndProc);
 		static bool unregisterWndProc(HWND hWnd, UINT msg);
+		static bool unregisterAllWndProc(HWND hWnd);
 
 	private:
 		typedef std::map<UINT, WNDPROC> WndProcMap;
