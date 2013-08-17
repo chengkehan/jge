@@ -32,10 +32,9 @@ wchar_t* jgewcsclone(const wchar_t* lpSrc, wchar_t* lpDest)
 
 	size_t strLen = jgewcslen(lpSrc) + 1/*'\0'*/;
 	wchar_t* lpStrClone = null;
-	// strLen * 2 是因为wchar占用的空间是char的两倍
 	if(lpDest == null)
 	{
-		jgeMalloc(lpStrClone, strLen * 2, wchar_t*);
+		jgeMalloc(lpStrClone, strLen * sizeof(wchar_t), wchar_t*);
 	}
 	else
 	{

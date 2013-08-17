@@ -37,7 +37,9 @@ bool jge::Window::create(jgeHINSTANCE hInstance, int windowX, int windowY, uint 
 	{
 		m_lpTitle = jgewcsclone(lpTitle);
 	}
-	jgewcs2(m_lpClassName, "JgeWindow", ++s_wndCount);
+	jgewcs2(m_lpClassName, "JgeWindow", s_wndCount);
+
+	++s_wndCount;
 
 	jgeWNDCLASS wc;
 	wc.cbClsExtra = 0;
@@ -95,9 +97,11 @@ void jge::Window::destroy()
 void jge::Window::release()
 {
 	unregisterAllWndProc(m_hWnd);
-	jgewcsfree(m_lpClassName);
 	m_hInstance = null;
 	m_hWnd = null;
+	m_windowd = false;
+	m_windowWidth = 0;
+	m_windowHeight = 0;
 	jgewcsfree(m_lpTitle);
 	jgewcsfree(m_lpClassName);
 }
