@@ -13,10 +13,7 @@ jge::Window::Window():
 
 jge::Window::~Window()
 {
-	if(s_lpMsgMap != null)
-	{
-		s_lpMsgMap->erase(m_hWnd);
-	}
+	unregisterAllWndProc(m_hWnd);
 }
 
 bool jge::Window::create(HINSTANCE hInstance, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle, wchar_t* lpClassName)
