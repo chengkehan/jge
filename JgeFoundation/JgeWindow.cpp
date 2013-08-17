@@ -18,7 +18,7 @@ jge::Window::~Window()
 	release();
 }
 
-bool jge::Window::create(JgeHINSTANCE hInstance, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
+bool jge::Window::create(jgeHINSTANCE hInstance, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
 {
 	if(m_hInstance != null || m_hWnd != null || hInstance == null || windowWidth == 0 || windowHeight == 0)
 	{
@@ -32,19 +32,19 @@ bool jge::Window::create(JgeHINSTANCE hInstance, uint windowWidth, uint windowHe
 	m_lpTitle = lpTitle;
 	jgewcs2(m_lpClassName, "JgeWindow", ++s_wndCount);
 
-	JgeWNDCLASS wc;
+	jgeWNDCLASS wc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.style = JgeCS_HREDRAW | JgeCS_VREDRAW;
+	wc.style = jgeCS_HREDRAW | jgeCS_VREDRAW;
 	wc.lpfnWndProc = jge::Window::wndProc;
 	wc.hInstance = hInstance;
-	wc.hIcon = JgeLoadIcon(null, JgeIDI_APPLICATION);
-	wc.hCursor = JgeLoadCursor(null, JgeIDC_ARROW);
-	wc.hbrBackground = (JgeHBRUSH)GetStockObject(JgeWHITE_BRUSH);
+	wc.hIcon = jgeLoadIcon(null, jgeIDI_APPLICATION);
+	wc.hCursor = jgeLoadCursor(null, jgeIDC_ARROW);
+	wc.hbrBackground = (jgeHBRUSH)GetStockObject(jgeWHITE_BRUSH);
 	wc.lpszMenuName = null;
 	wc.lpszClassName = m_lpClassName;
 
-	if(!JgeRegisterClass(&wc))
+	if(!jgeRegisterClass(&wc))
 	{
 		return false;
 	}
@@ -63,7 +63,7 @@ void jge::Window::release()
 	jgewcsfree(m_lpClassName);
 }
 
-bool jge::Window::registerWndProc(JgeHWND hWnd, uint msg, JgeWNDPROC wndProc)
+bool jge::Window::registerWndProc(jgeHWND hWnd, uint msg, jgeWNDPROC wndProc)
 {
 	if(hWnd == null || wndProc == null)
 	{
@@ -97,7 +97,7 @@ bool jge::Window::registerWndProc(JgeHWND hWnd, uint msg, JgeWNDPROC wndProc)
 	return true;
 }
 
-bool jge::Window::unregisterWndProc(JgeHWND hWnd, uint msg)
+bool jge::Window::unregisterWndProc(jgeHWND hWnd, uint msg)
 {
 	if(hWnd == null || s_lpMsgMap == null)
 	{
@@ -129,7 +129,7 @@ bool jge::Window::unregisterWndProc(JgeHWND hWnd, uint msg)
 	return false;
 }
 
-bool jge::Window::unregisterAllWndProc(JgeHWND hWnd)
+bool jge::Window::unregisterAllWndProc(jgeHWND hWnd)
 {
 	if(hWnd == null || s_lpMsgMap == null)
 	{
@@ -148,7 +148,7 @@ bool jge::Window::unregisterAllWndProc(JgeHWND hWnd)
 	return true;
 }
 
-JgeLRESULT JgeCALLBACK jge::Window::wndProc(JgeHWND hWnd, uint msg, JgeWPARAM wParam, JgeLPARAM lParam)
+JgeLRESULT jgeCALLBACK jge::Window::wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam)
 {
 	if(s_lpMsgMap != null)
 	{
@@ -159,11 +159,11 @@ JgeLRESULT JgeCALLBACK jge::Window::wndProc(JgeHWND hWnd, uint msg, JgeWPARAM wP
 			jge::Window::WndProcMap::iterator wndProcIter = lpWndProcMap->find(msg);
 			if(wndProcIter != lpWndProcMap->end())
 			{
-				JgeWNDPROC wndProcCallback = wndProcIter->second;
+				jgeWNDPROC wndProcCallback = wndProcIter->second;
 				return wndProcCallback(hWnd, msg, wParam, lParam);
 			}
 		}
 	}
 
-	return JgeDefWindowProc(hWnd, msg, wParam, lParam);
+	return jgeDefWindowProc(hWnd, msg, wParam, lParam);
 }
