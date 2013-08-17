@@ -18,7 +18,7 @@ jge::Window::~Window()
 	release();
 }
 
-bool jge::Window::create(jgeHINSTANCE hInstance, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
+bool jge::Window::create(jgeHINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
 {
 	if(m_hInstance != null || m_hWnd != null || hInstance == null || windowWidth == 0 || windowHeight == 0)
 	{
@@ -29,7 +29,14 @@ bool jge::Window::create(jgeHINSTANCE hInstance, uint windowWidth, uint windowHe
 	m_windowWidth = windowWidth;
 	m_windowHeight = windowHeight;
 	m_windowd = windowd;
-	m_lpTitle = lpTitle;
+	if(lpTitle == null)
+	{
+		jgewcs2(m_lpTitle, "JgeWindow", s_wndCount);
+	}
+	else
+	{
+		m_lpTitle = jgewcsclone(lpTitle);
+	}
 	jgewcs2(m_lpClassName, "JgeWindow", ++s_wndCount);
 
 	jgeWNDCLASS wc;
@@ -46,10 +53,38 @@ bool jge::Window::create(jgeHINSTANCE hInstance, uint windowWidth, uint windowHe
 
 	if(!jgeRegisterClass(&wc))
 	{
+		release();
 		return false;
 	}
 
-	return false;
+	if(m_windowd)
+	{
+		uint width, height;
+		int x, y;
+		jgeGetWindowAdjustedSize(windowWidth, windowHeight, &x, &y, &width, &height);
+
+		jgeRECT rect;
+		rect.left = windowX == -1 ? x : 0;
+		rect.top = windowY == -1 ? y : 0;
+		rect.right = rect.left + width;
+		rect.bottom = rect.top + height;
+		m_hWnd = jgeCreateWindowEx(0, m_lpClassName, m_lpTitle, jgeWS_POPUP | jgeWS_CAPTION | jgeWS_MINIMIZEBOX | jgeWS_VISIBLE, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, null, null, hInstance, null);
+	}
+	else
+	{
+		m_hWnd = jgeCreateWindowEx(jgeWS_EX_TOPMOST, m_lpClassName, m_lpTitle, jgeWS_POPUP | jgeWS_VISIBLE, 0, 0, windowWidth, windowHeight, null, null, hInstance, null);
+	}
+
+	if(m_hWnd == null)
+	{
+		release();
+		return false;
+	}
+
+	ShowWindow(m_hWnd, jgeSW_SHOW);
+	UpdateWindow(m_hWnd);
+
+	return true;
 }
 
 void jge::Window::destroy()
@@ -60,6 +95,10 @@ void jge::Window::destroy()
 void jge::Window::release()
 {
 	unregisterAllWndProc(m_hWnd);
+	jgewcsfree(m_lpClassName);
+	m_hInstance = null;
+	m_hWnd = null;
+	jgewcsfree(m_lpTitle);
 	jgewcsfree(m_lpClassName);
 }
 

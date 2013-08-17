@@ -12,7 +12,7 @@ namespace jge
 		Window();
 		~Window();
 
-		bool create(jgeHINSTANCE hInstance, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
+		bool create(jgeHINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
 		void destroy();
 
 		static bool registerWndProc(jgeHWND hWnd, uint msg, jgeWNDPROC wndProc);

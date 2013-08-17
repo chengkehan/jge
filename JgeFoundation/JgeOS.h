@@ -26,5 +26,13 @@
 #define jgeSM_CYCAPTION SM_CYCAPTION
 #define jgeSM_CXSCREEN SM_CXSCREEN
 #define jgeSM_CYSCREEN SM_CYSCREEN
+#define jgeRECT RECT
+#define jgeCreateWindowEx CreateWindowEx
+#define jgeWS_POPUP WS_POPUP
+#define jgeWS_CAPTION WS_CAPTION
+#define jgeWS_MINIMIZEBOX WS_MINIMIZEBOX
+#define jgeWS_VISIBLE WS_VISIBLE
+#define jgeWS_EX_TOPMOST WS_EX_TOPMOST
+#define jgeSW_SHOW SW_SHOW
 
 JGE_DLL void jgeGetWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult = null, int* lpYResult = null, uint* lpWidthResult = null, uint* lpHeightResult = null);
