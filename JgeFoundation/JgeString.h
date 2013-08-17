@@ -19,10 +19,7 @@ inline size_t jgecslen(const char* lpStr)
 
 JGE_DLL char* jgecsclone(const char* lpSrc, char* lpDest = null);
 
-inline void jgecsfree(char* lpStr)
-{
-	jgeFree(lpStr);
-}
+#define jgecsfree(lpStr) jgeFree(lpStr)
 
 #define jgecs1(lpcs, value1) \
 { \
@@ -55,10 +52,7 @@ inline size_t jgewcslen(const wchar_t* lpStr)
 
 JGE_DLL wchar_t* jgewcsclone(const wchar_t* lpSrc, wchar_t* lpDest = null);
 
-inline void jgewcsfree(wchar_t* lpStr)
-{
-	jgeFree(lpStr);
-}
+#define jgewcsfree(lpStr) jgeFree(lpStr)
 
 #define jgewcs1(lpwcs, value1) \
 { \

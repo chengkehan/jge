@@ -2,6 +2,7 @@
 
 #define null 0
 #define uint unsigned int
+#define uchar unsigned char
 
 #define jgeAssert(c) assert(c)
 

@@ -8,7 +8,7 @@ jge::Window::HWndMap* jge::Window::s_lpMsgMap = null;
 
 jge::Window::Window():
 	m_hInstance(null), m_hWnd(null), m_lpTitle(null), m_lpClassName(null), 
-	m_windowWidth(0), m_windowHeight(0), m_windowd(false)
+	m_windowWidth(0), m_windowHeight(0), m_windowd(false), m_running(false)
 {
 	// Do nothing
 }
@@ -89,9 +89,14 @@ bool jge::Window::create(jgeHINSTANCE hInstance, int windowX, int windowY, uint 
 	return true;
 }
 
-void jge::Window::destroy()
+void jge::Window::run()
 {
 
+}
+
+void jge::Window::stop()
+{
+	m_running = false;
 }
 
 void jge::Window::release()
@@ -103,6 +108,7 @@ void jge::Window::release()
 	m_windowWidth = 0;
 	m_windowHeight = 0;
 	jgewcsfree(m_lpTitle);
+	jgewcsfree(m_lpClassName);
 	jgewcsfree(m_lpClassName);
 }
 
