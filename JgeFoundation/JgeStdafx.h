@@ -17,6 +17,7 @@
 #include <cassert>
 #include <memory>
 #include <cstdio>
+#include <sstream>
 
 #ifdef JGE_DLL_EXPORT
 #define JGE_DLL __declspec(dllexport)

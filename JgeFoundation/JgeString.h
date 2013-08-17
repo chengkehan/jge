@@ -24,6 +24,22 @@ inline void jgecsfree(char* lpStr)
 	jgeFree(lpStr);
 }
 
+#define jgecs1(lpcs, value1) \
+{ \
+	jgeAssert(lpcs == null); \
+	std::stringstream ss; ss << value1; std::string s; ss >> s; lpcs = jgecsclone(s.c_str()) \
+}
+#define jgecs2(lpcs, value1, value2) \
+{ \
+	jgeAssert(lpcs == null); \
+	std::stringstream ss; ss << value1 << value2; std::string s; ss >> s; lpcs = jgecsclone(s.c_str()) \
+}
+#define jgecs3(lpcs, value1, value2, value3) \
+{ \
+	jgeAssert(lpcs == null); \
+	std::stringstream ss; ss << value1 << value2 << value3; std::string s; ss >> s; lpcs = jgecsclone(s.c_str()) \
+}
+
 // wide char string
 inline bool jgewcsequ(const wchar_t* lpStr1, const wchar_t* lpStr2)
 {
@@ -42,4 +58,20 @@ JGE_DLL wchar_t* jgewcsclone(const wchar_t* lpSrc, wchar_t* lpDest = null);
 inline void jgewcsfree(wchar_t* lpStr)
 {
 	jgeFree(lpStr);
+}
+
+#define jgewcs1(lpwcs, value1) \
+{ \
+	jgeAssert(lpwcs == null); \
+	std::wstringstream ss; ss << value1; std::wstring s; ss >> s; lpcs = jgewcsclone(s.c_str()) \
+}
+#define jgewcs2(lpwcs, value1, value2) \
+{ \
+	jgeAssert(lpwcs == null); \
+	std::wstringstream ss; ss << value1 << value2; std::wstring s; ss >> s; lpcs = jgewcsclone(s.c_str()) \
+}
+#define jgewcs3(lpwcs, value1, value2, value3) \
+{ \
+	jgeAssert(lpwcs == null); \
+	std::wstringstream ss; ss << value1 << value2 << value3; std::wstring s; ss >> s; lpcs = jgewcsclone(s.c_str()) \
 }
