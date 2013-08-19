@@ -49,7 +49,7 @@ bool jge::Window::create(HINSTANCE hInstance, int windowX, int windowY, uint win
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(null, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(null, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = null;
 	wc.lpszClassName = m_lpClassName;
 
@@ -121,6 +121,19 @@ bool jge::Window::run()
 void jge::Window::stop()
 {
 	release();
+}
+
+bool jge::Window::setTitle(const wchar_t* lpTitle)
+{
+	if(m_hInstance == null || m_hWnd == null)
+	{
+		return false;
+	}
+
+	jgewcsfree(m_lpTitle);
+	m_lpTitle = jgewcsclone(lpTitle);
+	SetWindowText(m_hWnd, m_lpTitle);
+	return true;
 }
 
 void jge::Window::release()
