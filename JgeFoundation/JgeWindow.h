@@ -23,6 +23,7 @@ namespace jge
 		inline bool getWindowd() const { return m_windowd; }
 		inline const wchar_t* getTitle() const { return m_lpTitle; }
 		bool setTitle(const wchar_t* lpTitle);
+		bool setSize(uint windowWidth, uint windowHeight);
 
 		static bool registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc);
 		static bool unregisterWndProc(HWND hWnd, uint msg);

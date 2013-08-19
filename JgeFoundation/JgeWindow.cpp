@@ -70,7 +70,7 @@ bool jge::Window::create(HINSTANCE hInstance, int windowX, int windowY, uint win
 		rect.top = windowY == -1 ? y : 0;
 		rect.right = rect.left + width;
 		rect.bottom = rect.top + height;
-		m_hWnd = CreateWindowEx(0, m_lpClassName, m_lpTitle, WS_POPUP | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, null, null, hInstance, null);
+		m_hWnd = CreateWindowEx(0, m_lpClassName, m_lpTitle, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU /*| WS_THICKFRAME*/ | WS_MINIMIZEBOX /*| WS_MAXIMIZEBOX*/, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, null, null, hInstance, null);
 	}
 	else
 	{
@@ -133,6 +133,19 @@ bool jge::Window::setTitle(const wchar_t* lpTitle)
 	jgewcsfree(m_lpTitle);
 	m_lpTitle = jgewcsclone(lpTitle);
 	SetWindowText(m_hWnd, m_lpTitle);
+	return true;
+}
+
+bool jge::Window::setSize(uint windowWidth, uint windowHeight)
+{
+	if(m_hInstance == null || m_hWnd == null || (windowWidth == m_windowWidth && windowHeight == m_windowHeight))
+	{
+		return false;
+	}
+
+	m_windowWidth = windowWidth;
+	m_windowHeight = windowHeight;
+	SetWindowPos(m_hWnd, null, 0, 0, m_windowWidth, m_windowHeight, SWP_NOZORDER | SWP_NOMOVE);
 	return true;
 }
 
