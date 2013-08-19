@@ -5,7 +5,7 @@
 #define jgeHWND HWND
 #define jgeHINSTANCE HINSTANCE
 #define jgeWNDPROC WNDPROC
-#define JgeLRESULT LRESULT
+#define jgeLRESULT LRESULT
 #define jgeCALLBACK CALLBACK
 #define jgeWPARAM WPARAM
 #define jgeLPARAM LPARAM
@@ -34,5 +34,6 @@
 #define jgeWS_VISIBLE WS_VISIBLE
 #define jgeWS_EX_TOPMOST WS_EX_TOPMOST
 #define jgeSW_SHOW SW_SHOW
+#define jgeMSG MSG
 
 JGE_DLL void jgeGetWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult = null, int* lpYResult = null, uint* lpWidthResult = null, uint* lpHeightResult = null);

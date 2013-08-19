@@ -13,8 +13,15 @@ namespace jge
 		~Window();
 
 		bool create(jgeHINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
-		void run();
+		bool run();
 		void stop();
+
+		inline jgeHWND getHWnd() const { return m_hWnd; }
+		inline jgeHINSTANCE getHInstance() const { return m_hInstance; }
+		inline uint getWindowWidth() const { return m_windowWidth; }
+		inline uint getWindowHeight() const { return m_windowHeight; }
+		inline bool getWindowd() const { return m_windowd; }
+		inline const wchar_t* getTitle() const { return m_lpTitle; }
 
 		static bool registerWndProc(jgeHWND hWnd, uint msg, jgeWNDPROC wndProc);
 		static bool unregisterWndProc(jgeHWND hWnd, uint msg);
@@ -35,18 +42,11 @@ namespace jge
 		wchar_t* m_lpTitle;
 		wchar_t* m_lpClassName;
 		bool m_running;
-		
-		inline jgeHWND getHWnd() const { return m_hWnd; }
-		inline jgeHINSTANCE getHInstance() const { return m_hInstance; }
-		inline uint getWindowWidth() const { return m_windowWidth; }
-		inline uint getWindowHeight() const { return m_windowHeight; }
-		inline bool getWindowd() const { return m_windowd; }
-		inline const wchar_t* getTitle() const { return m_lpTitle; }
 
 		void release();
 
 		static int s_wndCount;
 		static HWndMap* s_lpMsgMap;
-		static JgeLRESULT jgeCALLBACK wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam);
+		static jgeLRESULT jgeCALLBACK wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam);
 	};
 }

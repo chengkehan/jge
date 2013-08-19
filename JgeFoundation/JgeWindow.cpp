@@ -20,7 +20,7 @@ jge::Window::~Window()
 
 bool jge::Window::create(jgeHINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
 {
-	if(m_hInstance != null || m_hWnd != null || hInstance == null || windowWidth == 0 || windowHeight == 0)
+	if(m_hInstance != null || m_hWnd != null || hInstance == null || windowWidth == 0 || windowHeight == 0 || m_running)
 	{
 		return false;
 	}
@@ -89,14 +89,38 @@ bool jge::Window::create(jgeHINSTANCE hInstance, int windowX, int windowY, uint 
 	return true;
 }
 
-void jge::Window::run()
+bool jge::Window::run()
 {
+	if(m_running || m_hInstance == null || m_hWnd == null)
+	{
+		return false;
+	}
+	m_running = true;
 
+	jgeMSG msg;
+	jgeZeroMem(&msg, sizeof(jgeMSG));
+	while(m_running)
+	{
+		if(PeekMessage(&msg, null, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)	
+			{
+				break;
+			}
+			DispatchMessage(&msg);
+			continue;
+		}
+		else
+		{
+			
+		}
+	}
+	return true;
 }
 
 void jge::Window::stop()
 {
-	m_running = false;
+	release();
 }
 
 void jge::Window::release()
@@ -107,6 +131,7 @@ void jge::Window::release()
 	m_windowd = false;
 	m_windowWidth = 0;
 	m_windowHeight = 0;
+	m_running = false;
 	jgewcsfree(m_lpTitle);
 	jgewcsfree(m_lpClassName);
 	jgewcsfree(m_lpClassName);
@@ -197,7 +222,7 @@ bool jge::Window::unregisterAllWndProc(jgeHWND hWnd)
 	return true;
 }
 
-JgeLRESULT jgeCALLBACK jge::Window::wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam)
+jgeLRESULT jgeCALLBACK jge::Window::wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam)
 {
 	if(s_lpMsgMap != null)
 	{

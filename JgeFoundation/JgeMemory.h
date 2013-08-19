@@ -19,6 +19,7 @@
 #define jgeReleaseCom(lpCom) { if(lpCom != null){ lpCom->Release(); lpCom = null; } }
 
 #define jgeMalloc(lp, numBytes, lpType) { assert(lp == null); lp = (lpType)malloc(numBytes); assert(lp != null); memset(lp, 0, numBytes); }
+// The magic value 0x78 can be use to show the memory has been released.
 #define jgeFree(lp) { if(lp != null) { *(uchar*)lp = 0x78; free(lp); lp = null; } }
 #define jgeMemCpy(lpSrc, lpDest, numBytes) { if(lpSrc != lpDest){ assert(lpSrc != null); assert(lpDest != null); memcpy(lpDest, lpSrc, numBytes); } }
 #define jgeZeroMem(lp, numBytes) { if(lp != null){ memset(lp, 0, numBytes); } }
