@@ -27,8 +27,8 @@ LRESULT CALLBACK wmDestroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevHInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	wnd.create(hInstance, -1, -1, 800, 600, true, L"asdfasdfsdf");
-	jge::Window::registerWndProc(wnd.getHWnd(), WM_KEYDOWN, wmClose);
-	jge::Window::registerWndProc(wnd.getHWnd(), WM_DESTROY, wmDestroy);
+	jge::Window::registerWindowMessage(&wnd, WM_KEYDOWN, wmClose);
+	jge::Window::registerWindowMessage(&wnd, WM_DESTROY, wmDestroy);
 	wnd.setTitle(L"WOW");
 	wnd.run();
 	return 0;

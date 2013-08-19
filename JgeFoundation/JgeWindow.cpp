@@ -151,7 +151,7 @@ bool jge::Window::setSize(uint windowWidth, uint windowHeight)
 
 void jge::Window::release()
 {
-	unregisterAllWndProc(m_hWnd);
+	unregisterWindowAllMessages(this);
 	m_hInstance = null;
 	m_hWnd = null;
 	m_windowd = false;
@@ -163,9 +163,9 @@ void jge::Window::release()
 	jgewcsfree(m_lpClassName);
 }
 
-bool jge::Window::registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc)
+bool jge::Window::registerWindowMessage(jge::Window* lpWindow, uint msg, WNDPROC wndProc)
 {
-	if(hWnd == null || wndProc == null)
+	if(lpWindow == null || wndProc == null)
 	{
 		return false;
 	}
@@ -175,12 +175,12 @@ bool jge::Window::registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc)
 		jgeNew(s_lpMsgMap, jge::Window::HWndMap);
 	}
 
-	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
+	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(lpWindow);
 	jge::Window::WndProcMap* lpWndProcMap = null;
 	if(hWndIter == s_lpMsgMap->end())
 	{
 		jgeNew(lpWndProcMap, jge::Window::WndProcMap);
-		s_lpMsgMap->insert(jge::Window::HWndMap::value_type(hWnd, lpWndProcMap));
+		s_lpMsgMap->insert(jge::Window::HWndMap::value_type(lpWindow, lpWndProcMap));
 	}
 	else
 	{
@@ -197,14 +197,14 @@ bool jge::Window::registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc)
 	return true;
 }
 
-bool jge::Window::unregisterWndProc(HWND hWnd, uint msg)
+bool jge::Window::unregisterWindowMessage(jge::Window* lpWindow, uint msg)
 {
-	if(hWnd == null || s_lpMsgMap == null)
+	if(lpWindow == null || s_lpMsgMap == null)
 	{
 		return false;
 	}
 
-	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
+	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(lpWindow);
 	if(hWndIter == s_lpMsgMap->end())
 	{
 		return false;
@@ -222,28 +222,28 @@ bool jge::Window::unregisterWndProc(HWND hWnd, uint msg)
 		if(lpWndProcMap->empty())
 		{
 			jgeDelete(lpWndProcMap);
-			s_lpMsgMap->erase(hWnd);
+			s_lpMsgMap->erase(lpWindow);
 		}
 		return true;
 	}
 	return false;
 }
 
-bool jge::Window::unregisterAllWndProc(HWND hWnd)
+bool jge::Window::unregisterWindowAllMessages(jge::Window* lpWindow)
 {
-	if(hWnd == null || s_lpMsgMap == null)
+	if(lpWindow == null || s_lpMsgMap == null)
 	{
 		return false;
 	}
 
-	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
+	jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(lpWindow);
 	if(hWndIter == s_lpMsgMap->end())
 	{
 		return false;
 	}
 
 	jge::Window::WndProcMap* lpWndProcMap = hWndIter->second;
-	s_lpMsgMap->erase(hWnd);
+	s_lpMsgMap->erase(lpWindow);
 	jgeDelete(lpWndProcMap);
 	return true;
 }
@@ -252,15 +252,18 @@ LRESULT CALLBACK jge::Window::wndProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM
 {
 	if(s_lpMsgMap != null)
 	{
-		jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->find(hWnd);
-		if(hWndIter != s_lpMsgMap->end())
+		for (jge::Window::HWndMap::iterator hWndIter = s_lpMsgMap->begin(); hWndIter != s_lpMsgMap->end(); ++hWndIter)
 		{
-			jge::Window::WndProcMap* lpWndProcMap = hWndIter->second;
-			jge::Window::WndProcMap::iterator wndProcIter = lpWndProcMap->find(msg);
-			if(wndProcIter != lpWndProcMap->end())
+			Window* lpWindow = hWndIter->first;
+			if(lpWindow->getHWnd() == hWnd)
 			{
-				WNDPROC wndProcCallback = wndProcIter->second;
-				return wndProcCallback(hWnd, msg, wParam, lParam);
+				jge::Window::WndProcMap* lpWndProcMap = hWndIter->second;
+				jge::Window::WndProcMap::iterator wndProcIter = lpWndProcMap->find(msg);
+				if(wndProcIter != lpWndProcMap->end())
+				{
+					WNDPROC wndProcCallback = wndProcIter->second;
+					return wndProcCallback(hWnd, msg, wParam, lParam);
+				}
 			}
 		}
 	}

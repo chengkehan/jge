@@ -16,8 +16,6 @@ namespace jge
 		bool run();
 		void stop();
 
-		inline HWND getHWnd() const { return m_hWnd; }
-		inline HINSTANCE getHInstance() const { return m_hInstance; }
 		inline uint getWindowWidth() const { return m_windowWidth; }
 		inline uint getWindowHeight() const { return m_windowHeight; }
 		inline bool getWindowd() const { return m_windowd; }
@@ -25,13 +23,13 @@ namespace jge
 		bool setTitle(const wchar_t* lpTitle);
 		bool setSize(uint windowWidth, uint windowHeight);
 
-		static bool registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc);
-		static bool unregisterWndProc(HWND hWnd, uint msg);
-		static bool unregisterAllWndProc(HWND hWnd);
+		static bool registerWindowMessage(Window* lpWindow, uint msg, WNDPROC wndProc);
+		static bool unregisterWindowMessage(Window* lpWindow, uint msg);
+		static bool unregisterWindowAllMessages(Window* lpWindow);
 
 	private:
 		typedef std::map<uint, WNDPROC> WndProcMap;
-		typedef std::map<HWND, WndProcMap*> HWndMap;
+		typedef std::map<Window*, WndProcMap*> HWndMap;
 
 		Window(const Window& value);
 		Window& operator=(const Window& value);
@@ -46,6 +44,9 @@ namespace jge
 		bool m_running;
 
 		void release();
+
+		inline HWND getHWnd() const { return m_hWnd; }
+		inline HINSTANCE getHInstance() const { return m_hInstance; }
 
 		static int s_wndCount;
 		static HWndMap* s_lpMsgMap;
