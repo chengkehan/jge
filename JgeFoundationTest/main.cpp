@@ -3,22 +3,22 @@
 
 #pragma comment(lib, "JgeFoundation.lib")
 
-jgeLRESULT jgeCALLBACK wmClose(jgeHWND hwnd, uint msg, jgeWPARAM wparam, jgeLPARAM lparam)
+LRESULT CALLBACK wmClose(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 {
 	if(wparam == VK_ESCAPE)
 	{
 		DestroyWindow(hwnd);
 	}
-	return jgeDefWindowProc(hwnd, msg, wparam, lparam);
+	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-jgeLRESULT jgeCALLBACK wmDestroy(jgeHWND hwnd, uint msg, jgeWPARAM wparam, jgeLPARAM lparam)
+LRESULT CALLBACK wmDestroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 {
 	PostQuitMessage(0);
-	return jgeDefWindowProc(hwnd, msg, wparam, lparam);
+	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevHInstance, LPSTR lpCmdLine, INT nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevHInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	jge::Window wnd;
 	wnd.create(hInstance);

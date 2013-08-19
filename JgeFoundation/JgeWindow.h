@@ -12,30 +12,30 @@ namespace jge
 		Window();
 		~Window();
 
-		bool create(jgeHINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
+		bool create(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
 		bool run();
 		void stop();
 
-		inline jgeHWND getHWnd() const { return m_hWnd; }
-		inline jgeHINSTANCE getHInstance() const { return m_hInstance; }
+		inline HWND getHWnd() const { return m_hWnd; }
+		inline HINSTANCE getHInstance() const { return m_hInstance; }
 		inline uint getWindowWidth() const { return m_windowWidth; }
 		inline uint getWindowHeight() const { return m_windowHeight; }
 		inline bool getWindowd() const { return m_windowd; }
 		inline const wchar_t* getTitle() const { return m_lpTitle; }
 
-		static bool registerWndProc(jgeHWND hWnd, uint msg, jgeWNDPROC wndProc);
-		static bool unregisterWndProc(jgeHWND hWnd, uint msg);
-		static bool unregisterAllWndProc(jgeHWND hWnd);
+		static bool registerWndProc(HWND hWnd, uint msg, WNDPROC wndProc);
+		static bool unregisterWndProc(HWND hWnd, uint msg);
+		static bool unregisterAllWndProc(HWND hWnd);
 
 	private:
-		typedef std::map<uint, jgeWNDPROC> WndProcMap;
-		typedef std::map<jgeHWND, WndProcMap*> HWndMap;
+		typedef std::map<uint, WNDPROC> WndProcMap;
+		typedef std::map<HWND, WndProcMap*> HWndMap;
 
 		Window(const Window& value);
 		Window& operator=(const Window& value);
 
-		jgeHWND m_hWnd;
-		jgeHINSTANCE m_hInstance;
+		HWND m_hWnd;
+		HINSTANCE m_hInstance;
 		uint m_windowWidth;
 		uint m_windowHeight;
 		bool m_windowd;
@@ -47,6 +47,6 @@ namespace jge
 
 		static int s_wndCount;
 		static HWndMap* s_lpMsgMap;
-		static jgeLRESULT jgeCALLBACK wndProc(jgeHWND hWnd, uint msg, jgeWPARAM wParam, jgeLPARAM lParam);
+		static LRESULT CALLBACK wndProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam);
 	};
 }

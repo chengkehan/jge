@@ -3,8 +3,8 @@
 
 void jgeGetWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult, int* lpYResult, uint* lpWidthResult, uint* lpHeightResult)
 {
-	uint widthResult = widthSrc + jgeGetSystemMetrics(jgeSM_CXFIXEDFRAME) * 2;
-	uint heightResult = heightSrc + jgeGetSystemMetrics(jgeSM_CYFIXEDFRAME) * 2 + jgeGetSystemMetrics(jgeSM_CYCAPTION);
+	uint widthResult = widthSrc + GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
+	uint heightResult = heightSrc + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
 	if(lpWidthResult != null)
 	{
 		*lpWidthResult = widthResult;
@@ -15,10 +15,10 @@ void jgeGetWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult, int
 	}
 	if(lpXResult != null)
 	{
-		*lpXResult = (int)((jgeGetSystemMetrics(jgeSM_CXSCREEN) - widthResult) * 0.5f);
+		*lpXResult = (int)((GetSystemMetrics(SM_CXSCREEN) - widthResult) * 0.5f);
 	}
 	if(lpYResult != null)
 	{
-		*lpYResult = (int)((jgeGetSystemMetrics(jgeSM_CYSCREEN) - heightResult) * 0.5f);
+		*lpYResult = (int)((GetSystemMetrics(SM_CYSCREEN) - heightResult) * 0.5f);
 	}
 }
