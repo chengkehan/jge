@@ -25,6 +25,7 @@ namespace jge
 		Window* m_lpWindow;
 		IDirect3D9* m_lpd3d;
 		IDirect3DDevice9* m_lpd3dd;
+		D3DPRESENT_PARAMETERS m_presentParams;
 
 		void release();
 	};

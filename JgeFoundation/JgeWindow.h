@@ -16,6 +16,8 @@ namespace jge
 		bool run();
 		void stop();
 
+		inline HWND getHWnd() const { return m_hWnd; }
+		inline HINSTANCE getHInstance() const { return m_hInstance; }
 		inline uint getWindowWidth() const { return m_windowWidth; }
 		inline uint getWindowHeight() const { return m_windowHeight; }
 		inline bool getWindowd() const { return m_windowd; }
@@ -44,9 +46,6 @@ namespace jge
 		bool m_running;
 
 		void release();
-
-		inline HWND getHWnd() const { return m_hWnd; }
-		inline HINSTANCE getHInstance() const { return m_hInstance; }
 
 		static int s_wndCount;
 		static HWndMap* s_lpMsgMap;
