@@ -38,6 +38,9 @@ bool jge::MainLoop::run()
 
 	MSG msg;
 	jgeZeroMem(&msg, sizeof(MSG));
+
+	IDirect3DDevice9* lpd3dd = m_lpJge3D->getD3DDevice();
+
 	while(m_running)
 	{
 		if(PeekMessage(&msg, null, 0, 0, PM_REMOVE))
@@ -51,7 +54,12 @@ bool jge::MainLoop::run()
 		}
 		else
 		{
-
+			lpd3dd->Clear(0, null, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0x00000000, 1.0f, 0);
+			lpd3dd->BeginScene();
+			// Draw calls
+			lpd3dd->EndScene();
+			// Calculate logic,ai,physics,network,etc.
+			lpd3dd->Present(null, null, null, null);
 		}
 	}
 
