@@ -17,6 +17,8 @@ namespace jge
 		~Jge3D();
 
 		bool init(Window* lpWindow);
+		inline IDirect3D9* getD3D() { return m_lpd3d; }
+		inline IDirect3DDevice9* getD3DDevice() { return m_lpd3dd; }
 
 	private:
 		Jge3D(const Jge3D& value);

@@ -60,6 +60,11 @@ bool jge::Jge3D::init(jge::Window* lpWindow)
 	m_presentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	m_presentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
+	jge3DIfFailed(m_lpd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_lpWindow->getHWnd(), vp, &m_presentParams, &m_lpd3dd))
+		release();
+		return false;
+	jge3DEndIf
+
 	return true;
 }
 

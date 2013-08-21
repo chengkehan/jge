@@ -1,6 +1,5 @@
 #include "JgeStdafx.h"
 #include "JgeWindow.h"
-#include "JgeMemory.h"
 #include "JgeString.h"
 
 int jge::Window::s_wndCount = 0;
@@ -18,7 +17,7 @@ jge::Window::~Window()
 	release();
 }
 
-bool jge::Window::create(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
+bool jge::Window::init(HINSTANCE hInstance, int windowX, int windowY, uint windowWidth, uint windowHeight, bool windowd, wchar_t* lpTitle)
 {
 	if(m_hInstance != null || m_hWnd != null || hInstance == null || windowWidth == 0 || windowHeight == 0 || m_running)
 	{
@@ -87,40 +86,6 @@ bool jge::Window::create(HINSTANCE hInstance, int windowX, int windowY, uint win
 	UpdateWindow(m_hWnd);
 
 	return true;
-}
-
-bool jge::Window::run()
-{
-	if(m_running || m_hInstance == null || m_hWnd == null)
-	{
-		return false;
-	}
-	m_running = true;
-
-	MSG msg;
-	jgeZeroMem(&msg, sizeof(MSG));
-	while(m_running)
-	{
-		if(PeekMessage(&msg, null, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)	
-			{
-				break;
-			}
-			DispatchMessage(&msg);
-			continue;
-		}
-		else
-		{
-			
-		}
-	}
-	return true;
-}
-
-void jge::Window::stop()
-{
-	release();
 }
 
 bool jge::Window::setTitle(const wchar_t* lpTitle)

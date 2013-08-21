@@ -12,9 +12,7 @@ namespace jge
 		Window();
 		~Window();
 
-		bool create(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
-		bool run();
-		void stop();
+		bool init(HINSTANCE hInstance, int windowX = -1, int windowY = -1, uint windowWidth = 800, uint windowHeight = 600, bool windowd = true, wchar_t* lpTitle = null);
 
 		inline HWND getHWnd() const { return m_hWnd; }
 		inline HINSTANCE getHInstance() const { return m_hInstance; }
