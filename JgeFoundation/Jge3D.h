@@ -17,6 +17,7 @@ namespace jge
 		~Jge3D();
 
 		bool init(Window* lpWindow);
+		bool resize();
 		inline IDirect3D9* getD3D() { return m_lpd3d; }
 		inline IDirect3DDevice9* getD3DDevice() { return m_lpd3dd; }
 
@@ -28,6 +29,7 @@ namespace jge
 		IDirect3D9* m_lpd3d;
 		IDirect3DDevice9* m_lpd3dd;
 		D3DPRESENT_PARAMETERS m_presentParams;
+		DWORD m_deviceBehaviorFlags;
 
 		void release();
 	};

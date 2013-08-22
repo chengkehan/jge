@@ -3,7 +3,7 @@
 #include "JgeMemory.h"
 
 jge::Jge3D::Jge3D():
-	m_lpWindow(null), m_lpd3d(null), m_lpd3dd(null)
+	m_lpWindow(null), m_lpd3d(null), m_lpd3dd(null), m_deviceBehaviorFlags(0)
 {
 
 }
@@ -44,7 +44,7 @@ bool jge::Jge3D::init(jge::Window* lpWindow)
 		return false;
 	}
 
-	int vp = caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ? D3DCREATE_HARDWARE_VERTEXPROCESSING : D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+	m_deviceBehaviorFlags = caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ? D3DCREATE_HARDWARE_VERTEXPROCESSING : D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 	m_presentParams.BackBufferWidth = m_lpWindow->getWindowWidth();
 	m_presentParams.BackBufferHeight = m_lpWindow->getWindowHeight();
 	m_presentParams.BackBufferFormat = D3DFMT_X8R8G8B8;
@@ -60,7 +60,27 @@ bool jge::Jge3D::init(jge::Window* lpWindow)
 	m_presentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	m_presentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-	jge3DIfFailed(m_lpd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_lpWindow->getHWnd(), vp, &m_presentParams, &m_lpd3dd))
+	jge3DIfFailed(m_lpd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_lpWindow->getHWnd(), m_deviceBehaviorFlags, &m_presentParams, &m_lpd3dd))
+		release();
+		return false;
+	jge3DEndIf
+
+	return true;
+}
+
+bool jge::Jge3D::resize()
+{
+	if(m_lpWindow == null || m_lpd3d == null || m_lpd3dd == null)
+	{
+		return false;
+	}
+
+	jgeReleaseCom(m_lpd3dd);
+	m_presentParams.BackBufferWidth = m_lpWindow->getWindowWidth();
+	m_presentParams.BackBufferHeight = m_lpWindow->getWindowHeight();
+	m_presentParams.hDeviceWindow = m_lpWindow->getHWnd();
+	m_presentParams.Windowed = m_lpWindow->getWindowd();
+	jge3DIfFailed(m_lpd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_lpWindow->getHWnd(), m_deviceBehaviorFlags, &m_presentParams, &m_lpd3dd))
 		release();
 		return false;
 	jge3DEndIf
@@ -70,6 +90,7 @@ bool jge::Jge3D::init(jge::Window* lpWindow)
 
 void jge::Jge3D::release()
 {
+	m_deviceBehaviorFlags = 0;
 	m_lpWindow = null;
 	jgeReleaseCom(m_lpd3d);
 	jgeReleaseCom(m_lpd3dd);
