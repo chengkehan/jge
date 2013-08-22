@@ -1,6 +1,7 @@
 #include "JgeStdafx.h"
 #include "JgeWindow.h"
 #include "JgeString.h"
+#include "JgeOS.h"
 
 int jge::Window::s_wndCount = 0;
 jge::Window::HWndMap* jge::Window::s_lpMsgMap = null;
@@ -103,7 +104,17 @@ bool jge::Window::setTitle(const wchar_t* lpTitle)
 
 bool jge::Window::setSize(uint windowWidth, uint windowHeight)
 {
-	if(m_hInstance == null || m_hWnd == null || (windowWidth == m_windowWidth && windowHeight == m_windowHeight))
+	if(m_hInstance == null || m_hWnd == null)
+	{
+		return false;
+	}
+
+	if(windowWidth == m_windowWidth && windowHeight == m_windowHeight)
+	{
+		return false;
+	}
+
+	if(!m_windowd && !jge::ScreenResolution::checkScreenResolution(windowWidth, windowHeight))
 	{
 		return false;
 	}

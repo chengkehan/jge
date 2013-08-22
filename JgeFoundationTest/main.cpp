@@ -19,7 +19,7 @@ LRESULT CALLBACK wmClose(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 	else if(wparam == VK_SPACE)
 	{
 		wnd.setSize(1024, 768);
-		jge3D.resize();
+		jge3D.reset();
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
