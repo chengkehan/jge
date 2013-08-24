@@ -61,13 +61,13 @@ bool jge::MainLoop::run()
 			//jgeTraceA1("%s\n", "present");
 			if(presentResult == D3DERR_DEVICELOST)
 			{
-				jgeTraceA1("%s\n", "devicelose");
+				//jgeTraceA1("%s\n", "devicelose");
 				if(m_lpJge3D->getD3DDevice()->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
 				{
-					jgeTraceA1("%s\n", "free unavailable resources");
+					//jgeTraceA1("%s\n", "free unavailable resources");
 					if(m_lpJge3D->resetDevice())
 					{
-						jgeTraceA1("%s\n", "reload resources");
+						//jgeTraceA1("%s\n", "reload resources");
 					}
 				}
 			}

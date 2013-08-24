@@ -1,7 +1,7 @@
 #include "JgeStdafx.h"
 #include "JgeWindow.h"
 #include "JgeString.h"
-#include "JgeOS.h"
+#include "JgeScreen.h"
 
 int jge::Window::s_wndCount = 0;
 jge::Window::HWndMap* jge::Window::s_lpMsgMap = null;
@@ -63,7 +63,7 @@ bool jge::Window::init(HINSTANCE hInstance, int windowX, int windowY, uint windo
 	{
 		uint width, height;
 		int x, y;
-		jgeGetWindowAdjustedSize(windowWidth, windowHeight, &x, &y, &width, &height);
+		jge::Window::getWindowAdjustedSize(windowWidth, windowHeight, &x, &y, &width, &height);
 
 		RECT rect;
 		rect.left = windowX == -1 ? x : 0;
@@ -222,6 +222,28 @@ bool jge::Window::unregisterWindowAllMessages(jge::Window* lpWindow)
 	s_lpMsgMap->erase(lpWindow);
 	jgeDelete(lpWndProcMap);
 	return true;
+}
+
+void jge::Window::getWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult, int* lpYResult, uint* lpWidthResult, uint* lpHeightResult)
+{
+	uint widthResult = widthSrc + GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
+	uint heightResult = heightSrc + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+	if(lpWidthResult != null)
+	{
+		*lpWidthResult = widthResult;
+	}
+	if(lpHeightResult != null)
+	{
+		*lpHeightResult = heightResult;
+	}
+	if(lpXResult != null)
+	{
+		*lpXResult = (int)((GetSystemMetrics(SM_CXSCREEN) - widthResult) * 0.5f);
+	}
+	if(lpYResult != null)
+	{
+		*lpYResult = (int)((GetSystemMetrics(SM_CYSCREEN) - heightResult) * 0.5f);
+	}
 }
 
 LRESULT CALLBACK jge::Window::wndProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)

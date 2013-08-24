@@ -2,7 +2,6 @@
 
 #include <map>
 #include "JgeCommon.h"
-#include "JgeOS.h"
 
 namespace jge
 {
@@ -26,6 +25,7 @@ namespace jge
 		static bool registerWindowMessage(Window* lpWindow, uint msg, WNDPROC wndProc);
 		static bool unregisterWindowMessage(Window* lpWindow, uint msg);
 		static bool unregisterWindowAllMessages(Window* lpWindow);
+		static void getWindowAdjustedSize(uint widthSrc, uint heightSrc, int* lpXResult = null, int* lpYResult = null, uint* lpWidthResult = null, uint* lpHeightResult = null);
 
 	private:
 		typedef std::map<uint, WNDPROC> WndProcMap;
