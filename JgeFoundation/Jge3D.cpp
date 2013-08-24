@@ -69,7 +69,7 @@ bool jge::Jge3D::init(jge::Window* lpWindow)
 	return true;
 }
 
-bool jge::Jge3D::reset()
+bool jge::Jge3D::resetWindow()
 {
 	if(m_lpWindow == null || m_lpd3d == null || m_lpd3dd == null)
 	{
@@ -93,6 +93,19 @@ bool jge::Jge3D::reset()
 	jge3DEndIf
 
 	return true;
+}
+
+bool jge::Jge3D::resetDevice()
+{
+	if(m_lpWindow == null || m_lpd3d == null || m_lpd3dd == null)
+	{
+		return false;
+	}
+
+	jge3DIfSuccess(m_lpd3dd->Reset(&m_presentParams))
+		return true;
+	jge3DEndIf
+	return false;
 }
 
 void jge::Jge3D::release()

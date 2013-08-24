@@ -5,6 +5,7 @@
 #include <DxErr.h>
 #include "JgeWindow.h"
 
+#define jge3DIfSuccess(hr) if(SUCCEEDED(hr)) {
 #define jge3DIfFailed(hr) if(FAILED(hr)){ DXTRACE_ERR_MSGBOX(DXGetErrorDescription(hr), hr); DXTRACE_ERR_MSGBOX(DXGetErrorString(hr), hr); DXTRACE_MSG(DXGetErrorDescription(hr)); DXTRACE_ERR(DXGetErrorDescription(hr), hr); 
 #define jge3DEndIf }
 
@@ -17,7 +18,8 @@ namespace jge
 		~Jge3D();
 
 		bool init(Window* lpWindow);
-		bool reset();
+		bool resetWindow();
+		bool resetDevice();
 		inline IDirect3D9* getD3D() { return m_lpd3d; }
 		inline IDirect3DDevice9* getD3DDevice() { return m_lpd3dd; }
 

@@ -19,7 +19,7 @@ LRESULT CALLBACK wmClose(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 	else if(wparam == VK_SPACE)
 	{
 		wnd.setSize(1024, 768);
-		jge3D.reset();
+		jge3D.resetWindow();
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
@@ -32,7 +32,7 @@ LRESULT CALLBACK wmDestroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevHInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	wnd.init(hInstance, -1, -1, 800, 600, false, L"asdfasdfsdf");
+	wnd.init(hInstance, -1, -1, 800, 600, true, L"asdfasdfsdf");
 	jge::Window::registerWindowMessage(&wnd, WM_KEYDOWN, wmClose);
 	jge::Window::registerWindowMessage(&wnd, WM_DESTROY, wmDestroy);
 	wnd.setTitle(L"WOW");
