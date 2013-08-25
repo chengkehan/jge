@@ -4,6 +4,11 @@
 
 bool jge::File::read(const wchar_t* lpFileURL, char* lpFileData, uint* numBytes, bool binary)
 {
+	if(lpFileURL == null)
+	{
+		return false;
+	}
+
 	std::ifstream reader;
 	reader.open(lpFileURL, std::ios_base::in | (binary ? std::ios_base::binary : 0));
 	bool r = false;
@@ -23,6 +28,20 @@ bool jge::File::read(const wchar_t* lpFileURL, char* lpFileData, uint* numBytes,
 		}
 		r = true;
 	}
+	reader.close();
+	return r;
+}
+
+bool jge::File::exist(const wchar_t* lpFileURL)
+{
+	if(lpFileURL == null)
+	{
+		return false;
+	}
+
+	std::ifstream reader;
+	reader.open(lpFileURL);
+	bool r = reader.good();
 	reader.close();
 	return r;
 }

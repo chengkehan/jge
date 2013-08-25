@@ -18,6 +18,11 @@ jge::Texture::~Texture()
 
 bool jge::Texture::load(const wchar_t* lpFileURL)
 {
+	if(lpFileURL == null)
+	{
+		return false;
+	}
+
 	return false;
 }
 
