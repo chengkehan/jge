@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d9.h>
+#include "JgeCommon.h"
 
 namespace jge
 {
@@ -11,7 +12,8 @@ namespace jge
 		~Texture();
 
 		bool load(const wchar_t* lpFileURL);
-		bool load(const char* lpBytesData);
+		bool load(const char* lpBytesData, uint numBytes);
+		void release();
 
 	private:
 		Texture(const Texture& value);
@@ -20,7 +22,6 @@ namespace jge
 		IDirect3DTexture9* m_lpTexture;
 		wchar_t* m_lpFileURL;
 		char* m_lpBytesData;
-
-		void release();
+		uint m_numBytes;
 	};
 }
