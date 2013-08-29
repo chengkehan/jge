@@ -1,27 +1,30 @@
 #pragma once
 
 #include <d3d9.h>
+#include <d3dx9.h>
 #include "JgeCommon.h"
 
 namespace jge
 {
-	class JGE_DLL Texture
+	enum TextureFilter
+	{
+		TEXTURE_FILTER_NONE, 
+		TEXTURE_FILTER_POINT, 
+		TEXTURE_FILTER_LINEAR, 
+		TEXTURE_FILTER_TRIANGLE
+	};
+
+	class JGE_DLL Texture2D
 	{
 	public:
-		Texture();
-		~Texture();
-
-		bool load(const wchar_t* lpFileURL);
-		bool load(const char* lpBytesData, uint numBytes);
-		void release();
-
+		Texture2D();
+		Texture2D(uint width, uint height, TextureFilter filter);
+		~Texture2D();
+		
 	private:
-		Texture(const Texture& value);
-		Texture& operator=(const Texture& value);
+		Texture2D(const Texture2D& value);
+		Texture2D& operator=(const Texture2D& value);
 
-		IDirect3DTexture9* m_lpTexture;
-		wchar_t* m_lpFileURL;
-		char* m_lpBytesData;
-		uint m_numBytes;
+		TextureFilter m_filter;
 	};
 }
