@@ -1,16 +1,34 @@
 #include "JgeStdafx.h"
 #include "JgeMemory.h"
 
-jge::Buffer::Buffer(const char* lpBuffer, uint numBytes):
-	m_lpBuffer(0), m_numBytes(0)
+jge::Buffer::Buffer():
+	m_lpBuffer(null), m_numBytes(0)
 {
-	jgeAssert(lpBuffer != null);
-	jgeMalloc(m_lpBuffer, numBytes, char*);
-	jgeMemCpy(lpBuffer, m_lpBuffer, numBytes);
-	m_numBytes = numBytes;
+	// Do nothing
 }
 
 jge::Buffer::~Buffer()
+{
+	release();
+}
+
+bool jge::Buffer::setBuffer(const char* lpBuffer, uint numBytes)
+{
+	if(lpBuffer != null && numBytes > 0)
+	{
+		release();
+		jgeMalloc(m_lpBuffer, numBytes, char*);
+		jgeMemCpy(lpBuffer, m_lpBuffer, numBytes);
+		m_numBytes = numBytes;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void jge::Buffer::release()
 {
 	jgeFree(m_lpBuffer);
 	m_numBytes = 0;

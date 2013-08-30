@@ -29,11 +29,13 @@ namespace jge
 	class JGE_DLL Buffer
 	{
 	public:
-		Buffer(const char* lpBuffer, uint numBytes);
+		Buffer();
 		~Buffer();
 
 		inline const char* getBufferPointer() { return m_lpBuffer; }
 		inline uint getNumBytes() { return m_numBytes; }
+		bool setBuffer(const char* lpBuffer, uint numBytes);
+		void release();
 
 	private:
 		Buffer(const Buffer& value);
