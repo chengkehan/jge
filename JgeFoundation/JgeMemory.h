@@ -23,3 +23,23 @@
 #define jgeFree(lp) { if(lp != null) { *(uchar*)lp = 0x78; free(lp); lp = null; } }
 #define jgeMemCpy(lpSrc, lpDest, numBytes) { if(lpSrc != lpDest){ assert(lpSrc != null); assert(lpDest != null); memcpy(lpDest, lpSrc, numBytes); } }
 #define jgeZeroMem(lp, numBytes) { if(lp != null){ memset(lp, 0, numBytes); } }
+
+namespace jge
+{
+	class JGE_DLL Buffer
+	{
+	public:
+		Buffer(const char* lpBuffer, uint numBytes);
+		~Buffer();
+
+		inline const char* getBufferPointer() { return m_lpBuffer; }
+		inline uint getNumBytes() { return m_numBytes; }
+
+	private:
+		Buffer(const Buffer& value);
+		Buffer& operator=(const Buffer& value);
+
+		char* m_lpBuffer;
+		uint m_numBytes;
+	};
+}
