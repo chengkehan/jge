@@ -2,14 +2,11 @@
 #include "JgeIO.h"
 #include "JgeMemory.h"
 #include "JgeString.h"
-#include <d3d9.h>
-#include <d3dx9.h>
 
 jge::File::File():
 	m_lpPath(null)
 {
 	// Do nothing
-	//ID3DXBuffer
 }
 
 jge::File::~File()
