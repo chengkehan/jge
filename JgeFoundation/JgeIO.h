@@ -2,10 +2,11 @@
 
 #include "JgeCommon.h"
 #include "JgeMemory.h"
+#include "JgeNoncopyable.h"
 
 namespace jge
 {
-	class JGE_DLL File
+	class JGE_DLL File : private Noncopyable
 	{
 	public:
 		File();
@@ -19,9 +20,6 @@ namespace jge
 		static bool exist(const wchar_t* lpPath);
 
 	private:
-		File(const File& value);
-		File& operator=(const File& value);
-
 		wchar_t* m_lpPath;
 
 		void release();

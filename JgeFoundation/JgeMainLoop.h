@@ -2,10 +2,11 @@
 
 #include "Jge3D.h"
 #include "JgeWindow.h"
+#include "JgeNoncopyable.h"
 
 namespace jge
 {
-	class JGE_DLL MainLoop
+	class JGE_DLL MainLoop : private Noncopyable
 	{
 	public:
 		MainLoop();
@@ -17,9 +18,6 @@ namespace jge
 		inline bool running() { return m_running; }
 
 	private:
-		MainLoop(const MainLoop& value);
-		MainLoop& operator=(const MainLoop& value);
-
 		bool m_running;
 		Jge3D* m_lpJge3D;
 		Window* m_lpWindow;

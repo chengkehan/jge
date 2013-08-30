@@ -2,6 +2,7 @@
 
 #include "JgeCommon.h"
 #include "Jge3D.h"
+#include "JgeNoncopyable.h"
 
 namespace jge
 {
@@ -13,7 +14,7 @@ namespace jge
 		TEXTURE_FILTER_TRIANGLE
 	};
 
-	class JGE_DLL Texture2D
+	class JGE_DLL Texture2D : private Noncopyable
 	{
 	public:
 		Texture2D(Jge3D* lpJge3D);
@@ -26,9 +27,6 @@ namespace jge
 
 
 	private:
-		Texture2D(const Texture2D& value);
-		Texture2D& operator=(const Texture2D& value);
-
 		TextureFilter m_filter;
 		uint m_width;
 		uint m_height;

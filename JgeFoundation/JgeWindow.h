@@ -2,10 +2,11 @@
 
 #include <map>
 #include "JgeCommon.h"
+#include "JgeNoncopyable.h"
 
 namespace jge
 {
-	class JGE_DLL Window
+	class JGE_DLL Window : private Noncopyable
 	{
 	public:
 		Window();
@@ -30,9 +31,6 @@ namespace jge
 	private:
 		typedef std::map<uint, WNDPROC> WndProcMap;
 		typedef std::map<Window*, WndProcMap*> HWndMap;
-
-		Window(const Window& value);
-		Window& operator=(const Window& value);
 
 		HWND m_hWnd;
 		HINSTANCE m_hInstance;

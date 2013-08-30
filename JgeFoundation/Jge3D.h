@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <DxErr.h>
 #include "JgeWindow.h"
+#include "JgeNoncopyable.h"
 
 #define jge3DIfSuccess(hr) if(SUCCEEDED(hr)) {
 #define jge3DIfFailed(hr) if(FAILED(hr)){ DXTRACE_ERR_MSGBOX(DXGetErrorDescription(hr), hr); DXTRACE_ERR_MSGBOX(DXGetErrorString(hr), hr); DXTRACE_MSG(DXGetErrorDescription(hr)); DXTRACE_ERR(DXGetErrorDescription(hr), hr); 
@@ -11,7 +12,7 @@
 
 namespace jge
 {
-	class JGE_DLL Jge3D
+	class JGE_DLL Jge3D : private Noncopyable
 	{
 	public:
 		Jge3D();
@@ -24,9 +25,6 @@ namespace jge
 		inline IDirect3DDevice9* getD3DDevice() { return m_lpd3dd; }
 
 	private:
-		Jge3D(const Jge3D& value);
-		Jge3D& operator=(const Jge3D& value);
-
 		Window* m_lpWindow;
 		IDirect3D9* m_lpd3d;
 		IDirect3DDevice9* m_lpd3dd;
