@@ -11,8 +11,8 @@ namespace jge
 	{
 	public:
 		String();
-		explicit String(const String& str);
-		explicit String(const wchar_t* lpStr);
+		String(const String& str);
+		String(const wchar_t* lpStr);
 		~String();
 
 		const String& operator=(const String& str);
@@ -21,13 +21,11 @@ namespace jge
 		bool operator==(const wchar_t* lpStr) const;
 		bool operator!=(const String& str) const;
 		bool operator!=(const wchar_t* lpStr) const;
-		//const String& operator+(const String& str) const;
-		//const String& operator+(const wchar_t* lpStr) const;
-
-		bool equal(const String& str) const;
-		bool equal(const wchar_t* lpStr) const;
-		void set(const String& str);
-		void set(const wchar_t* lpStr);
+		String operator+(const String& str) const;
+		String operator+(const wchar_t* lpStr) const;
+		String operator+=(const String& str);
+		String operator+=(const wchar_t* lpStr);
+		
 		uint length() const;
 		void release();
 
