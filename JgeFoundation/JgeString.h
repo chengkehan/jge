@@ -2,6 +2,42 @@
 
 #include "JgeMemory.h"
 #include "JgeAssert.h"
+#include "JgeNoncopyable.h"
+#include "JgeDefinition.h"
+
+namespace jge
+{
+	class JGE_DLL String
+	{
+	public:
+		String();
+		explicit String(const String& str);
+		explicit String(const wchar_t* lpStr);
+		~String();
+
+		const String& operator=(const String& str);
+		const String& operator=(const wchar_t* lpStr);
+		bool operator==(const String& str) const;
+		bool operator==(const wchar_t* lpStr) const;
+		bool operator!=(const String& str) const;
+		bool operator!=(const wchar_t* lpStr) const;
+		//const String& operator+(const String& str) const;
+		//const String& operator+(const wchar_t* lpStr) const;
+
+		bool equal(const String& str) const;
+		bool equal(const wchar_t* lpStr) const;
+		void set(const String& str);
+		void set(const wchar_t* lpStr);
+		uint length() const;
+		void release();
+
+	private:
+		wchar_t* m_lpStr;
+
+		void cleanup();
+		wchar_t* clone(const wchar_t* lpSrc, wchar_t* lpDest = null);
+	};
+}
 
 // char string
 inline bool jgecsequ(const char* lpStr1, const char* lpStr2)
