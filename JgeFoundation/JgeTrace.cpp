@@ -1,2 +1,2 @@
 #include "JgeStdafx.h"
-#include "JgeCommon.h"
+#include "JgeTrace.h"

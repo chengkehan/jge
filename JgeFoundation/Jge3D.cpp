@@ -1,7 +1,8 @@
 #include "JgeStdafx.h"
 #include "Jge3D.h"
 #include "JgeMemory.h"
-#include "JgeCommon.h"
+#include "JgeDefinition.h"
+#include "JgeConvertion.h"
 
 jge::Jge3D::Jge3D():
 	m_lpWindow(null), m_lpd3d(null), m_lpd3dd(null), m_deviceBehaviorFlags(0)
@@ -77,7 +78,7 @@ bool jge::Jge3D::resetWindow()
 	}
 	
 	if(m_lpWindow->getWindowWidth() == m_presentParams.BackBufferWidth && m_lpWindow->getWindowHeight() == m_presentParams.BackBufferHeight && 
-		m_lpWindow->getHWnd() == m_presentParams.hDeviceWindow && m_lpWindow->getWindowd() == jgeToBoolean(m_presentParams.Windowed))
+		m_lpWindow->getHWnd() == m_presentParams.hDeviceWindow && m_lpWindow->getWindowd() == jgeBOOL2Bool(m_presentParams.Windowed))
 	{
 		return false;
 	}

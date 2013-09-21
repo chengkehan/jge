@@ -1,8 +1,8 @@
 #pragma once
 
 #include <map>
-#include "JgeCommon.h"
 #include "JgeNoncopyable.h"
+#include "JgeDefinition.h"
 
 namespace jge
 {

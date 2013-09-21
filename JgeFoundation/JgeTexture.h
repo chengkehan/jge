@@ -1,6 +1,5 @@
 #pragma once
 
-#include "JgeCommon.h"
 #include "Jge3D.h"
 #include "JgeNoncopyable.h"
 

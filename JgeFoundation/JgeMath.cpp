@@ -1,6 +1,5 @@
 #include "JgeStdafx.h"
 #include "JgeMath.h"
-#include "JgeCommon.h"
 #include "JgeMemory.h"
 
 // Point-----------------------------------------------------------------------------------

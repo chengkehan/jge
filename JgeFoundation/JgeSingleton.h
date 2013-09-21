@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JgeCommon.h"
+#include "JgeDefinition.h"
 
 #define JGE_SINGLETON_DECLARE(clazz) \
 	public: \

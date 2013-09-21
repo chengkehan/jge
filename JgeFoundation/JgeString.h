@@ -1,7 +1,7 @@
 #pragma once
 
-#include "JgeCommon.h"
 #include "JgeMemory.h"
+#include "JgeAssert.h"
 
 // char string
 inline bool jgecsequ(const char* lpStr1, const char* lpStr2)

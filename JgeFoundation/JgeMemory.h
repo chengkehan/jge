@@ -1,7 +1,7 @@
 #pragma once
 
-#include "JgeCommon.h"
 #include "JgeNoncopyable.h"
+#include "JgeDefinition.h"
 
 #define jgeNew(lp, newType) { assert(lp == null); lp = new newType(); assert(lp != null); }
 #define jgeNewArgs1(lp, newType, arg1) { assert(lp == null); lp = new newType(arg1); assert(lp != null); }
