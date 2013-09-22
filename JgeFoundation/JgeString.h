@@ -10,30 +10,112 @@ namespace jge
 	class JGE_DLL String
 	{
 	public:
-		String();
-		String(const String& str);
-		String(const wchar_t* lpStr);
-		~String();
+		//String();
+		//String(const String& str);
+		//String(const wchar_t* lpStr);
+		//~String();
 
-		const String& operator=(const String& str);
-		const String& operator=(const wchar_t* lpStr);
-		bool operator==(const String& str) const;
-		bool operator==(const wchar_t* lpStr) const;
-		bool operator!=(const String& str) const;
-		bool operator!=(const wchar_t* lpStr) const;
-		String operator+(const String& str) const;
-		String operator+(const wchar_t* lpStr) const;
-		String operator+=(const String& str);
-		String operator+=(const wchar_t* lpStr);
+		//const String& operator=(const String& str);
+		//const String& operator=(const wchar_t* lpStr);
+		//bool operator==(const String& str) const;
+		//bool operator==(const wchar_t* lpStr) const;
+		//bool operator!=(const String& str) const;
+		//bool operator!=(const wchar_t* lpStr) const;
+		//String operator+(const String& str) const;
+		//String operator+(const wchar_t* lpStr) const;
+		//String operator+=(const String& str);
+		//String operator+=(const wchar_t* lpStr);
 		
-		uint length() const;
-		void release();
+		//uint length() const;
+		//void release();
 
 	private:
-		wchar_t* m_lpStr;
+		//wchar_t* m_lpStr;
 
-		void cleanup();
-		wchar_t* clone(const wchar_t* lpSrc, wchar_t* lpDest = null);
+		//void cleanup();
+		//wchar_t* clone(const wchar_t* lpSrc, wchar_t* lpDest = null);
+
+		class StringAlloc;
+
+		template<uint blockBytes>
+		class StringPool;
+
+		template<uint numChars>
+		class StringMemory;
+
+		// IndexStack-----------------------------------------------------------------------------------
+		class IndexStack
+		{
+		public:
+			IndexStack(uint capability);
+			~IndexStack();
+
+			bool push(uint index);
+			bool pop(uint* index);
+
+		private:
+			uint* m_lpIndexList;
+			uint m_position;
+			uint m_capability;
+		};
+
+		// StringAlloc-----------------------------------------------------------------------------------
+		class StringAlloc
+		{
+		private:
+			
+		};
+
+		// StringPool-----------------------------------------------------------------------------------
+		template<uint blockBytes>
+		class StringPool
+		{
+		public:
+			StringPool(uint numBlocks):
+				m_blockBytes(blockBytes), m_numBlocks(numBlocks)
+			{
+				jgeNewArray(m_lpStringMemoryList, StringMemory<blockBytes>, numBlocks);
+				jgeNewArgs1(m_lpFreeIndexStack, IndexStack, numBlocks);
+				jgeNewArgs1(m_lpUsedIndexStack, IndexStack, numBlocks);
+				m_lpNextStringPool = null;
+			}
+			~StringPool()
+			{
+				jgeDeleteArray(m_lpStringMemoryList);
+				jgeDelete(m_lpFreeIndexStack);
+				jgeDelete(m_lpUsedIndexStack);
+			}
+
+		private:
+			uint m_blockBytes;
+			uint m_numBlocks;
+			StringMemory<blockBytes>* m_lpStringMemoryList;
+			StringPool* m_lpNextStringPool;
+			IndexStack* m_lpFreeIndexStack;
+			IndexStack* m_lpUsedIndexStack;
+		};
+
+		// StringMemory-----------------------------------------------------------------------------------
+		template<uint numChars>
+		class StringMemory
+		{
+		public:
+			StringMemory(StringPool<numChars>* lpStringPool, uint indexInPool):
+				m_lpStringPool(lpStringPool), m_indexInPool(indexInPool), m_usedCount(0)
+			{
+				// Do nothing
+			}
+			~StringMemory()
+			{
+				// Do nothing
+			}
+
+		private:
+			StringPool<numChars>* m_lpStringPool;
+			uint m_usedCount;
+			uint m_indexInPool;
+			wchar_t m_str[numChars];
+		};
 	};
 }
 
