@@ -2,206 +2,102 @@
 #include "JgeString.h"
 #include "JgeMemory.h"
 
-//jge::String::String():
-//	m_lpStr(null)
-//{
-//	// Do nothing
-//}
-//
-//jge::String::String(const jge::String& str)
-//{
-//	*this = str;
-//}
-//
-//jge::String::String(const wchar_t* lpStr)
-//{
-//	*this = lpStr;
-//}
-//
-//jge::String::~String()
-//{
-//	cleanup();
-//}
-//
-//const jge::String& jge::String::operator=(const jge::String& str)
-//{
-//	return *this = (&str == null ? null : str.m_lpStr);
-//}
-//
-//const jge::String& jge::String::operator=(const wchar_t* lpStr)
-//{
-//	if(*this != lpStr)
-//	{
-//		if(lpStr == null || wcslen(lpStr) == 0)
-//		{
-//			cleanup();
-//		}
-//		else
-//		{
-//			if(m_lpStr == null)
-//			{
-//				m_lpStr = clone(lpStr);
-//			}
-//			else
-//			{
-//				if(wcslen(lpStr) > length())
-//				{
-//					cleanup();
-//					m_lpStr = clone(lpStr);
-//				}
-//				else
-//				{
-//					clone(lpStr, m_lpStr);
-//				}
-//			}
-//		}
-//	}
-//	return *this;
-//}
-//
-//bool jge::String::operator==(const jge::String& str) const
-//{
-//	return *this == (&str == null ? null : str.m_lpStr);
-//}
-//
-//bool jge::String::operator==(const wchar_t* lpStr) const
-//{
-//	if(length() == 0 && (wcslen(lpStr) == 0 || lpStr == null))
-//	{
-//		return true;
-//	}
-//	if(length() != wcslen(lpStr))
-//	{
-//		return false;
-//	}
-//	return wcscmp(m_lpStr, lpStr) == 0;
-//}
-//
-//bool jge::String::operator!=(const jge::String& str) const
-//{
-//	return !(*this == str);
-//}
-//
-//bool jge::String::operator!=(const wchar_t* lpStr) const
-//{
-//	return !(*this == lpStr);
-//}
-//
-//jge::String jge::String::operator+(const jge::String& str) const
-//{
-//	if(&str == null || str.length() == 0)
-//	{
-//		return String(*this);
-//	}
-//	else
-//	{
-//		std::wstringstream ss;
-//		if(length() != 0)
-//		{
-//			ss << m_lpStr;
-//		}
-//		ss << str.m_lpStr;
-//		std::wstring s;
-//		ss >> s;
-//		return String(s.c_str());
-//	}
-//}
-//
-//jge::String jge::String::operator+(const wchar_t* lpStr) const
-//{
-//	if(lpStr == null || wcslen(lpStr) == 0)
-//	{
-//		return String(*this);
-//	}
-//	else
-//	{
-//		std::wstringstream ss;
-//		if(length() != 0)
-//		{
-//			ss << m_lpStr;
-//		}
-//		ss << lpStr;
-//		std::wstring s;
-//		ss >> s;
-//		return String(s.c_str());
-//	}
-//}
-//
-//jge::String jge::String::operator+=(const jge::String& str)
-//{
-//	return *this += (&str == null ? null : str.m_lpStr);
-//}
-//
-//jge::String jge::String::operator+=(const wchar_t* lpStr)
-//{
-//	if(lpStr == null || wcslen(lpStr) == 0)
-//	{
-//		return *this;
-//	}
-//	else
-//	{
-//		std::wstringstream ss;
-//		if(length() != 0)
-//		{
-//			ss << m_lpStr;
-//		}
-//		ss << lpStr;
-//		std::wstring s;
-//		ss >> s;
-//		*this = s.c_str();
-//		return *this;
-//	}
-//}
-//
-//uint jge::String::length() const
-//{
-//	return m_lpStr == null ? 0 : wcslen(m_lpStr);
-//}
-//
-//void jge::String::release()
-//{
-//	cleanup();
-//}
-//
-//void jge::String::cleanup()
-//{
-//	jgeFree(m_lpStr);
-//}
-//
-//wchar_t* jge::String::clone(const wchar_t* lpSrc, wchar_t* lpDest)
-//{
-//	if(lpSrc == null)
-//	{
-//		return null;
-//	}
-//
-//	size_t strLen = jgewcslen(lpSrc) + 1/*'\0'*/;
-//	wchar_t* lpStrClone = null;
-//	if(lpDest == null)
-//	{
-//		jgeMalloc(lpStrClone, strLen * sizeof(wchar_t), wchar_t*);
-//	}
-//	else
-//	{
-//		lpStrClone = lpDest;
-//	}
-//	jgeMemCpy(lpSrc, lpStrClone, strLen * sizeof(wchar_t));
-//	return lpStrClone;
-//}
+using namespace jge;
+
+// String-----------------------------------------------------------------------------------
+String::String()
+{
+
+}
+
+String::String(const String& value)
+{
+
+}
+
+String::String(const wchar_t* lpString)
+{
+
+}
+
+String::~String()
+{
+
+}
+
+// StringAlloc-----------------------------------------------------------------------------------
+const uint String::StringAlloc::NUM_BLOCKS_PER_STRINGPOOL = 100;
+String::StringMemory String::StringAlloc::m_nullStringMemory;
+String::StringAlloc String::StringAlloc::m_instance;
+
+String::StringAlloc* String::StringAlloc::getInstance()
+{
+	return &m_instance;
+}
+
+String::StringAlloc::StringAlloc()
+{
+	// Do nothing
+}
+
+String::StringAlloc::~StringAlloc()
+{
+	// Do nothing
+}
+
+String::StringMemory* String::StringAlloc::alloc(const wchar_t* lpString)
+{
+	if(lpString == null)
+	{
+		return &String::StringAlloc::m_nullStringMemory;
+	}
+	else
+	{
+		uint length = jgewcslen(lpString);
+		uint fixedLength = getCeilPowerOf2(length);
+		String::StringAlloc::StringPoolMap::iterator findResult = m_stringPoolMap.find(fixedLength);
+		if(findResult != m_stringPoolMap.end())
+		{
+			return findResult->second->pushString(lpString);
+		}
+		else
+		{
+			String::StringPool* lpStringPool = null;
+			jgeNewArgs2(lpStringPool, String::StringPool, NUM_BLOCKS_PER_STRINGPOOL, fixedLength);
+			m_stringPoolMap.insert(String::StringAlloc::StringPoolMap::value_type(fixedLength, lpStringPool));
+			return lpStringPool->pushString(lpString);
+		}
+	}
+}
+
+uint String::StringAlloc::getCeilPowerOf2(uint value)
+{
+	uint v = 1;
+	while(true)
+	{
+		if(v >= value)
+		{
+			return v;	
+		}
+		v *= 2;
+	}
+	jgeAssert(false);
+	return 0;
+}
 
 // IndexStack-----------------------------------------------------------------------------------
-jge::String::IndexStack::IndexStack(uint capability):
+String::IndexStack::IndexStack(uint capability):
 	m_lpIndexList(null), m_position(0), m_capability(capability)
 {
 	jgeNewArray(m_lpIndexList, uint, capability);
 }
 
-jge::String::IndexStack::~IndexStack()
+String::IndexStack::~IndexStack()
 {
 	jgeDeleteArray(m_lpIndexList);
 }
 
-bool jge::String::IndexStack::push(uint index)
+bool String::IndexStack::push(uint index)
 {
 	if(m_position >= m_capability)
 	{
@@ -214,7 +110,7 @@ bool jge::String::IndexStack::push(uint index)
 	}
 }
 
-bool jge::String::IndexStack::pop(uint* index)
+bool String::IndexStack::pop(uint* index)
 {
 	if(m_position == 0)
 	{
@@ -230,6 +126,85 @@ bool jge::String::IndexStack::pop(uint* index)
 	}
 }
 
+// StringPool-----------------------------------------------------------------------------------
+String::StringPool::StringPool(uint numBlocks, uint blockChars):
+	m_numBlocks(numBlocks), m_blockChars(blockChars), m_lpNextStringPool(null)
+{
+	jgeAssert(m_numBlocks > 0);
+	jgeAssert(m_blockChars > 0);
+	jgeMalloc(m_lpStringMemoryList, numBlocks * (sizeof(String::StringMemory) + sizeof(wchar_t)* blockChars), String::StringMemory*);
+	jgeNewArgs1(m_lpFreeIndexStack, String::IndexStack, numBlocks);
+	jgeNewArgs1(m_lpUsedIndexStack, String::IndexStack, numBlocks);
+
+	for(uint i = 0; i < numBlocks; ++i)
+	{
+		String::StringMemory* lpStringMemory = &m_lpStringMemoryList[i];
+		lpStringMemory->lpBelongToWhichStringPool = this;
+		lpStringMemory->usedCount = 0;
+		lpStringMemory->indexInStringPool = i;
+		lpStringMemory->lpStr = (wchar_t*)(lpStringMemory + sizeof(String::StringMemory));
+		m_lpFreeIndexStack->push(i);
+	}
+}
+
+String::StringPool::~StringPool()
+{
+	jgeDeleteArray(m_lpStringMemoryList);
+	jgeDelete(m_lpFreeIndexStack);
+	jgeDelete(m_lpUsedIndexStack);
+
+	String::StringPool* lpStringPoolNext = m_lpNextStringPool;
+	while(lpStringPoolNext != null)
+	{
+		String::StringPool* lpStringPoolNextNext = lpStringPoolNext->m_lpNextStringPool;
+		jgeDelete(lpStringPoolNext);
+		lpStringPoolNext = lpStringPoolNextNext;
+	}
+}
+
+String::StringMemory* String::StringPool::pushString(const wchar_t* lpString)
+{
+	String::StringPool* lpStringPoolPrev = null;
+	String::StringPool* lpStringPoolThis = this;
+	String::StringMemory* lpStringMemory = null;
+	while(true)
+	{
+		if(lpStringPoolThis == null)
+		{
+			jgeNewArgs2(lpStringPoolThis, String::StringPool, m_numBlocks, m_blockChars);
+			jgeAssert(lpStringPoolPrev != null);
+			lpStringPoolPrev->m_lpNextStringPool = lpStringPoolThis;
+			lpStringPoolThis->pushString(lpString);
+			break;
+		}
+		else
+		{
+			uint index;
+			if(m_lpFreeIndexStack->pop(&index))
+			{
+				m_lpUsedIndexStack->push(index);
+				jgewcsclone(lpString, m_lpStringMemoryList[index].lpStr);
+				lpStringMemory = &m_lpStringMemoryList[index];
+				break;
+			}
+			else
+			{
+				lpStringPoolPrev = lpStringPoolThis;
+				lpStringPoolThis = m_lpNextStringPool;
+			}
+		}
+	}
+	return lpStringMemory;
+}
+
+// StringMemory-----------------------------------------------------------------------------------
+String::StringMemory::StringMemory():
+	lpBelongToWhichStringPool(null), usedCount(0), indexInStringPool(0), lpStr(null)
+{
+	// Do nothing
+}
+
+// c style string-----------------------------------------------------------------------------------
 char* jgecsclone(const char* lpSrc, char* lpDest)
 {
 	if(lpSrc == null)

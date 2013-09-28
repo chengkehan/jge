@@ -1,5 +1,6 @@
 #pragma once
 
+#include "JgeStdafx.h"
 #include "JgeMemory.h"
 #include "JgeAssert.h"
 #include "JgeNoncopyable.h"
@@ -7,44 +8,50 @@
 
 namespace jge
 {
+	// String-----------------------------------------------------------------------------------
 	class JGE_DLL String
 	{
 	public:
-		//String();
-		//String(const String& str);
-		//String(const wchar_t* lpStr);
-		//~String();
+		String();
+		String(const String& value);
+		String(const wchar_t* lpString);
+		~String();
 
-		//const String& operator=(const String& str);
-		//const String& operator=(const wchar_t* lpStr);
-		//bool operator==(const String& str) const;
-		//bool operator==(const wchar_t* lpStr) const;
-		//bool operator!=(const String& str) const;
-		//bool operator!=(const wchar_t* lpStr) const;
-		//String operator+(const String& str) const;
-		//String operator+(const wchar_t* lpStr) const;
-		//String operator+=(const String& str);
-		//String operator+=(const wchar_t* lpStr);
-		
-		//uint length() const;
-		//void release();
+		const String& operator=(const String& value);
+		const String& operator=(const wchar_t* lpString);
+		bool operator==(const String& value);
+		bool operator==(const wchar_t* lpString);
 
 	private:
-		//wchar_t* m_lpStr;
 
-		//void cleanup();
-		//wchar_t* clone(const wchar_t* lpSrc, wchar_t* lpDest = null);
 
-		class StringAlloc;
-
-		template<uint blockBytes>
+		// -----------------------------------------------------------------------------------
 		class StringPool;
+		struct StringMemory;
 
-		template<uint numChars>
-		class StringMemory;
+		// StringAlloc-----------------------------------------------------------------------------------
+		class StringAlloc : private Noncopyable
+		{
+		friend String;
+
+		private:
+			static const uint NUM_BLOCKS_PER_STRINGPOOL;
+			static StringMemory m_nullStringMemory;
+			static StringAlloc m_instance;
+			static StringAlloc* getInstance();
+
+			StringAlloc();
+			~StringAlloc();
+
+			typedef std::map<uint, StringPool*> StringPoolMap;
+			StringPoolMap m_stringPoolMap;
+
+			StringMemory* alloc(const wchar_t* lpString);
+			uint getCeilPowerOf2(uint value);
+		};
 
 		// IndexStack-----------------------------------------------------------------------------------
-		class IndexStack
+		class IndexStack : private Noncopyable
 		{
 		public:
 			IndexStack(uint capability);
@@ -59,66 +66,40 @@ namespace jge
 			uint m_capability;
 		};
 
-		// StringAlloc-----------------------------------------------------------------------------------
-		class StringAlloc
-		{
-		private:
-			
-		};
-
 		// StringPool-----------------------------------------------------------------------------------
-		template<uint blockBytes>
-		class StringPool
+		class StringPool : private Noncopyable
 		{
 		public:
-			StringPool(uint numBlocks):
-				m_blockBytes(blockBytes), m_numBlocks(numBlocks)
-			{
-				jgeNewArray(m_lpStringMemoryList, StringMemory<blockBytes>, numBlocks);
-				jgeNewArgs1(m_lpFreeIndexStack, IndexStack, numBlocks);
-				jgeNewArgs1(m_lpUsedIndexStack, IndexStack, numBlocks);
-				m_lpNextStringPool = null;
-			}
-			~StringPool()
-			{
-				jgeDeleteArray(m_lpStringMemoryList);
-				jgeDelete(m_lpFreeIndexStack);
-				jgeDelete(m_lpUsedIndexStack);
-			}
+			StringPool(uint numBlocks, uint blockChars);
+			~StringPool();
+
+			inline uint getBlockChars() const { return m_blockChars; }
+			StringMemory* pushString(const wchar_t* lpString);
 
 		private:
-			uint m_blockBytes;
 			uint m_numBlocks;
-			StringMemory<blockBytes>* m_lpStringMemoryList;
+			uint m_blockChars;
+			StringMemory* m_lpStringMemoryList;
 			StringPool* m_lpNextStringPool;
 			IndexStack* m_lpFreeIndexStack;
 			IndexStack* m_lpUsedIndexStack;
 		};
 
 		// StringMemory-----------------------------------------------------------------------------------
-		template<uint numChars>
-		class StringMemory
+		struct StringMemory : private Noncopyable
 		{
 		public:
-			StringMemory(StringPool<numChars>* lpStringPool, uint indexInPool):
-				m_lpStringPool(lpStringPool), m_indexInPool(indexInPool), m_usedCount(0)
-			{
-				// Do nothing
-			}
-			~StringMemory()
-			{
-				// Do nothing
-			}
+			StringMemory();
 
-		private:
-			StringPool<numChars>* m_lpStringPool;
-			uint m_usedCount;
-			uint m_indexInPool;
-			wchar_t m_str[numChars];
+			StringPool* lpBelongToWhichStringPool;
+			uint usedCount;
+			uint indexInStringPool;
+			wchar_t* lpStr;
 		};
 	};
 }
 
+// c style string-----------------------------------------------------------------------------------
 // char string
 inline bool jgecsequ(const char* lpStr1, const char* lpStr2)
 {

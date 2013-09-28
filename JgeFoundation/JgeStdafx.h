@@ -19,6 +19,7 @@
 #include <cstdio>
 #include <sstream>
 #include <fstream>
+#include <map>
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
