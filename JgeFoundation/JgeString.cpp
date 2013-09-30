@@ -7,49 +7,102 @@ using namespace jge;
 // String-----------------------------------------------------------------------------------
 String::String()
 {
-
+	m_lpStringMemory = &String::StringAlloc::m_emptyStringMemory;
 }
 
 String::String(const String& value)
 {
-
+	m_lpStringMemory = value.m_lpStringMemory;
+	++m_lpStringMemory->usedCount;
 }
 
 String::String(const wchar_t* lpString)
 {
-
+	m_lpStringMemory = String::StringAlloc::alloc(lpString);
 }
 
 String::~String()
 {
+	release();
+}
 
+const String& String::operator=(const String& value)
+{
+	if(m_lpStringMemory == value.m_lpStringMemory)
+	{
+		return *this;
+	}
+
+	release();
+	m_lpStringMemory = value.m_lpStringMemory;
+	++m_lpStringMemory->usedCount;
+	return *this;
+}
+
+const String& String::operator=(const wchar_t* lpString)
+{
+	if(lpString == null || jgewcslen(lpString) == 0)
+	{
+		release();
+		m_lpStringMemory = String::StringAlloc::alloc(lpString);
+		return *this;
+	}
+
+	if(m_lpStringMemory != &String::StringAlloc::m_emptyStringMemory && 
+		m_lpStringMemory != &String::StringAlloc::m_nullStringMemory && 
+		jgewcsequ(m_lpStringMemory->lpStr, lpString))
+	{
+		return *this;
+	}
+
+	release();
+	m_lpStringMemory = String::StringAlloc::alloc(lpString);
+	return *this;
+}
+
+bool String::operator==(const String& value)
+{
+	return m_lpStringMemory == value.m_lpStringMemory;
+}
+
+bool String::operator==(const wchar_t* lpString)
+{
+	return 
+		(m_lpStringMemory == &String::StringAlloc::m_nullStringMemory && lpString == null) || 
+		(m_lpStringMemory == &String::StringAlloc::m_emptyStringMemory && jgewcslen(lpString) == 0) || 
+		jgewcsequ(m_lpStringMemory->lpStr, lpString);
+}
+
+void String::release()
+{
+	jgeAssert(m_lpStringMemory != null);
+	if(m_lpStringMemory != &String::StringAlloc::m_nullStringMemory && m_lpStringMemory != &String::StringAlloc::m_emptyStringMemory)
+	{
+		--m_lpStringMemory->usedCount;
+		jgeAssert(m_lpStringMemory->usedCount >= 0);
+		if(m_lpStringMemory->usedCount == 0)
+		{
+			m_lpStringMemory->lpBelongToWhichStringPool->recycle(m_lpStringMemory);
+		}
+		m_lpStringMemory = null;
+	}
 }
 
 // StringAlloc-----------------------------------------------------------------------------------
 const uint String::StringAlloc::NUM_BLOCKS_PER_STRINGPOOL = 100;
 String::StringMemory String::StringAlloc::m_nullStringMemory;
-String::StringAlloc String::StringAlloc::m_instance;
-
-String::StringAlloc* String::StringAlloc::getInstance()
-{
-	return &m_instance;
-}
-
-String::StringAlloc::StringAlloc()
-{
-	// Do nothing
-}
-
-String::StringAlloc::~StringAlloc()
-{
-	// Do nothing
-}
+String::StringMemory String::StringAlloc::m_emptyStringMemory;
+String::StringAlloc::StringPoolMap String::StringAlloc::m_stringPoolMap;
 
 String::StringMemory* String::StringAlloc::alloc(const wchar_t* lpString)
 {
 	if(lpString == null)
 	{
 		return &String::StringAlloc::m_nullStringMemory;
+	}
+	else if(jgewcslen(lpString) == 0)
+	{
+		return &String::StringAlloc::m_emptyStringMemory;
 	}
 	else
 	{
@@ -134,7 +187,6 @@ String::StringPool::StringPool(uint numBlocks, uint blockChars):
 	jgeAssert(m_blockChars > 0);
 	jgeMalloc(m_lpStringMemoryList, numBlocks * (sizeof(String::StringMemory) + sizeof(wchar_t)* blockChars), String::StringMemory*);
 	jgeNewArgs1(m_lpFreeIndexStack, String::IndexStack, numBlocks);
-	jgeNewArgs1(m_lpUsedIndexStack, String::IndexStack, numBlocks);
 
 	for(uint i = 0; i < numBlocks; ++i)
 	{
@@ -151,7 +203,6 @@ String::StringPool::~StringPool()
 {
 	jgeDeleteArray(m_lpStringMemoryList);
 	jgeDelete(m_lpFreeIndexStack);
-	jgeDelete(m_lpUsedIndexStack);
 
 	String::StringPool* lpStringPoolNext = m_lpNextStringPool;
 	while(lpStringPoolNext != null)
@@ -182,7 +233,6 @@ String::StringMemory* String::StringPool::pushString(const wchar_t* lpString)
 			uint index;
 			if(m_lpFreeIndexStack->pop(&index))
 			{
-				m_lpUsedIndexStack->push(index);
 				jgewcsclone(lpString, m_lpStringMemoryList[index].lpStr);
 				lpStringMemory = &m_lpStringMemoryList[index];
 				break;
@@ -195,6 +245,13 @@ String::StringMemory* String::StringPool::pushString(const wchar_t* lpString)
 		}
 	}
 	return lpStringMemory;
+}
+
+void String::StringPool::recycle(String::StringMemory* lpStringMemory)
+{
+	jgeAssert(lpStringMemory != null);
+	jgeAssert(lpStringMemory->usedCount == 0);
+	m_lpFreeIndexStack->push(lpStringMemory->indexInStringPool);
 }
 
 // StringMemory-----------------------------------------------------------------------------------

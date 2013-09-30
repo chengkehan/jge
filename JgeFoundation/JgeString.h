@@ -23,11 +23,14 @@ namespace jge
 		bool operator==(const wchar_t* lpString);
 
 	private:
-
-
 		// -----------------------------------------------------------------------------------
 		class StringPool;
 		struct StringMemory;
+
+		// -----------------------------------------------------------------------------------
+		StringMemory* m_lpStringMemory;
+
+		void release();
 
 		// StringAlloc-----------------------------------------------------------------------------------
 		class StringAlloc : private Noncopyable
@@ -37,17 +40,13 @@ namespace jge
 		private:
 			static const uint NUM_BLOCKS_PER_STRINGPOOL;
 			static StringMemory m_nullStringMemory;
-			static StringAlloc m_instance;
-			static StringAlloc* getInstance();
-
-			StringAlloc();
-			~StringAlloc();
+			static StringMemory m_emptyStringMemory;
 
 			typedef std::map<uint, StringPool*> StringPoolMap;
-			StringPoolMap m_stringPoolMap;
+			static StringPoolMap m_stringPoolMap;
 
-			StringMemory* alloc(const wchar_t* lpString);
-			uint getCeilPowerOf2(uint value);
+			static StringMemory* alloc(const wchar_t* lpString);
+			static uint getCeilPowerOf2(uint value);
 		};
 
 		// IndexStack-----------------------------------------------------------------------------------
@@ -75,6 +74,7 @@ namespace jge
 
 			inline uint getBlockChars() const { return m_blockChars; }
 			StringMemory* pushString(const wchar_t* lpString);
+			void recycle(StringMemory* lpStringMemory);
 
 		private:
 			uint m_numBlocks;
@@ -82,7 +82,6 @@ namespace jge
 			StringMemory* m_lpStringMemoryList;
 			StringPool* m_lpNextStringPool;
 			IndexStack* m_lpFreeIndexStack;
-			IndexStack* m_lpUsedIndexStack;
 		};
 
 		// StringMemory-----------------------------------------------------------------------------------
