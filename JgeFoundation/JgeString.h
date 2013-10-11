@@ -22,6 +22,10 @@ namespace jge
 		bool operator==(const String& value);
 		bool operator==(const wchar_t* lpString);
 
+		bool isNull();
+		bool isEmpty();
+		bool isNullOrEmpty();
+
 	private:
 		// -----------------------------------------------------------------------------------
 		class StringPool;

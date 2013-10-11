@@ -73,6 +73,21 @@ bool String::operator==(const wchar_t* lpString)
 		jgewcsequ(m_lpStringMemory->lpStr, lpString);
 }
 
+bool String::isNull()
+{
+	return m_lpStringMemory == &String::StringAlloc::m_nullStringMemory;
+}
+
+bool String::isEmpty()
+{
+	return m_lpStringMemory == &String::StringAlloc::m_emptyStringMemory;
+}
+
+bool String::isNullOrEmpty()
+{
+	return isNull() || isEmpty();
+}
+
 void String::release()
 {
 	jgeAssert(m_lpStringMemory != null);
